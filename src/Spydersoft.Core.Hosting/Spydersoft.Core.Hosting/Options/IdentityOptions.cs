@@ -9,6 +9,8 @@ public class IdentityOptions
     /// </summary>
     public const string SectionName = "Identity";
 
+    public bool Enabled { get; set; } = false;
+
     /// <summary>
     /// Gets or sets the authority.
     /// </summary>

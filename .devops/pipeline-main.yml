@@ -42,6 +42,6 @@ extends:
     sonarProjectName: Spydersoft.Core.Hosting
     sonarExtraProperties: |
       sonar.projectKey=spydersoft_core_hosting
-      sonar.sources=./src/
-      sonar.tests=./src/**/*.UnitTests/
+      sonar.sources=src/**/;!src/**/*.UnitTests/
+      sonar.tests=src/**/*.UnitTests/
       sonar.scanner.scanAll=false

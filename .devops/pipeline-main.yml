@@ -35,11 +35,12 @@ extends:
     dotnetSdk: "8.0.x"
     gitVersionVersion: "6.x"
     nugetConfigPath: $(Build.SourcesDirectory)/src/nuget.config
-    executeSonar: false
-    sonarEndpointName: sonarcloud-internal
-    sonarProjectKey: asp_core_libraries
-    sonarProjectName: Core Libraries
+    executeSonar: true
+    useSonarCloud: true
+    sonarEndpointName: sonarcloud-spydersoft
+    sonarProjectKey: spydersoft_core_hosting
+    sonarProjectName: Spydersoft.Core.Hosting
     sonarExtraProperties: |
-      sonar.projectKey=asp_core_libraries
+      sonar.projectKey=spydersoft_core_hosting
       sonar.sources=./src/
       sonar.tests=./src/**/*.UnitTests/

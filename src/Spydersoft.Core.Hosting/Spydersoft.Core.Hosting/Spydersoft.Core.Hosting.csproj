@@ -4,6 +4,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -17,5 +18,14 @@
 		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.9.0" />
 		<PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="../../../README.md" Pack="true" PackagePath="\" />
+		<None Include="D:\spydersoft\core-hosting\src\Spydersoft.Core.Hosting\Spydersoft.Core.Hosting\.editorconfig" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EditorConfigFiles Remove="D:\spydersoft\core-hosting\src\Spydersoft.Core.Hosting\Spydersoft.Core.Hosting\.editorconfig" />
 	</ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 # Spydersoft Core Hosting Libraries
 
-This repository contains libraries with common hosting tasks for Spydersoft projects
+This repository contains libraries with common hosting tasks for Spydersoft projects.
 
 ## Libraries
 

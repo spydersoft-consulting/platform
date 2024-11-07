@@ -1,5 +1,13 @@
-trigger: none
-pr: none
+trigger:
+  tags:
+    include:
+    - "*"
+  branches:
+    include:
+    - main
+    - feature/*
+pr:
+- main
 
 resources:
   repositories:
@@ -11,8 +19,8 @@ resources:
 extends:
   template: pipelines/dotnet-library-build/v1.yml@templates
   parameters:
-    projectsToBuild: src/Spydersoft.Core.Hosting/Spydersoft.Core.Hosting.csproj
-    projectsToPack: src/Spydersoft.Core.Hosting/Spydersoft.Core.Hosting.csproj
+    projectsToBuild: src/Spydersoft.Core.Hosting/Spydersoft.Core.Hosting/Spydersoft.Core.Hosting.csproj
+    projectsToPack: src/Spydersoft.Core.Hosting/Spydersoft.Core.Hosting/Spydersoft.Core.Hosting.csproj
     executeTests: true
     # If it's a PR or a build from main (not a tag) then don't publish to Nuget
     ${{ if or(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranchName'], 'main')) }}:

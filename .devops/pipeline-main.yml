@@ -30,6 +30,7 @@ extends:
     dotnetSdk: "8.0.x"
     gitVersionVersion: "6.x"
     nugetConfigPath: $(Build.SourcesDirectory)/src/nuget.config
+    externalPublishFeed: SpydersoftDevelop
     executeSonar: false
     sonarEndpointName: sonarcloud-internal
     sonarProjectKey: asp_core_libraries

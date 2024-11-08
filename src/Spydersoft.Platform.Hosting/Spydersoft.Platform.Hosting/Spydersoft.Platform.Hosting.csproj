@@ -21,11 +21,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="../../../README.md" Pack="true" PackagePath="\" />
-		<None Include="D:\spydersoft\core-hosting\src\Spydersoft.Platform.Hosting\Spydersoft.Platform.Hosting\.editorconfig" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <EditorConfigFiles Remove="D:\spydersoft\core-hosting\src\Spydersoft.Platform.Hosting\Spydersoft.Platform.Hosting\.editorconfig" />
+		<None Include="../docs/README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 </Project>

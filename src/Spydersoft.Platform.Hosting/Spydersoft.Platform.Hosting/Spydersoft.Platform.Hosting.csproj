@@ -22,10 +22,10 @@
 
 	<ItemGroup>
 		<None Include="../../../README.md" Pack="true" PackagePath="\" />
-		<None Include="D:\spydersoft\core-hosting\src\Spydersoft.Core.Hosting\Spydersoft.Core.Hosting\.editorconfig" />
+		<None Include="D:\spydersoft\core-hosting\src\Spydersoft.Platform.Hosting\Spydersoft.Platform.Hosting\.editorconfig" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EditorConfigFiles Remove="D:\spydersoft\core-hosting\src\Spydersoft.Core.Hosting\Spydersoft.Core.Hosting\.editorconfig" />
+	  <EditorConfigFiles Remove="D:\spydersoft\core-hosting\src\Spydersoft.Platform.Hosting\Spydersoft.Platform.Hosting\.editorconfig" />
 	</ItemGroup>
 </Project>

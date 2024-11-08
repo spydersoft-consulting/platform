@@ -11,11 +11,11 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
-using Spydersoft.Core.Hosting.Options;
+using Spydersoft.Platform.Hosting.Options;
 using System.Diagnostics.Metrics;
 using System.Reflection;
 
-namespace Spydersoft.Core.Hosting;
+namespace Spydersoft.Platform.Hosting;
 
 public static class StartupExtensions
 {

@@ -22,8 +22,8 @@ variables:
 extends:
   template: pipelines/dotnet-library-build/v1.yml@templates
   parameters:
-    projectsToBuild: src/Spydersoft.Core.Hosting/Spydersoft.Core.Hosting/Spydersoft.Core.Hosting.csproj
-    projectsToPack: src/Spydersoft.Core.Hosting/Spydersoft.Core.Hosting/Spydersoft.Core.Hosting.csproj
+    projectsToBuild: src/Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting.csproj
+    projectsToPack: src/Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting.csproj
     executeTests: true
     externalPublishUrl: $(nuget-feed-url)
     externalPublishApiKey: $(nuget-feed-api-key)
@@ -38,10 +38,10 @@ extends:
     executeSonar: true
     useSonarCloud: true
     sonarEndpointName: sonarcloud-spydersoft
-    sonarProjectKey: spydersoft_core_hosting
-    sonarProjectName: Spydersoft.Core.Hosting
+    sonarProjectKey: spydersoft_platform
+    sonarProjectName: Spydersoft.Platform
     sonarExtraProperties: |
-      sonar.projectKey=spydersoft_core_hosting
+      sonar.projectKey=spydersoft_platform
       sonar.sources=src/**/;!src/**/*.UnitTests/
       sonar.tests=src/**/*.UnitTests/
       sonar.scanner.scanAll=false

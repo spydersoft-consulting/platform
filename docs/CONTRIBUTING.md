@@ -15,7 +15,7 @@ This repository uses [Dotnet Format][1] to apply formatting rules to the C#.
 To format your files prior to staging and committing, you can run `dotnet format` on any of the projects in the repository:
 
 ```powershell
-dotnet format .\source\Spydersoft.Core.Hosting.sln
+dotnet format .\source\Spydersoft.Platform.Hosting.sln
 ```
 
 ## Automated Linting/Formatting

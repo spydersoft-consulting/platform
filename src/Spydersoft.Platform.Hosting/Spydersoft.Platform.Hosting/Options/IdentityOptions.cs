@@ -1,4 +1,4 @@
-﻿namespace Spydersoft.Core.Hosting.Options;
+﻿namespace Spydersoft.Platform.Hosting.Options;
 /// <summary>
 /// Class IdentityOptions.
 /// </summary>

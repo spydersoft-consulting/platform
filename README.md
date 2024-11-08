@@ -4,7 +4,7 @@ This repository contains libraries with common hosting tasks for Spydersoft proj
 
 ## Libraries
 
-* [Spydersoft.Core.Hosting](./src/Spydersoft.Core.Hosting//)
+* [Spydersoft.Platform.Hosting](./src/Spydersoft.Platform.Hosting//)
 
 ## Usage
 

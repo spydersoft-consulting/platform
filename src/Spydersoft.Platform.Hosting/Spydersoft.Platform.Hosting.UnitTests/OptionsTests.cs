@@ -1,6 +1,6 @@
-using Spydersoft.Core.Hosting.Options;
+using Spydersoft.Platform.Hosting.Options;
 
-namespace Spydersoft.Core.Hosting.UnitTests;
+namespace Spydersoft.Platform.Hosting.UnitTests;
 
 public class OptionsTests
 {

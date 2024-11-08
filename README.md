@@ -1,10 +1,10 @@
-# Spydersoft Core Hosting Libraries
+# Spydersoft Platform Libraries
 
-This repository contains libraries with common hosting tasks for Spydersoft projects.
+This repository contains libraries with common tasks for Spydersoft projects.
 
 ## Libraries
 
-* [Spydersoft.Core.Hosting](./src/Spydersoft.Core.Hosting//)
+* [Spydersoft.Platform.Hosting](./src/Spydersoft.Platform.Hosting//)
 
 ## Directory Structure
 

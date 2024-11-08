@@ -1,4 +1,4 @@
-﻿namespace Spydersoft.Core.Hosting.Options;
+﻿namespace Spydersoft.Platform.Hosting.Options;
 /// <summary>
 /// Class IdentityOptions.
 /// </summary>
@@ -8,6 +8,8 @@ public class IdentityOptions
     /// The section name
     /// </summary>
     public const string SectionName = "Identity";
+
+    public bool Enabled { get; set; } = false;
 
     /// <summary>
     /// Gets or sets the authority.

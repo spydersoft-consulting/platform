@@ -11,11 +11,11 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
-using Spydersoft.Core.Hosting.Options;
+using Spydersoft.Platform.Hosting.Options;
 using System.Diagnostics.Metrics;
 using System.Reflection;
 
-namespace Spydersoft.Core.Hosting;
+namespace Spydersoft.Platform.Hosting;
 
 public static class StartupExtensions
 {
@@ -53,10 +53,10 @@ public static class StartupExtensions
     public static bool AddSpydersoftIdentity(this WebApplicationBuilder appBuilder)
     {
         var authInstalled = false;
-        var identityOption = new Options.IdentityOptions();
-        appBuilder.Configuration.GetSection(Options.IdentityOptions.SectionName).Bind(identityOption);
+        var identityOption = new IdentityOptions();
+        appBuilder.Configuration.GetSection(IdentityOptions.SectionName).Bind(identityOption);
 
-        if (identityOption.Authority != null)
+        if (identityOption.Enabled && identityOption.Authority != null)
         {
             appBuilder.Services
                 .AddAuthentication(o =>
@@ -70,14 +70,14 @@ public static class StartupExtensions
                     o.Authority = identityOption.Authority;
                     o.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                     {
-                        ValidAudiences = new List<string>
-                                        {
+                        ValidAudiences =
+                                        [
                                             identityOption.ApplicationName
-                                        },
-                        ValidIssuers = new List<string>
-                                        {
+                                        ],
+                        ValidIssuers =
+                                        [
                                             identityOption.Authority
-                                        }
+                                        ]
                     };
                 });
 

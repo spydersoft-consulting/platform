@@ -16,12 +16,17 @@ resources:
       endpoint: spydersoft-gh
       name: spydersoft-consulting/azure-devops-templates
 
+variables:
+  - group: nuget-spydersoft-develop
+
 extends:
   template: pipelines/dotnet-library-build/v1.yml@templates
   parameters:
-    projectsToBuild: src/Spydersoft.Core.Hosting/Spydersoft.Core.Hosting/Spydersoft.Core.Hosting.csproj
-    projectsToPack: src/Spydersoft.Core.Hosting/Spydersoft.Core.Hosting/Spydersoft.Core.Hosting.csproj
+    projectsToBuild: src/Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting.csproj
+    projectsToPack: src/Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting.csproj
     executeTests: true
+    externalPublishUrl: $(nuget-feed-url)
+    externalPublishApiKey: $(nuget-feed-api-key)
     # If it's a PR or a build from main (not a tag) then don't publish to Nuget
     ${{ if or(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranchName'], 'main')) }}:
       publishToNuget: false
@@ -30,11 +35,13 @@ extends:
     dotnetSdk: "8.0.x"
     gitVersionVersion: "6.x"
     nugetConfigPath: $(Build.SourcesDirectory)/src/nuget.config
-    executeSonar: false
-    sonarEndpointName: sonarcloud-internal
-    sonarProjectKey: asp_core_libraries
-    sonarProjectName: Core Libraries
+    executeSonar: true
+    useSonarCloud: true
+    sonarEndpointName: sonarcloud-spydersoft
+    sonarProjectKey: spydersoft_platform
+    sonarProjectName: Spydersoft.Platform
     sonarExtraProperties: |
-      sonar.projectKey=asp_core_libraries
-      sonar.sources=./src/
-      sonar.tests=./src/**/*.UnitTests/
+      sonar.projectKey=spydersoft_platform
+      sonar.sources=src/**/;!src/**/*.UnitTests/
+      sonar.tests=src/**/*.UnitTests/
+      sonar.scanner.scanAll=false

@@ -1,0 +1,19 @@
+@Spydersoft.Platform.Hosting.ApiTests_HostAddress = https://localhost:7051
+
+GET {{Spydersoft.Platform.Hosting.ApiTests_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+GET {{Spydersoft.Platform.Hosting.ApiTests_HostAddress}}/livez
+Accept: application/json
+
+###
+
+GET {{Spydersoft.Platform.Hosting.ApiTests_HostAddress}}/readyz
+Accept: application/json
+
+###
+
+GET {{Spydersoft.Platform.Hosting.ApiTests_HostAddress}}/startup
+Accept: application/json

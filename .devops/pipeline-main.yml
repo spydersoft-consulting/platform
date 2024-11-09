@@ -43,5 +43,5 @@ extends:
     sonarExtraProperties: |
       sonar.projectKey=spydersoft_platform
       sonar.sources=src/**/;!src/**/*.UnitTests/
-      sonar.tests=src/**/*.UnitTests/
+      sonar.tests=src/**/*.UnitTests/;src/**/*.ApiTests/
       sonar.scanner.scanAll=false

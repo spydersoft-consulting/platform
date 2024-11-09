@@ -1,8 +1,8 @@
 using Spydersoft.Platform.Hosting.Options;
 
-namespace Spydersoft.Platform.Hosting.UnitTests;
+namespace Spydersoft.Platform.Hosting.UnitTests.Options;
 
-public class OptionsTests
+public class IdentityOptionsTests
 {
     [Test]
     public void IdentityOptionsDefaults()

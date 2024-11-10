@@ -4,14 +4,10 @@ using Spydersoft.Platform.Hosting.Attributes;
 
 namespace Spydersoft.Platform.Hosting.ApiTests.HealthChecks
 {
-    [SpydersoftHealthCheck(nameof(StartupHealthCheck), failureStatus: HealthStatus.Degraded, "startup")]
-    public class StartupHealthCheck : IHealthCheck
+    [SpydersoftHealthCheck(nameof(StartupHealthCheck), failureStatus: HealthStatus.Degraded, "ready")]
+    public class StartupHealthCheck(ITestService myService) : IHealthCheck
     {
-        private readonly ITestService _myService;
-        public StartupHealthCheck(ITestService myService)
-        {
-            _myService = myService;
-        }
+        private readonly ITestService _myService = myService;
 
         public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {

@@ -30,10 +30,19 @@ public static class TelemetryExtensions
         });
     }
 
-    public static void AddSpydersoftTelemetry(this WebApplicationBuilder appBuilder, Assembly startupAssembly)
+    public static WebApplicationBuilder AddSpydersoftTelemetry(this WebApplicationBuilder appBuilder, Assembly startupAssembly)
     {
         var telemetryOptions = new TelemetryOptions();
         appBuilder.Configuration.GetSection(TelemetryOptions.SectionName).Bind(telemetryOptions);
+
+        // Add TelemetryOptions to the service collection for the Healthcheck
+        appBuilder.Services.Configure<TelemetryOptions>(appBuilder.Configuration.GetSection(TelemetryOptions.SectionName));
+
+        if (!telemetryOptions.Enabled)
+        {
+            return appBuilder;
+        }
+
 
         // Use IConfiguration binding for AspNetCore instrumentation options.
         appBuilder.Services.Configure<AspNetCoreTraceInstrumentationOptions>(appBuilder.Configuration.GetSection(telemetryOptions.AspNetCoreInstrumentationSection));
@@ -47,6 +56,8 @@ public static class TelemetryExtensions
             .WithTracing(builder => ConfigureTracing(builder, appBuilder.Configuration, telemetryOptions))
             .WithMetrics(builder => ConfigureMetrics(builder, telemetryOptions))
             .WithLogging(builder => ConfigureLogging(builder, telemetryOptions));
+
+        return appBuilder;
     }
 
     #endregion

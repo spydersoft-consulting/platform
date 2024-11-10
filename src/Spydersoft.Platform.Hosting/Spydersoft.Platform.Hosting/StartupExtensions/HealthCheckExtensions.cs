@@ -23,15 +23,10 @@ public static class HealthCheckExtensions
         }
 
         var healthCheckBuilder = appBuilder.Services.AddHealthChecks()
-            .AddCheck("self", () => HealthCheckResult.Healthy(), tags: ["live"]);
+            .AddCheck("self", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy("Ping Success"), tags: ["live"]);
 
-        MethodInfo? addCheckMethod = Array.Find(typeof(HealthChecksBuilderAddCheckExtensions).GetMethods(),
-            m => m.Name == "AddCheck" && m.GetParameters().Length == 4 && m.IsGenericMethod);
-
-        if (addCheckMethod == null)
-        {
-            throw new ConfigurationException("Unable to find AddCheck method on HealthChecksBuilderAddCheckExtensions");
-        }
+        MethodInfo addCheckMethod = Array.Find(typeof(HealthChecksBuilderAddCheckExtensions).GetMethods(),
+            m => m.Name == "AddCheck" && m.GetParameters().Length == 4 && m.IsGenericMethod) ?? throw new ConfigurationException("Unable to find AddCheck method on HealthChecksBuilderAddCheckExtensions");
 
         foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
@@ -73,6 +68,12 @@ public static class HealthCheckExtensions
         appBuilder.UseHealthChecks("/startup", new HealthCheckOptions
         {
             Predicate = (check) => options.StartupTagsList().Exists(tag => check.Tags.Contains(tag)),
+            ResponseWriter = HealthCheckWriter.WriteResponse
+        });
+
+        appBuilder.UseHealthChecks("/configuration", new HealthCheckOptions
+        {
+            Predicate = (check) => check.Tags.Contains("configuration"),
             ResponseWriter = HealthCheckWriter.WriteResponse
         });
 

@@ -20,12 +20,12 @@ Configuration is controlled by configuration entries in `appsettings.json` or en
 
 ```json
 "Telemetry": {
-  "ActivitySourceName": "spydersoft-otel-activity",
+  "ActivitySourceName": "Spydersoft.Otel.Activity",
   "AspNetCoreInstrumentation": {
     // AspNetCoreTraceInstrumentationOptions
   },
   "AspNetCoreInstrumentationSection": "AspNetCoreInstrumentation",
-  "MeterName": "spydersoft-otel-meter",
+  "MeterName": "Spydersoft.Otel.Meter",
   "Otlp": {
     "Endpoint": ""
   },

@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<ITestService, TestService>();
-
+builder.AddSpydersoftTelemetry(typeof(Program).Assembly);
 var healthCheckOptions = builder.AddSpydersoftHealthChecks();
 
 var app = builder.Build();
@@ -20,3 +20,5 @@ app.UseSpydersoftHealthChecks(healthCheckOptions);
 app.MapControllers();
 
 await app.RunAsync();
+
+public partial class Program { }

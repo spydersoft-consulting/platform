@@ -9,7 +9,7 @@ public class HealthCheckDataPropertyConvertor : JsonConverter<IReadOnlyDictionar
         Dictionary<string, object> dictionary = [];
         if (reader.TokenType != JsonTokenType.StartObject)
         {
-            throw new JsonException();
+            throw new JsonException("Object not found.");
         }
 
         while (reader.Read())
@@ -19,49 +19,15 @@ public class HealthCheckDataPropertyConvertor : JsonConverter<IReadOnlyDictionar
                 return dictionary;
             }
 
-            // Get the key.
-            if (reader.TokenType != JsonTokenType.PropertyName)
-            {
-                throw new JsonException();
-            }
-
             string? key = reader.GetString();
 
             if (string.IsNullOrWhiteSpace(key))
             {
-                throw new JsonException("Invalid key value");
+                throw new JsonException("Invalid key value.");
             }
 
             // Get the value.
-            reader.Read();
-            if (reader.TokenType != JsonTokenType.StartObject)
-            {
-                throw new JsonException("No object found");
-            }
-            reader.Read();
-            if (reader.TokenType != JsonTokenType.PropertyName && reader.GetString() != "$type")
-            {
-                throw new JsonException("No type information found");
-            }
-            reader.Read();
-
-            string? typeName = reader.GetString() ?? throw new JsonException("No type information found");
-            Type? dataType = Type.GetType(typeName, true) ?? throw new JsonException("Type not found");
-            reader.Read();
-
-            if (reader.TokenType != JsonTokenType.PropertyName)
-            {
-                throw new JsonException("No object data found");
-            }
-
-            reader.Read();
-
-            if (reader.TokenType != JsonTokenType.StartObject && reader.TokenType != JsonTokenType.StartArray)
-            {
-                throw new JsonException("No object found");
-            }
-
-            object? dataValue = JsonSerializer.Deserialize(ref reader, dataType, options) ?? throw new JsonException("Invalid data value");
+            object? dataValue = GetDataValue(ref reader, options) ?? throw new JsonException("Invalid Data Value");
 
             // Add to dictionary.
             dictionary.Add(key, dataValue);
@@ -86,4 +52,55 @@ public class HealthCheckDataPropertyConvertor : JsonConverter<IReadOnlyDictionar
         }
         writer.WriteEndObject();
     }
+
+
+    private static object? GetDataValue(ref Utf8JsonReader reader, JsonSerializerOptions options)
+    {
+        reader.Read();
+        if (reader.TokenType != JsonTokenType.StartObject)
+        {
+            throw new JsonException("No object found.");
+        }
+        reader.Read();
+        if (reader.TokenType != JsonTokenType.PropertyName || reader.GetString() != "$type")
+        {
+            throw new JsonException("No type information found.");
+        }
+        reader.Read();
+
+        string? typeName = reader.GetString();
+        if (string.IsNullOrWhiteSpace(typeName))
+        {
+            throw new JsonException("No type information found.");
+        }
+
+        Type? dataType = Type.GetType(typeName) ?? throw new JsonException("Type not found.");
+        reader.Read();
+
+        if (reader.TokenType != JsonTokenType.PropertyName || reader.GetString() != "data")
+        {
+            throw new JsonException("No object data found.");
+        }
+        reader.Read();
+
+        if (reader.TokenType == JsonTokenType.String && dataType == typeof(string))
+        {
+            return reader.GetString();
+        }
+
+        if (reader.TokenType != JsonTokenType.StartObject && reader.TokenType != JsonTokenType.StartArray)
+        {
+            throw new JsonException("No object found.");
+        }
+        try
+        {
+            return JsonSerializer.Deserialize(ref reader, dataType, options);
+        }
+        catch (JsonException ex)
+        {
+            throw new JsonException("Error deserializing object.", ex);
+        }
+
+    }
+
 }

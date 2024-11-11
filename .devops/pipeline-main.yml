@@ -42,7 +42,6 @@ extends:
     sonarProjectName: Spydersoft.Platform
     sonarExtraProperties: |
       sonar.projectKey=spydersoft_platform
-      sonar.inclusions=src/**/
-      sonar.exclusions=src/**/*.UnitTests/;src/**/*.ApiTests/
-      sonar.test.inclusions=src/**/*.UnitTests/;src/**/*.ApiTests/
+      sonar.inclusions=src/**/*
+      sonar.test.inclusions=src/**/*.UnitTests/**/*;src/**/*.ApiTests/**/*
       sonar.scanner.scanAll=false

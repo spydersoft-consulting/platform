@@ -1,15 +1,5 @@
 ﻿using Spydersoft.Platform.Hosting.HealthChecks;
-using Spydersoft.Platform.Hosting.Options;
-using Spydersoft.Platform.Hosting.UnitTests.ApiTests;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Spydersoft.Platform.Hosting.UnitTests.HealthCheckDataPropertyConvertorTests;
 internal class SerializationTests
@@ -22,7 +12,7 @@ internal class SerializationTests
         _jsonSerializerOptions = new JsonSerializerOptions()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
+            WriteIndented = true,
         };
     }
 
@@ -30,7 +20,7 @@ internal class SerializationTests
     public string Test_Serialization(HealthCheckResult healthCheckResult)
     {
         string json = JsonSerializer.Serialize(healthCheckResult, _jsonSerializerOptions);
-
+        json = json.Replace("\r\n", "\n");
         Assert.DoesNotThrow(() => JsonDocument.Parse(json), "Invalid JSON");
         return json;
     }
@@ -51,7 +41,6 @@ internal class SerializationTests
                 Assert.That(healthCheckResult.ResultData, Contains.Key(expectedData.Key));
                 Assert.That(healthCheckResult.ResultData[expectedData.Key].GetType(), Is.EqualTo(expectedData.Value.GetType()));
             }
-            //Assert.That(healthCheckResult.ResultData, Is.EquivalentTo(expectedHealthCheckResult.ResultData));
         });
     }
 

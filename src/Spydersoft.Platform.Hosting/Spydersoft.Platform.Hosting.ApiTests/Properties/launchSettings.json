@@ -5,7 +5,7 @@
       "launchBrowser": true,
       "launchUrl": "weatherforecast",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Identity"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7051;http://localhost:5153"

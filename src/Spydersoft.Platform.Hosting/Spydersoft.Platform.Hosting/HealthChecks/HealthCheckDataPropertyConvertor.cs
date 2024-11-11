@@ -61,11 +61,7 @@ public class HealthCheckDataPropertyConvertor : JsonConverter<IReadOnlyDictionar
                 throw new JsonException("No object found");
             }
 
-            object? dataValue = JsonSerializer.Deserialize(ref reader, dataType, options);
-            if (dataValue == null)
-            {
-                throw new JsonException("Invalid data value");
-            }
+            object? dataValue = JsonSerializer.Deserialize(ref reader, dataType, options) ?? throw new JsonException("Invalid data value");
 
             // Add to dictionary.
             dictionary.Add(key, dataValue);

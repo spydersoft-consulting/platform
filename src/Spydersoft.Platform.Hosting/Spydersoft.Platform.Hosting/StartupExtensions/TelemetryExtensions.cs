@@ -10,6 +10,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
+using Spydersoft.Platform.Hosting.Exceptions;
 using Spydersoft.Platform.Hosting.Options;
 using System.Diagnostics.Metrics;
 using System.Reflection;
@@ -154,7 +155,7 @@ public static class TelemetryExtensions
     {
         if (string.IsNullOrWhiteSpace(options.Otlp.Endpoint))
         {
-            throw new InvalidOperationException("OTLP endpoint is required when using OTLP exporter.");
+            throw new ConfigurationException("OTLP endpoint is required when using OTLP exporter.");
         }
         otlpOptions.Endpoint = new Uri(options.Otlp.Endpoint);
     }

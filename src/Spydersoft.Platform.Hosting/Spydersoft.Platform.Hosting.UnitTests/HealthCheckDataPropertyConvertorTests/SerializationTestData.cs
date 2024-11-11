@@ -6,7 +6,7 @@ namespace Spydersoft.Platform.Hosting.UnitTests.HealthCheckDataPropertyConvertor
 public static class SerializationTestData
 {
     #region Test1 Data
-    public static HealthCheckResult Test1 = new()
+    public static HealthCheckResult Test1 => new()
     {
         Description = "Test",
         Status = "Healthy",
@@ -22,7 +22,7 @@ public static class SerializationTestData
     #endregion
 
     #region Test2 Data
-    public static HealthCheckResult Test2 = new()
+    public static HealthCheckResult Test2 => new()
     {
         Description = "Test2",
         Status = "Healthy",
@@ -55,7 +55,7 @@ public static class SerializationTestData
     #endregion
 
     #region Test3 Data
-    public static HealthCheckResult Test3 = new()
+    public static HealthCheckResult Test3 => new()
     {
         Description = "Test3",
         Status = "Healthy",

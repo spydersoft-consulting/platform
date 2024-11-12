@@ -31,7 +31,11 @@ public static class TelemetryExtensions
         });
     }
 
-    public static WebApplicationBuilder AddSpydersoftTelemetry(this WebApplicationBuilder appBuilder, Assembly startupAssembly)
+    public static WebApplicationBuilder AddSpydersoftTelemetry(this WebApplicationBuilder appBuilder,
+        Assembly startupAssembly,
+        Action<TracerProviderBuilder>? additionalTraceConfiguration,
+        Action<MeterProviderBuilder>? additionalMetricsConfiguration,
+        Action<LoggerProviderBuilder>? additionalLogConfiguration)
     {
         var telemetryOptions = new TelemetryOptions();
         appBuilder.Configuration.GetSection(TelemetryOptions.SectionName).Bind(telemetryOptions);
@@ -44,7 +48,6 @@ public static class TelemetryExtensions
             return appBuilder;
         }
 
-
         // Use IConfiguration binding for AspNetCore instrumentation options.
         appBuilder.Services.Configure<AspNetCoreTraceInstrumentationOptions>(appBuilder.Configuration.GetSection(telemetryOptions.AspNetCoreInstrumentationSection));
 
@@ -54,18 +57,23 @@ public static class TelemetryExtensions
                     serviceName: telemetryOptions.ServiceName,
                     serviceVersion: startupAssembly.GetName().Version?.ToString() ?? "unknown",
                     serviceInstanceId: Environment.MachineName))
-            .WithTracing(builder => ConfigureTracing(builder, appBuilder.Configuration, telemetryOptions))
-            .WithMetrics(builder => ConfigureMetrics(builder, telemetryOptions))
-            .WithLogging(builder => ConfigureLogging(builder, telemetryOptions));
+            .WithTracing(builder => ConfigureTracing(builder, appBuilder.Configuration, telemetryOptions, additionalTraceConfiguration))
+            .WithMetrics(builder => ConfigureMetrics(builder, telemetryOptions, additionalMetricsConfiguration))
+            .WithLogging(builder => ConfigureLogging(builder, telemetryOptions, additionalLogConfiguration));
 
         return appBuilder;
+    }
+
+    public static WebApplicationBuilder AddSpydersoftTelemetry(this WebApplicationBuilder appBuilder, Assembly startupAssembly)
+    {
+        return AddSpydersoftTelemetry(appBuilder, startupAssembly, null, null, null);
     }
 
     #endregion
 
 
     #region Private Startup Helpers
-    private static void ConfigureTracing(TracerProviderBuilder builder, ConfigurationManager configuration, TelemetryOptions options)
+    private static void ConfigureTracing(TracerProviderBuilder builder, ConfigurationManager configuration, TelemetryOptions options, Action<TracerProviderBuilder>? action)
     {
 
         // Ensure the TracerProvider subscribes to any custom ActivitySources.
@@ -74,7 +82,6 @@ public static class TelemetryExtensions
             .SetSampler(new AlwaysOnSampler())
             .AddHttpClientInstrumentation()
             .AddAspNetCoreInstrumentation();
-
 
         switch (options.UseTracingExporter)
         {
@@ -96,9 +103,11 @@ public static class TelemetryExtensions
                 builder.AddConsoleExporter();
                 break;
         }
+
+        action?.Invoke(builder);
     }
 
-    private static void ConfigureMetrics(MeterProviderBuilder builder, TelemetryOptions options)
+    private static void ConfigureMetrics(MeterProviderBuilder builder, TelemetryOptions options, Action<MeterProviderBuilder>? action)
     {
         builder
             .AddMeter(options.MeterName)
@@ -135,9 +144,11 @@ public static class TelemetryExtensions
                 builder.AddConsoleExporter();
                 break;
         }
+
+        action?.Invoke(builder);
     }
 
-    private static void ConfigureLogging(LoggerProviderBuilder builder, TelemetryOptions options)
+    private static void ConfigureLogging(LoggerProviderBuilder builder, TelemetryOptions options, Action<LoggerProviderBuilder>? action)
     {
         switch (options.UseLogExporter)
         {
@@ -148,6 +159,8 @@ public static class TelemetryExtensions
                 builder.AddConsoleExporter();
                 break;
         }
+
+        action?.Invoke(builder);
     }
 
 

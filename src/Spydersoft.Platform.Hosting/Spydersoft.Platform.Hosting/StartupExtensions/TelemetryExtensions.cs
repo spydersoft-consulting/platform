@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,13 +10,14 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
+using Spydersoft.Platform.Hosting.Exceptions;
 using Spydersoft.Platform.Hosting.Options;
 using System.Diagnostics.Metrics;
 using System.Reflection;
 
-namespace Spydersoft.Platform.Hosting;
+namespace Spydersoft.Platform.Hosting.StartupExtensions;
 
-public static class StartupExtensions
+public static class TelemetryExtensions
 {
     #region Public Startup Extensions
     public static void AddSpydersoftSerilog(this WebApplicationBuilder appBuilder)
@@ -31,10 +31,19 @@ public static class StartupExtensions
         });
     }
 
-    public static void AddSpydersoftTelemetry(this WebApplicationBuilder appBuilder, Assembly startupAssembly)
+    public static WebApplicationBuilder AddSpydersoftTelemetry(this WebApplicationBuilder appBuilder, Assembly startupAssembly)
     {
         var telemetryOptions = new TelemetryOptions();
         appBuilder.Configuration.GetSection(TelemetryOptions.SectionName).Bind(telemetryOptions);
+
+        // Add TelemetryOptions to the service collection for the Healthcheck
+        appBuilder.Services.Configure<TelemetryOptions>(appBuilder.Configuration.GetSection(TelemetryOptions.SectionName));
+
+        if (!telemetryOptions.Enabled)
+        {
+            return appBuilder;
+        }
+
 
         // Use IConfiguration binding for AspNetCore instrumentation options.
         appBuilder.Services.Configure<AspNetCoreTraceInstrumentationOptions>(appBuilder.Configuration.GetSection(telemetryOptions.AspNetCoreInstrumentationSection));
@@ -48,69 +57,15 @@ public static class StartupExtensions
             .WithTracing(builder => ConfigureTracing(builder, appBuilder.Configuration, telemetryOptions))
             .WithMetrics(builder => ConfigureMetrics(builder, telemetryOptions))
             .WithLogging(builder => ConfigureLogging(builder, telemetryOptions));
+
+        return appBuilder;
     }
-
-    public static bool AddSpydersoftIdentity(this WebApplicationBuilder appBuilder)
-    {
-        var authInstalled = false;
-        var identityOption = new IdentityOptions();
-        appBuilder.Configuration.GetSection(IdentityOptions.SectionName).Bind(identityOption);
-
-        if (identityOption.Enabled && identityOption.Authority != null)
-        {
-            appBuilder.Services
-                .AddAuthentication(o =>
-                {
-                    o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(o =>
-                {
-                    o.IncludeErrorDetails = true;
-
-                    o.Authority = identityOption.Authority;
-                    o.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                    {
-                        ValidAudiences =
-                                        [
-                                            identityOption.ApplicationName
-                                        ],
-                        ValidIssuers =
-                                        [
-                                            identityOption.Authority
-                                        ]
-                    };
-                });
-
-            appBuilder.Services.AddAuthorization();
-            authInstalled = true;
-        }
-        return authInstalled;
-    }
-
-    public static IApplicationBuilder UseAuthentication(this IApplicationBuilder app, bool authInstalled)
-    {
-        if (authInstalled)
-        {
-            app.UseAuthentication();
-        }
-        return app;
-    }
-
-    public static IApplicationBuilder UseAuthorization(this IApplicationBuilder app, bool authInstalled)
-    {
-        if (authInstalled)
-        {
-            app.UseAuthorization();
-        }
-        return app;
-    }
-
 
     #endregion
 
 
     #region Private Startup Helpers
-    private static void ConfigureTracing(TracerProviderBuilder builder, IConfiguration configuration, TelemetryOptions options)
+    private static void ConfigureTracing(TracerProviderBuilder builder, ConfigurationManager configuration, TelemetryOptions options)
     {
 
         // Ensure the TracerProvider subscribes to any custom ActivitySources.
@@ -200,7 +155,7 @@ public static class StartupExtensions
     {
         if (string.IsNullOrWhiteSpace(options.Otlp.Endpoint))
         {
-            throw new InvalidOperationException("OTLP endpoint is required when using OTLP exporter.");
+            throw new ConfigurationException("OTLP endpoint is required when using OTLP exporter.");
         }
         otlpOptions.Endpoint = new Uri(options.Otlp.Endpoint);
     }

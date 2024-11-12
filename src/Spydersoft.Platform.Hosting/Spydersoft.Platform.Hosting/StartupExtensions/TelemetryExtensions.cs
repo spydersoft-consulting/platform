@@ -83,7 +83,7 @@ public static class TelemetryExtensions
             .AddHttpClientInstrumentation()
             .AddAspNetCoreInstrumentation();
 
-        switch (options.UseTracingExporter)
+        switch (options.Trace.Type)
         {
             case "zipkin":
                 builder.AddZipkinExporter();
@@ -91,12 +91,12 @@ public static class TelemetryExtensions
                 builder.ConfigureServices(services =>
                 {
                     // Use IConfiguration binding for Zipkin exporter options.
-                    services.Configure<ZipkinExporterOptions>(configuration.GetSection(options.ZipkinConfigurationSection));
+                    services.Configure<ZipkinExporterOptions>(configuration.GetSection(options.Trace.ZipkinConfigurationSection));
                 });
                 break;
 
             case "otlp":
-                builder.AddOtlpExporter(otlpOptions => SetOltpOptions(otlpOptions, options));
+                builder.AddOtlpExporter(otlpOptions => SetOltpOptions(otlpOptions, options.Trace.Otlp));
                 break;
 
             default:
@@ -116,7 +116,7 @@ public static class TelemetryExtensions
             .AddHttpClientInstrumentation()
             .AddAspNetCoreInstrumentation();
 
-        switch (options.HistogramAggregation)
+        switch (options.Metrics.HistogramAggregation)
         {
             case "exponential":
                 builder.AddView(instrument =>
@@ -132,13 +132,13 @@ public static class TelemetryExtensions
                 break;
         }
 
-        switch (options.UseMetricsExporter)
+        switch (options.Metrics.Type)
         {
             case "prometheus":
                 builder.AddPrometheusExporter();
                 break;
             case "otlp":
-                builder.AddOtlpExporter(otlpOptions => SetOltpOptions(otlpOptions, options));
+                builder.AddOtlpExporter(otlpOptions => SetOltpOptions(otlpOptions, options.Metrics.Otlp));
                 break;
             default:
                 builder.AddConsoleExporter();
@@ -150,10 +150,10 @@ public static class TelemetryExtensions
 
     private static void ConfigureLogging(LoggerProviderBuilder builder, TelemetryOptions options, Action<LoggerProviderBuilder>? action)
     {
-        switch (options.UseLogExporter)
+        switch (options.Log.Type)
         {
             case "otlp":
-                builder.AddOtlpExporter(otlpOptions => SetOltpOptions(otlpOptions, options));
+                builder.AddOtlpExporter(otlpOptions => SetOltpOptions(otlpOptions, options.Log.Otlp));
                 break;
             default:
                 builder.AddConsoleExporter();
@@ -164,13 +164,13 @@ public static class TelemetryExtensions
     }
 
 
-    private static void SetOltpOptions(OtlpExporterOptions otlpOptions, TelemetryOptions options)
+    private static void SetOltpOptions(OtlpExporterOptions otlpOptions, OtlpOptions options)
     {
-        if (string.IsNullOrWhiteSpace(options.Otlp.Endpoint))
+        if (string.IsNullOrWhiteSpace(options.Endpoint))
         {
             throw new ConfigurationException("OTLP endpoint is required when using OTLP exporter.");
         }
-        otlpOptions.Endpoint = new Uri(options.Otlp.Endpoint);
+        otlpOptions.Endpoint = new Uri(options.Endpoint);
     }
     #endregion
 }

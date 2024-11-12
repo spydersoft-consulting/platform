@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Spydersoft.Platform.Attributes;
-using Spydersoft.Platform.Exceptions;
 
 namespace Spydersoft.Platform.UnitTests.ExceptionTests
 {

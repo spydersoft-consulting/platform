@@ -92,15 +92,17 @@ public class DefaultConfigurationTests : ApiTestBase
 
             Assert.That(telemetryData?.ActivitySourceName, Is.EqualTo("Spydersoft.Otel.Activity"));
             Assert.That(telemetryData?.Enabled, Is.True);
-            Assert.That(telemetryData?.HistogramAggregation, Is.Empty);
-            Assert.That(telemetryData?.LogExporter, Is.EqualTo("console"));
+            Assert.That(telemetryData?.Metrics.HistogramAggregation, Is.Empty);
+            Assert.That(telemetryData?.Log.Type, Is.EqualTo("console"));
+            Assert.That(telemetryData?.Log.Otlp.Endpoint, Is.Null);
             Assert.That(telemetryData?.LogPresent, Is.True);
             Assert.That(telemetryData?.MeterName, Is.EqualTo("Spydersoft.Otel.Meter"));
-            Assert.That(telemetryData?.MetricsExporter, Is.EqualTo("console"));
+            Assert.That(telemetryData?.Metrics.Type, Is.EqualTo("console"));
             Assert.That(telemetryData?.MetricsPresent, Is.True);
-            Assert.That(telemetryData?.Otlp.Endpoint, Is.Null);
+            Assert.That(telemetryData?.Metrics.Otlp.Endpoint, Is.Null);
             Assert.That(telemetryData?.ServiceName, Is.EqualTo("spydersoft-otel-service"));
-            Assert.That(telemetryData?.TraceExporter, Is.EqualTo("console"));
+            Assert.That(telemetryData?.Trace.Type, Is.EqualTo("console"));
+            Assert.That(telemetryData?.Trace.Otlp.Endpoint, Is.Null);
             Assert.That(telemetryData?.TracePresent, Is.True);
         });
     }

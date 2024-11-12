@@ -22,8 +22,9 @@ variables:
 extends:
   template: pipelines/dotnet-library-build/v1.yml@templates
   parameters:
-    projectsToBuild: src/Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting.csproj
-    projectsToPack: src/Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting.csproj
+    projectsToBuild: | 
+      src/**/*.csproj
+    projectsToPack: "**/*.csproj;!**/*.UnitTests.csproj;!**/*.ApiTests.csproj"
     executeTests: true
     externalPublishUrl: $(nuget-feed-url)
     externalPublishApiKey: $(nuget-feed-api-key)

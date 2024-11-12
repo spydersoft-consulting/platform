@@ -1,4 +1,4 @@
-﻿using Spydersoft.Platform.Hosting.Exceptions;
+﻿using Spydersoft.Platform.Exceptions;
 
 namespace Spydersoft.Platform.Hosting.UnitTests.ApiTests.Telemetry;
 public class OtlpBadConfigurationTests

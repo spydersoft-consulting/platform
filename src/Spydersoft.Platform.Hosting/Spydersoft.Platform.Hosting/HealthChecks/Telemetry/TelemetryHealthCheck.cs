@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
-using Spydersoft.Platform.Hosting.Attributes;
+using Spydersoft.Platform.Attributes;
 using Spydersoft.Platform.Hosting.Options;
 
 namespace Spydersoft.Platform.Hosting.HealthChecks.Telemetry;

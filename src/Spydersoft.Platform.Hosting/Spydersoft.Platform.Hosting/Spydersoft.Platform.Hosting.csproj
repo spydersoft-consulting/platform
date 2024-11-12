@@ -24,4 +24,8 @@
 	<ItemGroup>
 		<None Include="../docs/README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Spydersoft.Platform\Spydersoft.Platform\Spydersoft.Platform.csproj" />
+	</ItemGroup>
 </Project>

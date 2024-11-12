@@ -10,7 +10,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
-using Spydersoft.Platform.Hosting.Exceptions;
+using Spydersoft.Platform.Exceptions;
 using Spydersoft.Platform.Hosting.Options;
 using System.Diagnostics.Metrics;
 using System.Reflection;

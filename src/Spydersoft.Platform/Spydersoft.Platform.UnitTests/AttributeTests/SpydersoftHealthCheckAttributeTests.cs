@@ -13,7 +13,7 @@ namespace Spydersoft.Platform.UnitTests.ExceptionTests
             var failureStatus = HealthStatus.Unhealthy;
             var tags = "tag1,tag2,,tag3";
             var attribute = new SpydersoftHealthCheckAttribute(name, failureStatus, tags);
-            
+
             Assert.Multiple(() =>
             {
                 Assert.That(attribute.Name, Is.EqualTo(name));

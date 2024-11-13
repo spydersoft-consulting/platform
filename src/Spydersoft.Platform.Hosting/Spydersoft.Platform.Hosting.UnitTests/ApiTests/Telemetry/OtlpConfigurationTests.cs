@@ -38,15 +38,17 @@ public class OtlpConfigurationTests : ApiTestBase
 
             Assert.That(telemetryData?.ActivitySourceName, Is.EqualTo("Platform.Test.Activity"));
             Assert.That(telemetryData?.Enabled, Is.True);
-            Assert.That(telemetryData?.HistogramAggregation, Is.Empty);
-            Assert.That(telemetryData?.LogExporter, Is.EqualTo("otlp"));
+            Assert.That(telemetryData?.Metrics.HistogramAggregation, Is.Empty);
+            Assert.That(telemetryData?.Log.Type, Is.EqualTo("otlp"));
+            Assert.That(telemetryData?.Log.Otlp.Endpoint, Is.EqualTo("http://log.localhost:12345"));
             Assert.That(telemetryData?.LogPresent, Is.True);
             Assert.That(telemetryData?.MeterName, Is.EqualTo("Platform.Test.Meter"));
-            Assert.That(telemetryData?.MetricsExporter, Is.EqualTo("otlp"));
+            Assert.That(telemetryData?.Metrics.Type, Is.EqualTo("otlp"));
+            Assert.That(telemetryData?.Metrics.Otlp.Endpoint, Is.EqualTo("http://metrics.localhost:12345"));
             Assert.That(telemetryData?.MetricsPresent, Is.True);
-            Assert.That(telemetryData?.Otlp.Endpoint, Is.EqualTo("http://localhost:12345"));
             Assert.That(telemetryData?.ServiceName, Is.EqualTo("Platform.Test"));
-            Assert.That(telemetryData?.TraceExporter, Is.EqualTo("otlp"));
+            Assert.That(telemetryData?.Trace.Type, Is.EqualTo("otlp"));
+            Assert.That(telemetryData?.Trace.Otlp.Endpoint, Is.EqualTo("http://trace.localhost:12345"));
             Assert.That(telemetryData?.TracePresent, Is.True);
         });
     }

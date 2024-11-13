@@ -16,43 +16,88 @@ The assembly parameter is used to calculate the version and set the OpenTelemetr
 
 #### OpenTelemetry Configuration
 
-Configuration is controlled by configuration entries in `appsettings.json` or environment variables.  Below are the possible settings with their default values.
+Configuration is controlled by configuration entries in `appsettings.json` or environment variables.  Below are the possible settings with their default values.  Notice the `Logging:OpenTelemetry` section.  This section is used to configure the OpenTelemetry SDKs logging providers.
 
 ```json
+"Logging": {
+  "OpenTelemetry": {
+    "IncludeFormattedMessage": true,
+    "IncludeScopes": true,
+    "ParseStateValues": true
+  }
+},
 "Telemetry": {
   "ActivitySourceName": "Spydersoft.Otel.Activity",
   "AspNetCoreInstrumentation": {
     // AspNetCoreTraceInstrumentationOptions
   },
-  "AspNetCoreInstrumentationSection": "AspNetCoreInstrumentation",
+  "Log": {
+    "Otlp": {
+      "Endpoint": "",
+      "Protocol": "grpc"
+    },
+    "Type": "console"
+  },
   "MeterName": "Spydersoft.Otel.Meter",
-  "Otlp": {
-    "Endpoint": ""
+  "Metrics": {
+    "Otlp": {
+      "Endpoint": "",
+      "Protocol": "grpc"
+    },
+    "Type": "console"
   },
   "ServiceName": "techradar-data",
-  "UseLogExporter": "console",
-  "UseMetricsExporter": "console",
-  "UseTracingExporter": "console",
-  "Zipkin": { 
-    // ZipkinExporterOptions  
+  "Trace": {
+    "Otlp": {
+      "Endpoint": "http://trace.localhost:12345"
+    },
+    "Type": "console",
+    "Zipkin": { 
+      // ZipkinExporterOptions  
+    },
   },
-  "ZipkinConfigurationSection": "Zipkin"
 }
 ```
 
-| Setting                          | Description                                                                          | Possible Values                 |
-| -------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------- |
-| ActivitySourceName               | The name for the [OpenTelemetry ActivitySource][3]                                   |                                 |
-| AspNetCoreInstrumentation        | AspNetCoreTraceInstrumentationOptions                                                | See [AspNetCoreTraceOptions][2] |
-| AspNetCoreInstrumentationSection | Section name within `Telemetry` where AspNetCoreTraceInstrumentationOptions are set. |                                 |
-| MeterName                        | The name for the OpenTelemetry Meter                                                 |                                 |
-| Oltp                             |                                                                                      |                                 |
-| ServiceName                      | OpenTelemetry `service.name`                                                         |                                 |
-| UseLogExporter                   | Which log exporter to use                                                            | `console`, `oltp`               |
-| UseMetricsExporter               | Which metrics exporter to use                                                        | `console`, `oltp`, `prometheus` |
-| UseTracingExporter               | Which tracing exporter to use                                                        | `console`, `oltp`, `zipkin`     |
-| Zipkin                           | Zipkin Options                                                                       | See [Zipkin Configuration][1]   |
-| ZipkinConfigurationSection       | Section name within `Telemetry` where ZipkinConfigurationOptions are set.            |                                 |
+| Setting                             | Description                                        | Possible Values                                     |
+| ----------------------------------- | -------------------------------------------------- | --------------------------------------------------- |
+| Logging:OpenTelemetry               | Configure OpenTelemetry Logging Options            | See [OpenTelemetry Logging Options][5]              |
+| Telemetry:ActivitySourceName        | The name for the [OpenTelemetry ActivitySource][3] |                                                     |
+| Telemetry:AspNetCoreInstrumentation | AspNetCoreTraceInstrumentationOptions              | See [AspNetCoreTraceOptions][2]                     |
+| Telemetry:Log                       | Log Configuration Section                          | See [Log Configuration](#log-configuration)         |
+| Telemetry:MeterName                 | The name for the OpenTelemetry Meter               |                                                     |
+| Telemetry:Metrics                   | Metrics Configuration Section                      | See [Metrics Configuration](#metrics-configuration) |
+| Telemetry:ServiceName               | OpenTelemetry `service.name`                       |                                                     |
+| Telemetry:Trace                     | Trace Configuration Section                        | See [Trace Configuration](#trace-configuration)     |
+
+##### Log Configuration
+
+| Setting | Description          | Possible Values                   |
+| ------- | -------------------- | --------------------------------- |
+| Otlp    | Otlp Options Section | See [Otlp Options](#otlp-options) |
+| Type    | Exporter Type        | `console` (default), `otlp`       |
+
+##### Metrics Configuration
+
+| Setting | Description          | Possible Values                           |
+| ------- | -------------------- | ----------------------------------------- |
+| Otlp    | Otlp Options Section | See [Otlp Options](#otlp-options)         |
+| Type    | Exporter Type        | `console` (default), `prometheus`, `otlp` |
+
+##### Trace Configuration
+
+| Setting | Description            | Possible Values                       |
+| ------- | ---------------------- | ------------------------------------- |
+| Otlp    | Otlp Options Section   | See [Otlp Options](#otlp-options)     |
+| Type    | Exporter Type          | `console` (default), `zipkin`, `otlp` |
+| Zipkin  | Zipkin Options Section | See [Zipkin Configuration][1]         |
+
+##### Otlp Options
+
+| Setting  | Description                   | Possible Values            |
+| -------- | ----------------------------- | -------------------------- |
+| Endpoint | Endpoint URL for Otlp logging |                            |
+| Protocol | Communication Protocol to use | `grpc` (default) or `http` |
 
 ### Identity
 
@@ -105,6 +150,10 @@ Notice that the provided `UseAuthentication` and `UseAuthorization` methods acce
 
 The `AddSpydersoftSerilog` extension on `WebApplicationBuilder` adds a default Serilog console logger plus any Serilog configuration provided in your app settings.  See [Serilog.Settings.Configuration][4] for more details.
 
+> [!IMPORTANT]
+> If you add Telemetry above, `AddSpydersoftSerilog` MUST be called with `writeToProviders=true`.  Additionally, Serilog's section of the 
+>  appsettings will override the log levels, so log levels must be set in the `"Serilog`" section.
+
 ### Health Checks
 
 This library provides extensions to configure (`AddSpydersoftHealthChecks`) and use (`UseSpydersoftHealthChecks`) health checks to provide standard endpoints (`/livez`, `/readyz`, and `/startup`).
@@ -144,3 +193,4 @@ Configuration is controlled by configuration entries in `appsettings.json` or en
 [2]: https://github.com/open-telemetry/opentelemetry-dotnet-contrib/tree/main/src/OpenTelemetry.Instrumentation.AspNetCore "AspNetCoreTraceOptions"
 [3]: https://opentelemetry.io/docs/languages/net/instrumentation/#setting-up-an-activitysource "OpenTelemetry Activity Source"
 [4]: https://github.com/serilog/serilog-settings-configuration "Serilog.Settings.Configuration"
+[5]: https://github.com/open-telemetry/opentelemetry-dotnet/blob/main/src/OpenTelemetry/Logs/ILogger/OpenTelemetryLoggerOptions.cs "OpenTelemetry Logging Options"

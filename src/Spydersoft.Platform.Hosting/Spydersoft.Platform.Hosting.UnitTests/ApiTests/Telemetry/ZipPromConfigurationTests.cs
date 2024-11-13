@@ -38,14 +38,14 @@ public class ZipPromConfigurationTests : ApiTestBase
 
             Assert.That(telemetryData?.ActivitySourceName, Is.EqualTo("Platform.Test.Activity"));
             Assert.That(telemetryData?.Enabled, Is.True);
-            Assert.That(telemetryData?.HistogramAggregation, Is.EqualTo("exponential"));
-            Assert.That(telemetryData?.LogExporter, Is.EqualTo("console"));
+            Assert.That(telemetryData?.Metrics.HistogramAggregation, Is.EqualTo("exponential"));
+            Assert.That(telemetryData?.Log.Type, Is.EqualTo("console"));
             Assert.That(telemetryData?.LogPresent, Is.True);
             Assert.That(telemetryData?.MeterName, Is.EqualTo("Platform.Test.Meter"));
-            Assert.That(telemetryData?.MetricsExporter, Is.EqualTo("prometheus"));
+            Assert.That(telemetryData?.Metrics.Type, Is.EqualTo("prometheus"));
             Assert.That(telemetryData?.MetricsPresent, Is.True);
             Assert.That(telemetryData?.ServiceName, Is.EqualTo("Platform.Test"));
-            Assert.That(telemetryData?.TraceExporter, Is.EqualTo("zipkin"));
+            Assert.That(telemetryData?.Trace.Type, Is.EqualTo("zipkin"));
             Assert.That(telemetryData?.TracePresent, Is.True);
         });
     }

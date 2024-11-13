@@ -1,6 +1,5 @@
 ﻿using Spydersoft.Platform.Hosting.HealthChecks;
 using System.Collections;
-using System.Net.NetworkInformation;
 
 namespace Spydersoft.Platform.Hosting.UnitTests.HealthCheckDataPropertyConvertorTests;
 public static class SerializationTestData

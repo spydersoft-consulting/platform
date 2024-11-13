@@ -6,14 +6,14 @@ public class TelemetryHealthCheckDetails
 {
     public string ActivitySourceName { get; set; } = string.Empty;
     public bool Enabled { get; set; } = false;
-    public string HistogramAggregation { get; set; } = string.Empty;
-    public string LogExporter { get; set; } = string.Empty;
+    public LogOptions Log { get; set; } = new LogOptions();
     public bool LogPresent { get; set; } = false;
     public string MeterName { get; set; } = string.Empty;
-    public string MetricsExporter { get; set; } = string.Empty;
+    public MetricsOptions Metrics { get; set; } = new MetricsOptions();
     public bool MetricsPresent { get; set; } = false;
-    public OtlpOptions Otlp { get; set; } = new OtlpOptions();
     public string ServiceName { get; set; } = string.Empty;
-    public string TraceExporter { get; set; } = string.Empty;
+
+    public TraceOptions Trace { get; set; } = new TraceOptions();
+
     public bool TracePresent { get; set; } = false;
 }

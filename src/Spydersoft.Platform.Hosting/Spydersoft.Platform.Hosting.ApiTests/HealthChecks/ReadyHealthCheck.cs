@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Spydersoft.Platform.Attributes;
 using Spydersoft.Platform.Hosting.ApiTests.Services;
-using Spydersoft.Platform.Hosting.Attributes;
 
 namespace Spydersoft.Platform.Hosting.ApiTests.HealthChecks
 {

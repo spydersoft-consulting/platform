@@ -9,8 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddScoped<ITestService, TestService>();
 
-builder.AddSpydersoftSerilog();
 builder.AddSpydersoftTelemetry(typeof(Program).Assembly);
+builder.AddSpydersoftSerilog(true);
 AppHealthCheckOptions healthCheckOptions = builder.AddSpydersoftHealthChecks();
 
 bool authInstalled = builder.AddSpydersoftIdentity();

@@ -4,6 +4,7 @@ This repository contains libraries with common tasks for Spydersoft projects.
 
 ## Libraries
 
+* [Spydersoft.Platform](./src/Spydersoft.Platform/)
 * [Spydersoft.Platform.Hosting](./src/Spydersoft.Platform.Hosting//)
 
 ## Directory Structure

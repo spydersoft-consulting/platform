@@ -1,0 +1,4 @@
+. .husky/common.sh
+
+dotnet build src/Spydersoft.Platform.sln
+dotnet test src/Spydersoft.Platform.sln

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
-using Spydersoft.Platform.Hosting.Attributes;
+using Spydersoft.Platform.Attributes;
 using Spydersoft.Platform.Hosting.Options;
 
 namespace Spydersoft.Platform.Hosting.HealthChecks.Telemetry;
@@ -23,11 +23,9 @@ public class TelemetryHealthCheck(IServiceProvider services, IOptions<TelemetryO
             Enabled = _telemetryOptions.Enabled,
             MeterName = _telemetryOptions.MeterName,
             ServiceName = _telemetryOptions.ServiceName,
-            LogExporter = _telemetryOptions.UseLogExporter,
-            MetricsExporter = _telemetryOptions.UseMetricsExporter,
-            TraceExporter = _telemetryOptions.UseTracingExporter,
-            HistogramAggregation = _telemetryOptions.HistogramAggregation,
-            Otlp = _telemetryOptions.Otlp,
+            Log = _telemetryOptions.Log,
+            Metrics = _telemetryOptions.Metrics,
+            Trace = _telemetryOptions.Trace,
             TracePresent = tracePresent,
             MetricsPresent = metricsPresent,
             LogPresent = logPresent

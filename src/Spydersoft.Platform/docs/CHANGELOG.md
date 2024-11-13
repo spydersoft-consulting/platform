@@ -9,17 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* Standardized HealthCheck options
-* Test Project (Spydersoft.Platform.Hosting.ApiTests)
-* Update Serilog Extension to support writing to other providers
-* Add OpenTelemetry protocol support (`grpc` and `http`)
+* Created
 
 ### Changed
 
 ### Removed
-
-## [1.0.0]
-
-### Added
-
-* Initial Release

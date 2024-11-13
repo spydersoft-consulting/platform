@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OpenTelemetry;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Logs;
@@ -19,8 +20,17 @@ namespace Spydersoft.Platform.Hosting.StartupExtensions;
 
 public static class TelemetryExtensions
 {
-    #region Public Startup Extensions
-    public static void AddSpydersoftSerilog(this WebApplicationBuilder appBuilder)
+    #region Public Startup Extensions    
+    /// <summary>
+    /// Adds Serilog as a console logger, plus any other sinks configured in appsettings.
+    /// </summary>
+    /// <remarks>
+    /// When using this in conjunction with OpenTelemetry, make sure <paramref name="writeToProviders"/> is set to <c>true</c>.  Additionally, the
+    /// Serilog configuration for log levels overrides the any levels in the Logging section.
+    /// </remarks>
+    /// <param name="appBuilder">The application builder.</param>
+    /// <param name="writeToProviders">if set to <c>true</c> [write to providers].</param>
+    public static void AddSpydersoftSerilog(this WebApplicationBuilder appBuilder, bool writeToProviders = false)
     {
         appBuilder.Services.AddSerilog(config =>
         {
@@ -28,7 +38,7 @@ public static class TelemetryExtensions
             .ReadFrom.Configuration(appBuilder.Configuration)
             .Enrich.FromLogContext()
             .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate);
-        });
+        }, writeToProviders: writeToProviders);
     }
 
     public static WebApplicationBuilder AddSpydersoftTelemetry(this WebApplicationBuilder appBuilder,
@@ -153,7 +163,10 @@ public static class TelemetryExtensions
         switch (options.Log.Type)
         {
             case "otlp":
-                builder.AddOtlpExporter(otlpOptions => SetOltpOptions(otlpOptions, options.Log.Otlp));
+                builder.AddOtlpExporter(otlpOptions =>
+                {
+                    SetOltpOptions(otlpOptions, options.Log.Otlp);
+                });
                 break;
             default:
                 builder.AddConsoleExporter();
@@ -171,6 +184,15 @@ public static class TelemetryExtensions
             throw new ConfigurationException("OTLP endpoint is required when using OTLP exporter.");
         }
         otlpOptions.Endpoint = new Uri(options.Endpoint);
+        if (options.Protocol == "http")
+        {
+            otlpOptions.Protocol = OtlpExportProtocol.HttpProtobuf;
+        }
+        else
+        {
+            otlpOptions.Protocol = OtlpExportProtocol.Grpc;
+        }
+
     }
     #endregion
 }

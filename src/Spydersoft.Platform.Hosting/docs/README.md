@@ -16,9 +16,16 @@ The assembly parameter is used to calculate the version and set the OpenTelemetr
 
 #### OpenTelemetry Configuration
 
-Configuration is controlled by configuration entries in `appsettings.json` or environment variables.  Below are the possible settings with their default values.
+Configuration is controlled by configuration entries in `appsettings.json` or environment variables.  Below are the possible settings with their default values.  Notice the `Logging:OpenTelemetry` section.  This section is used to configure the OpenTelemetry SDKs logging providers.
 
 ```json
+"Logging": {
+  "OpenTelemetry": {
+    "IncludeFormattedMessage": true,
+    "IncludeScopes": true,
+    "ParseStateValues": true
+  }
+},
 "Telemetry": {
   "ActivitySourceName": "Spydersoft.Otel.Activity",
   "AspNetCoreInstrumentation": {
@@ -104,6 +111,10 @@ Notice that the provided `UseAuthentication` and `UseAuthorization` methods acce
 ### Serilog
 
 The `AddSpydersoftSerilog` extension on `WebApplicationBuilder` adds a default Serilog console logger plus any Serilog configuration provided in your app settings.  See [Serilog.Settings.Configuration][4] for more details.
+
+> [!IMPORTANT]
+> If you add Telemetry above, `AddSpydersoftSerilog` MUST be called with `writeToProviders=true`.  Additionally, Serilog's section of the 
+>  appsettings will override the log levels, so log levels must be set in the `"Serilog`" section.
 
 ### Health Checks
 

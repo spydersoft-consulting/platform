@@ -8,7 +8,7 @@ public class TelemetryOptions
     public const string SectionName = "Telemetry";
 
     public string ActivitySourceName { get; set; } = "Spydersoft.Otel.Activity";
-    public string AspNetCoreInstrumentationSection { get; set; } = $"{SectionName}:AspNetCoreInstrumentation";
+    public string AspNetCoreInstrumentationSection { get; } = $"{SectionName}:AspNetCoreInstrumentation";
     public bool Enabled { get; set; } = true;
     public string MeterName { get; set; } = "Spydersoft.Otel.Meter";
     public string ServiceName { get; set; } = "spydersoft-otel-service";

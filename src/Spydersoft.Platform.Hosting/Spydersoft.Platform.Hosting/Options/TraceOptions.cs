@@ -6,5 +6,5 @@ public class TraceOptions
 
     public OtlpOptions Otlp { get; set; } = new OtlpOptions();
 
-    public string ZipkinConfigurationSection { get; set; } = $"{TelemetryOptions.SectionName}:Trace:Zipkin";
+    public string ZipkinConfigurationSection { get; } = $"{TelemetryOptions.SectionName}:Trace:Zipkin";
 }

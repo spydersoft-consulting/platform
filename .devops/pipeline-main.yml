@@ -26,6 +26,8 @@ extends:
       src/**/*.csproj
     projectsToPack: "**/*.csproj;!**/*.UnitTests.csproj;!**/*.ApiTests.csproj"
     executeTests: true
+    testProjects: |
+      src/**/*.UnitTests.csproj
     externalPublishUrl: $(nuget-feed-url)
     externalPublishApiKey: $(nuget-feed-api-key)
     # If it's a PR or a build from main (not a tag) then don't publish to Nuget

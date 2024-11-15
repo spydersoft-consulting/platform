@@ -16,7 +16,7 @@ The assembly parameter is used to calculate the version and set the OpenTelemetr
 
 #### OpenTelemetry Configuration
 
-Configuration is controlled by configuration entries in `appsettings.json` or environment variables.  Below are the possible settings with their default values.  Notice the `Logging:OpenTelemetry` section.  This section is used to configure the OpenTelemetry SDKs logging providers.
+Configuration is controlled by configuration entries in `appsettings.json` or environment variables. Below are the possible settings with their default values. Notice the `Logging:OpenTelemetry` section. This section is used to configure the OpenTelemetry SDKs logging providers.
 
 ```json
 "Logging": {
@@ -52,8 +52,8 @@ Configuration is controlled by configuration entries in `appsettings.json` or en
       "Endpoint": "http://trace.localhost:12345"
     },
     "Type": "console",
-    "Zipkin": { 
-      // ZipkinExporterOptions  
+    "Zipkin": {
+      // ZipkinExporterOptions
     },
   },
 }
@@ -128,7 +128,7 @@ await app.RunAsync();
 
 ```
 
-Notice that the provided `UseAuthentication` and `UseAuthorization` methods accept a boolean parameter.  If that parameter is true, Authentication/Authorization will be configured using the standard extensions.  These methods must be used to ensure that `UseAuthentication` and `UseAuthorization` are not called if no authentication is configured.
+Notice that the provided `UseAuthentication` and `UseAuthorization` methods accept a boolean parameter. If that parameter is true, Authentication/Authorization will be configured using the standard extensions. These methods must be used to ensure that `UseAuthentication` and `UseAuthorization` are not called if no authentication is configured.
 
 #### Identity Configuration
 
@@ -148,11 +148,11 @@ Notice that the provided `UseAuthentication` and `UseAuthorization` methods acce
 
 ### Serilog
 
-The `AddSpydersoftSerilog` extension on `WebApplicationBuilder` adds a default Serilog console logger plus any Serilog configuration provided in your app settings.  See [Serilog.Settings.Configuration][4] for more details.
+The `AddSpydersoftSerilog` extension on `WebApplicationBuilder` adds a default Serilog console logger plus any Serilog configuration provided in your app settings. See [Serilog.Settings.Configuration][4] for more details.
 
 > [!IMPORTANT]
-> If you add Telemetry above, `AddSpydersoftSerilog` MUST be called with `writeToProviders=true`.  Additionally, Serilog's section of the 
->  appsettings will override the log levels, so log levels must be set in the `"Serilog`" section.
+> If you add Telemetry above, `AddSpydersoftSerilog` MUST be called with `writeToProviders=true`. Additionally, Serilog's section of the
+> appsettings will override the log levels, so log levels must be set in the `"Serilog`" section.
 
 ### Health Checks
 
@@ -160,25 +160,25 @@ This library provides extensions to configure (`AddSpydersoftHealthChecks`) and 
 
 #### Configuring New Health Checks
 
-By default, a simple check will return healthy for all endpoints.  To add your own health check:
+By default, a simple check will return healthy for all endpoints. To add your own health check:
 
-* Create a new class that implements `IHealthCheck`
-* Decorate that class with the `SpydersoftHealthCheckAttribute`, adding tags to control which endpoint(s) will execute the check.
-* Call `AddSpydersoftHealthChecks` and `UseSpydersoftHealthChecks` in your `Program.cs`
+- Create a new class that implements `IHealthCheck`
+- Decorate that class with the `SpydersoftHealthCheckAttribute`, adding tags to control which endpoint(s) will execute the check.
+- Call `AddSpydersoftHealthChecks` and `UseSpydersoftHealthChecks` in your `Program.cs`
 
 The [Spydersoft.Platform.Hosting.ApiTests](../Spydersoft.Platform.Hosting.ApiTests/) project has some examples, including some that utilize services in the dependency injection system.
 
 #### Health Check Configuration
 
-Configuration is controlled by configuration entries in `appsettings.json` or environment variables.  Below are the possible settings with their default values.
+Configuration is controlled by configuration entries in `appsettings.json` or environment variables. Below are the possible settings with their default values.
 
 ```json
 "HealthChecks": {
   "Enabled": true,
-  "LiveTags": "live",  
+  "LiveTags": "live",
   "ReadyTags": "ready",
   "StartupTags": "startup"
-  
+
 }
 ```
 

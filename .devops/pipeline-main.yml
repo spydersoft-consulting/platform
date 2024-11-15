@@ -17,10 +17,11 @@ resources:
       name: spydersoft-consulting/azure-devops-templates
 
 variables:
-  - group: nuget-spydersoft-develop
+  #- group: nuget-spydersoft-develop
+  - group: nuget-spydersoft-github
 
 extends:
-  template: pipelines/dotnet-library-build/v1.yml@templates
+  template: pipelines/build-net-library/v1.yml@templates
   parameters:
     projectsToBuild: | 
       src/**/*.csproj

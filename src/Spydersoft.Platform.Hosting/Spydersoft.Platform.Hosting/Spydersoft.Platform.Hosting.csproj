@@ -5,6 +5,11 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<Authors>Matt Gerega</Authors>
+		<Company>Spydersoft Consulting</Company>
+		<PackageDescription>Spydersoft Platform Hosting extensions and classes</PackageDescription>
+		<RepositoryUrl>https://github.com/spydersoft-consulting/platform</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 
 	<ItemGroup>

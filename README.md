@@ -1,5 +1,10 @@
 # Spydersoft Platform Libraries
 
+![GitHub License](https://img.shields.io/github/license/spydersoft-consulting/platform)
+![Azure DevOps builds](https://img.shields.io/azure-devops/build/spydersoft/97a7b4ed-e5c1-4999-b697-36114643d28c/52)
+![Sonar Quality Gate](https://img.shields.io/sonar/quality_gate/spydersoft_platform?server=https%3A%2F%2Fsonarcloud.io)
+![Sonar Coverage](https://img.shields.io/sonar/coverage/spydersoft_platform?server=https%3A%2F%2Fsonarcloud.io)
+
 This repository contains libraries with common tasks for Spydersoft projects.
 
 ## Libraries

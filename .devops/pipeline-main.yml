@@ -1,13 +1,13 @@
 trigger:
   tags:
     include:
-    - "*"
+      - "*"
   branches:
     include:
-    - main
-    - feature/*
+      - main
+      - feature/*
 pr:
-- main
+  - main
 
 resources:
   repositories:
@@ -23,7 +23,7 @@ variables:
 extends:
   template: pipelines/build-net-library/v1.yml@templates
   parameters:
-    projectsToBuild: | 
+    projectsToBuild: |
       src/**/*.csproj
     projectsToPack: "**/*.csproj;!**/*.UnitTests.csproj;!**/*.ApiTests.csproj"
     executeTests: true

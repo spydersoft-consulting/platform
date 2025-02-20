@@ -8,7 +8,7 @@ A class can be decorated with `Spydersoft.Platform.Attributes.SpydersoftOptionsA
 
 ### Example
 
-First, create your options classes and decorate them with `Spydersoft.Platform.Attributes.SpydersoftOptionsAttribute`.  The `SectionName` indicates the section to be retrieved from configuration.  `Tags` is a comma-delimited list of tags for this option.
+First, create your options classes and decorate them with `Spydersoft.Platform.Attributes.SpydersoftOptionsAttribute`. The `SectionName` indicates the section to be retrieved from configuration. `Tags` is a comma-delimited list of tags for this option.
 
 ```csharp
  [SpydersoftOptions(nameof(MyOptionSection), "root")]
@@ -39,7 +39,7 @@ builder.AddSpydersoftOptions(["nested"], "MySection");
 
 The extension will locate all classes decorated with the options attribute, and add them via the `IServiceProvider.Configure<OptionClass>()` generic.
 
-Notice the section prefix:  in the above example, `MyOptionSection` will load from the root of the configuration, looking for `MyOptionSection` in the root of the configuration. `NestedOptionSection` will load from `MySection:NestedOptionSection`.
+Notice the section prefix: in the above example, `MyOptionSection` will load from the root of the configuration, looking for `MyOptionSection` in the root of the configuration. `NestedOptionSection` will load from `MySection:NestedOptionSection`.
 
 The appsettings.json file for the above example:
 
@@ -55,4 +55,3 @@ The appsettings.json file for the above example:
     }
   }
 ```
-

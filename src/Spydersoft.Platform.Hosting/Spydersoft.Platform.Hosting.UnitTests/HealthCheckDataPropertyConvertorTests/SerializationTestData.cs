@@ -98,7 +98,7 @@ public static class SerializationTestData
 
     public const string MalformedResultData = "{\n  \"description\": \"Test\",\n  \"status\": \"Healthy\",\n  \"duration\": \"00:00:01\",\n  \"resultData\": [ \"\" ] }";
 
-    public const string MalformedResultData_EmptyProperty = "{\n  \"description\": \"Test\",\n  \"status\": \"Healthy\",\n  \"duration\": \"00:00:01\",\n  \"resultData\": { \"\": { \"$type\": \"<>f__AnonymousType0, Spydersoft.Platform.Hosting.ApiTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\", \"data\": {} } , {} } }";
+    public const string MalformedResultData_EmptyProperty = "{\n  \"description\": \"Test\",\n  \"status\": \"Healthy\",\n  \"duration\": \"00:00:01\",\n  \"resultData\": { \"\": { \"$type\": \"Spydersoft.Platform.Hosting.UnitTests.HealthCheckDataPropertyConvertorTests.SimpleObject, Spydersoft.Platform.Hosting.UnitTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\", \"data\": {} } , {} } }";
 
     public const string MalformedResultData_NoType = "{\n  \"description\": \"Test\",\n  \"status\": \"Healthy\",\n  \"duration\": \"00:00:01\",\n  \"resultData\": { \"first\": { \"data\": {} } } }";
 
@@ -106,15 +106,13 @@ public static class SerializationTestData
 
     public const string MalformedResultData_InvalidType = "{\n  \"description\": \"Test\",\n  \"status\": \"Healthy\",\n  \"duration\": \"00:00:01\",\n  \"resultData\": { \"first\": { \"$type\": \"InvalidType\", \"data\": {} } , {} } }";
 
-    public const string MalformedResultData_EmptyDataKey = "{\n  \"description\": \"Test\",\n  \"status\": \"Healthy\",\n  \"duration\": \"00:00:01\",\n  \"resultData\": { \"first\": { \"$type\": \"<>f__AnonymousType0, Spydersoft.Platform.Hosting.ApiTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\", \"\": [] } } }";
+    public const string MalformedResultData_EmptyDataKey = "{\n  \"description\": \"Test\",\n  \"status\": \"Healthy\",\n  \"duration\": \"00:00:01\",\n  \"resultData\": { \"first\": { \"$type\": \"Spydersoft.Platform.Hosting.UnitTests.HealthCheckDataPropertyConvertorTests.SimpleObject, Spydersoft.Platform.Hosting.UnitTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\", \"\": [] } } }";
 
-    public const string MalformedResultData_WrongDataKey = "{\n  \"description\": \"Test\",\n  \"status\": \"Healthy\",\n  \"duration\": \"00:00:01\",\n  \"resultData\": { \"first\": { \"$type\": \"<>f__AnonymousType0, Spydersoft.Platform.Hosting.ApiTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\", \"data2\": {} } } }";
+    public const string MalformedResultData_WrongDataKey = "{\n  \"description\": \"Test\",\n  \"status\": \"Healthy\",\n  \"duration\": \"00:00:01\",\n  \"resultData\": { \"first\": { \"$type\": \"Spydersoft.Platform.Hosting.UnitTests.HealthCheckDataPropertyConvertorTests.SimpleObject, Spydersoft.Platform.Hosting.UnitTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\", \"data2\": {} } } }";
 
-    public const string MalformedResultData_NoDataObject = "{\n  \"description\": \"Test\",\n  \"status\": \"Healthy\",\n  \"duration\": \"00:00:01\",\n  \"resultData\": { \"first\": { \"$type\": \"<>f__AnonymousType0, Spydersoft.Platform.Hosting.ApiTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\", \"data\": \"\" } } }";
+    public const string MalformedResultData_NoDataObject = "{\n  \"description\": \"Test\",\n  \"status\": \"Healthy\",\n  \"duration\": \"00:00:01\",\n  \"resultData\": { \"first\": { \"$type\": \"Spydersoft.Platform.Hosting.UnitTests.HealthCheckDataPropertyConvertorTests.SimpleObject, Spydersoft.Platform.Hosting.UnitTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\", \"data\": \"\" } } }";
 
     public const string MalformedResultData_ObjectTypeMismatch = "{\n  \"description\": \"Test\",\n  \"status\": \"Healthy\",\n  \"duration\": \"00:00:01\",\n  \"resultData\": { \"first\": { \"$type\": \"System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\", \"data\": [\"string1\",\"string2\"] } } }";
-
-
 
     #endregion
 

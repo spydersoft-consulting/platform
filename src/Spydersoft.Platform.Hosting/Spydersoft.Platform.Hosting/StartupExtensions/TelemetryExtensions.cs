@@ -67,7 +67,7 @@ public static class TelemetryExtensions
                     serviceVersion: startupAssembly.GetName().Version?.ToString() ?? "unknown",
                     serviceInstanceId: Environment.MachineName))
             .WithTracing(builder => ConfigureTracing(builder, appBuilder.Configuration, telemetryOptions, additionalTraceConfiguration))
-            .WithMetrics(builder => ConfigureMetrics(builder, telemetryOptions, additionalMetricsConfiguration))
+            .WithMetrics(builder => ConfigureMetrics(builder, appBuilder.Configuration, telemetryOptions, additionalMetricsConfiguration))
             .WithLogging(builder => ConfigureLogging(builder, telemetryOptions, additionalLogConfiguration));
 
         return appBuilder;
@@ -84,7 +84,6 @@ public static class TelemetryExtensions
     #region Private Startup Helpers
     private static void ConfigureTracing(TracerProviderBuilder builder, ConfigurationManager configuration, TelemetryOptions options, Action<TracerProviderBuilder>? action)
     {
-
         // Ensure the TracerProvider subscribes to any custom ActivitySources.
         builder
             .AddSource(options.ActivitySourceName)
@@ -113,10 +112,18 @@ public static class TelemetryExtensions
                 break;
         }
 
+        var cacheOptions = new FusionCacheConfigOptions();
+        configuration.GetSection(FusionCacheConfigOptions.SectionName).Bind(cacheOptions);
+
+        if (cacheOptions.Enabled)
+        {
+            builder.AddFusionCacheInstrumentation();
+        }
+
         action?.Invoke(builder);
     }
 
-    private static void ConfigureMetrics(MeterProviderBuilder builder, TelemetryOptions options, Action<MeterProviderBuilder>? action)
+    private static void ConfigureMetrics(MeterProviderBuilder builder, ConfigurationManager configuration, TelemetryOptions options, Action<MeterProviderBuilder>? action)
     {
         builder
             .AddMeter(options.MeterName)
@@ -152,6 +159,14 @@ public static class TelemetryExtensions
             default:
                 builder.AddConsoleExporter();
                 break;
+        }
+
+        var cacheOptions = new FusionCacheConfigOptions();
+        configuration.GetSection(FusionCacheConfigOptions.SectionName).Bind(cacheOptions);
+
+        if (cacheOptions.Enabled)
+        {
+            builder.AddFusionCacheInstrumentation();
         }
 
         action?.Invoke(builder);

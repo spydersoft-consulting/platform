@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Spydersoft.Platform.Hosting.ApiTests.Models;
 
 namespace Spydersoft.Platform.Hosting.ApiTests.Controllers
 {

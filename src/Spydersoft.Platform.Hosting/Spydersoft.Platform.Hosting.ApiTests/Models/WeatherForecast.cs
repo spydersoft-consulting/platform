@@ -1,4 +1,4 @@
-namespace Spydersoft.Platform.Hosting.ApiTests
+namespace Spydersoft.Platform.Hosting.ApiTests.Models
 {
     public class WeatherForecast
     {

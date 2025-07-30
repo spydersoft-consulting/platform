@@ -1,6 +1,9 @@
+using NeoSmart.Caching.Sqlite;
 using Spydersoft.Platform.Hosting.ApiTests.Services;
 using Spydersoft.Platform.Hosting.Options;
 using Spydersoft.Platform.Hosting.StartupExtensions;
+using ZiggyCreatures.Caching.Fusion;
+using ZiggyCreatures.Caching.Fusion.Serialization.SystemTextJson;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +14,31 @@ builder.Services.AddScoped<ITestService, TestService>();
 
 builder.AddSpydersoftTelemetry(typeof(Program).Assembly);
 builder.AddSpydersoftSerilog(true);
+
+var fusionCacheOptions = new FusionCacheConfigOptions();
+builder.Configuration.GetSection(FusionCacheConfigOptions.SectionName).Bind(fusionCacheOptions);
+
+if (fusionCacheOptions.Enabled && fusionCacheOptions.DistributedCacheType == CacheType.Memory)
+{
+    builder.Services.AddSqliteCache(options =>
+    {
+        options.CachePath = @".\cache.db";
+    });
+    builder.AddSpydersoftFusionCache(builder =>
+    {
+        builder
+        .WithSerializer(new FusionCacheSystemTextJsonSerializer())
+        .WithDistributedCache(new NeoSmart.Caching.Sqlite.SqliteCache(new NeoSmart.Caching.Sqlite.SqliteCacheOptions()
+        {
+            CachePath = @".\cache.db",
+
+        }));
+    });
+}
+else
+{
+    builder.AddSpydersoftFusionCache();
+}
 AppHealthCheckOptions healthCheckOptions = builder.AddSpydersoftHealthChecks();
 
 bool authInstalled = builder.AddSpydersoftIdentity();

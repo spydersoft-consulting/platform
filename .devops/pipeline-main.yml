@@ -34,12 +34,15 @@ extends:
     # If it's a PR or a build from main (not a tag) then don't publish to Nuget
     ${{ if or(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranchName'], 'main')) }}:
       publishToNuget: false
+      executeSonar: true
     ${{ else }}:
       publishToNuget: true
+      executeSonar: false
+      
     dotnetSdk: "8.0.x"
     gitVersionVersion: "6.0.x"
     nugetConfigPath: $(Build.SourcesDirectory)/src/nuget.config
-    executeSonar: true
+    
     useSonarCloud: true
     sonarEndpointName: sonarcloud-spydersoft
     sonarProjectKey: spydersoft_platform
@@ -48,4 +51,5 @@ extends:
       sonar.projectKey=spydersoft_platform
       sonar.inclusions=src/**/*
       sonar.test.inclusions=src/**/*.UnitTests/**/*;src/**/*.ApiTests/**/*
+      sonar.coverage.exclusions=src/**/*.UnitTests/**/*;src/**/*.ApiTests/**/*
       sonar.scanner.scanAll=false

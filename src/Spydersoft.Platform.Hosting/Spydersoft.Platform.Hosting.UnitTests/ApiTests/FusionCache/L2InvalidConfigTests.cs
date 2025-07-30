@@ -1,5 +1,4 @@
-using System.Net;
-using System.Text.Json;
+using Spydersoft.Platform.Exceptions;
 
 namespace Spydersoft.Platform.Hosting.UnitTests.ApiTests.FusionCache;
 public class L2InvalidConfigTests
@@ -8,7 +7,7 @@ public class L2InvalidConfigTests
 	public void StartupFails_NoRedisConnectionString()
 	{
         var factory = new UnitTestWebApplicationFactory("FusionCacheL2NoRedis");
-        Assert.Throws<ArgumentException>(() => 
+        Assert.Throws<ConfigurationException>(() => 
 		{
             factory.CreateClient();
         });

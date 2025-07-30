@@ -45,7 +45,7 @@ namespace Spydersoft.Platform.Hosting.ApiTests.Controllers
         [HttpGet("HasCache")]
         public IActionResult HasCache()
         {
-            return Ok(new { HasCache = cache == null ? false : true });
+            return Ok(new { HasCache = cache != null });
         }
     }
 }

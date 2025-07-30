@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Spydersoft.Platform.Exceptions;
 using Spydersoft.Platform.Hosting.Options;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
@@ -73,7 +74,7 @@ namespace Spydersoft.Platform.Hosting.StartupExtensions
                 case CacheType.Redis:
                     if (string.IsNullOrWhiteSpace(options.Redis.ConnectionString))
                     {
-                        throw new ArgumentException("Redis connection string must be provided when using Redis cache.", nameof(options.Redis.ConnectionString));
+                        throw new ConfigurationException("Redis connection string must be provided when using Redis cache.");
                     }
                     fusionCache.ConfigureRedisWithBackplane(options);
 

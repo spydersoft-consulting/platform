@@ -51,4 +51,5 @@ extends:
       sonar.projectKey=spydersoft_platform
       sonar.inclusions=src/**/*
       sonar.test.inclusions=src/**/*.UnitTests/**/*;src/**/*.ApiTests/**/*
+      sonar.coverage.exclusions=src/**/*.UnitTests/**/*;src/**/*.ApiTests/**/*
       sonar.scanner.scanAll=false

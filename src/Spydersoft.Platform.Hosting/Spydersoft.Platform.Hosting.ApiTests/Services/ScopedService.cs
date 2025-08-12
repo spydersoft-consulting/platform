@@ -5,7 +5,6 @@ namespace Spydersoft.Platform.Hosting.ApiTests.Services;
 public interface IScopedService
 {
 	Guid InstanceId { get; }
-	bool IsRunning();
 }
 
 [DependencyInjection(typeof(IScopedService), LifetimeOfService.Scoped)]

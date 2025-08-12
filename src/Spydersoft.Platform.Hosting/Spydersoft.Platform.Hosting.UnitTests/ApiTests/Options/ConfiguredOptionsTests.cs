@@ -1,12 +1,6 @@
 ﻿using Spydersoft.Platform.Hosting.ApiTests.OptionsTests;
-using Spydersoft.Platform.Hosting.HealthChecks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Spydersoft.Platform.Hosting.UnitTests.ApiTests.Options;
 
@@ -72,7 +66,7 @@ public class ConfiguredOptionsTests : ApiTestBase
         {
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(details, Is.Not.Null);
-            Assert.That(details?.NotLoadedOption1, Is.EqualTo("NotLoadedOption1"));
+            Assert.That(details?.NotLoadedOption1, Is.EqualTo("NotLoadedOption1"), "Should be the default option value");
         }
     }
 }

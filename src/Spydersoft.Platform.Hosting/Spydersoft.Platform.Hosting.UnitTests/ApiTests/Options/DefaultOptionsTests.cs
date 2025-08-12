@@ -66,7 +66,7 @@ public class DefaultOptionsTests : ApiTestBase
         {
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(details, Is.Not.Null);
-            Assert.That(details?.NotLoadedOption1, Is.EqualTo("NotLoadedOption1"));
+            Assert.That(details?.NotLoadedOption1, Is.EqualTo("NotLoadedOption1"), "Should be the default option value");
         }
     }
 }

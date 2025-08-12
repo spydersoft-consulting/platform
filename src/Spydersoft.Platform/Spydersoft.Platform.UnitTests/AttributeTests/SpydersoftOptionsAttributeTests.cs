@@ -1,4 +1,3 @@
-using System;
 using Spydersoft.Platform.Attributes;
 
 namespace Spydersoft.Platform.UnitTests.AttributeTests;

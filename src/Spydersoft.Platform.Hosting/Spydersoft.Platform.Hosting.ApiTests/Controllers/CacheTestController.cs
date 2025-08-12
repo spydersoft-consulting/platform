@@ -22,9 +22,9 @@ public class CacheTestController(IFusionCache? cache = null) : ControllerBase
             };
         }
 
-        return await cache.GetOrSetAsync<CacheObjectOne>($"CacheObjectOne:{id}",
-            async _ => {
-                await Task.Delay(2000); // Simulate a delay for cache population
+        return await cache.GetOrSetAsync($"CacheObjectOne:{id}",
+            async (token) => {
+                await Task.Delay(2000, token); // Simulate a delay for cache population
                 return new CacheObjectOne
                 {
                     Name = $"Name{id}",

@@ -2,6 +2,7 @@
 using System.Text.Json;
 
 namespace Spydersoft.Platform.Hosting.UnitTests.HealthCheckDataPropertyConvertorTests;
+
 internal class SerializationTests
 {
     public JsonSerializerOptions _jsonSerializerOptions = new();
@@ -13,6 +14,7 @@ internal class SerializationTests
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             WriteIndented = true,
+            Converters = { new HealthCheckDataPropertyConvertor() }
         };
     }
 
@@ -44,6 +46,54 @@ internal class SerializationTests
         });
     }
 
+    [Test]
+    public void Test_SerializeDeserialize_RoundTrip_PrimitivesAndComplexTypes()
+    {
+        var dict = new HealthCheckResult()
+        {
+            Description = "Test",
+            Status = "Healthy",
+            Duration = TimeSpan.FromSeconds(1).ToString(),
+            ResultData = new Dictionary<string, object>()
+                    {
+                        { "key1", "value1" },
+                        { "key2", "value2" }
+                    }
+        };
+        var json = JsonSerializer.Serialize(dict, _jsonSerializerOptions);
+        var deserialized = JsonSerializer.Deserialize<HealthCheckResult>(json, _jsonSerializerOptions);
+        Assert.That(deserialized, Is.Not.Null);
+        Assert.That(deserialized.Description, Is.EqualTo("Test"));
+        Assert.That(deserialized.Status, Is.EqualTo("Healthy"));
+        Assert.That(deserialized.Duration, Is.EqualTo(TimeSpan.FromSeconds(1).ToString()));
+        Assert.That(deserialized.ResultData, Has.Count.EqualTo(2));
+        Assert.That(deserialized.ResultData["key1"], Is.EqualTo("value1"));
+        Assert.That(deserialized.ResultData["key2"], Is.EqualTo("value2"));
+    }
+
+    private class TestObj
+    {
+        public int A { get; set; }
+        public string B { get; set; } = string.Empty;
+    }
+
+    [Test]
+    public void Test_SerializeDeserialize_EmptyDictionary()
+    {
+        var dict = new Dictionary<string, object>();
+        var json = JsonSerializer.Serialize(dict, _jsonSerializerOptions);
+        var deserialized = JsonSerializer.Deserialize<IReadOnlyDictionary<string, object>>(json, _jsonSerializerOptions);
+        Assert.That(deserialized, Is.Not.Null);
+        Assert.That(deserialized.Count, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void Test_Read_ThrowsOnNonObject()
+    {
+        var json = "[1,2,3]";
+        Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<IReadOnlyDictionary<string, object>>(json, _jsonSerializerOptions));
+    }
+
     [TestCase(SerializationTestData.MalformedResultData, "Object not found.")]
     [TestCase(SerializationTestData.MalformedResultData_EmptyProperty, "Invalid key value.")]
     [TestCase(SerializationTestData.MalformedResultData_NoType, "No type information found.")]
@@ -56,7 +106,6 @@ internal class SerializationTests
     public void Fail_InvalidCustomData(string badData, string expectedException)
     {
         JsonException ex = Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<HealthCheckResult>(badData, _jsonSerializerOptions));
-
         Assert.That(ex.Message, Is.EqualTo(expectedException));
     }
 }

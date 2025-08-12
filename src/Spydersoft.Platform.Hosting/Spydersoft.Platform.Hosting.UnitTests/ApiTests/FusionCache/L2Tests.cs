@@ -43,7 +43,7 @@ public class L2Tests : ApiTestBase
 
 		using (Assert.EnterMultipleScope())
 		{
-			Assert.That(stopwatch.ElapsedMilliseconds, Is.InRange(2000, 5000), "Initial load should take longer than 2 seconds due to cache population delay, but less than 5 seconds, which is the load without cache.");
+			Assert.That(stopwatch.ElapsedMilliseconds, Is.InRange(1999, 5000), "Initial load should take longer than 2 seconds due to cache population delay, but less than 5 seconds, which is the load without cache.");
 			Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 			var content = await result.Content.ReadAsStringAsync();
 

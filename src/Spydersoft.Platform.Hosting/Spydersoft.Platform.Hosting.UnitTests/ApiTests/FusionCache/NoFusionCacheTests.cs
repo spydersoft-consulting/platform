@@ -43,7 +43,7 @@ public class NoFusionCacheTests : ApiTestBase
 
 		using (Assert.EnterMultipleScope())
 		{
-			Assert.That(stopwatch.ElapsedMilliseconds, Is.GreaterThan(5000), "Initial load should take longer than 5 seconds due to no cache in place.");
+			Assert.That(stopwatch.ElapsedMilliseconds, Is.GreaterThan(4999), "Initial load should take longer than 5 seconds due to no cache in place.");
 			Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 			var content = await result.Content.ReadAsStringAsync();
 

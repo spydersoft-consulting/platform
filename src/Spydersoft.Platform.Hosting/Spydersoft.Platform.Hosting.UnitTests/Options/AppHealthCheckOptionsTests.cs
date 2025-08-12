@@ -8,13 +8,13 @@ internal class AppHealthCheckOptionsTests
     public void AppHealthCheckOptionsDefaults()
     {
         var options = new AppHealthCheckOptions();
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(options.Enabled, Is.True);
             Assert.That(options.ReadyTags, Is.EqualTo("ready"));
             Assert.That(options.LiveTags, Is.EqualTo("live"));
             Assert.That(options.StartupTags, Is.EqualTo("startup"));
-        });
+        }
     }
 
     [Test]
@@ -27,13 +27,13 @@ internal class AppHealthCheckOptionsTests
         {
             ReadyTags = tagList
         };
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(options.Enabled, Is.True);
             Assert.That(options.ReadyTags, Is.EqualTo(tagList));
             Assert.That(options.ReadyTagsList(), Has.Exactly(expectedList.Count).Items);
             Assert.That(options.ReadyTagsList(), Is.EquivalentTo(expectedList));
-        });
+        }
     }
 
     [Test]
@@ -46,13 +46,13 @@ internal class AppHealthCheckOptionsTests
         {
             LiveTags = tagList
         };
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(options.Enabled, Is.True);
             Assert.That(options.LiveTags, Is.EqualTo(tagList));
             Assert.That(options.LiveTagsList(), Has.Exactly(expectedList.Count).Items);
             Assert.That(options.LiveTagsList(), Is.EquivalentTo(expectedList));
-        });
+        }
     }
 
     [Test]
@@ -65,12 +65,12 @@ internal class AppHealthCheckOptionsTests
         {
             StartupTags = tagList
         };
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(options.Enabled, Is.True);
             Assert.That(options.StartupTags, Is.EqualTo(tagList));
             Assert.That(options.StartupTagsList(), Has.Exactly(expectedList.Count).Items);
             Assert.That(options.StartupTagsList(), Is.EquivalentTo(expectedList));
-        });
+        }
     }
 }

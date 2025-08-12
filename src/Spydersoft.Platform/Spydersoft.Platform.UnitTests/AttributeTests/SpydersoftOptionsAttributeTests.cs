@@ -1,27 +1,24 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Spydersoft.Platform.Attributes;
 
 namespace Spydersoft.Platform.UnitTests.AttributeTests;
 
-public class SpydersoftHealthCheckAttributeTests
+public class SpydersoftOptionsAttributeTests
 {
-    [Test]
+ [Test]
     public void Validate_Constructor()
     {
-        var name = "MyHealthCheck";
-        var failureStatus = HealthStatus.Unhealthy;
+        var name = "MySectionName";
         var tags = "tag1,tag2,,tag3";
-        var attribute = new SpydersoftHealthCheckAttribute(name, failureStatus, tags);
+        var attribute = new SpydersoftOptionsAttribute(name, tags);
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(attribute.Name, Is.EqualTo(name));
-            Assert.That(attribute.FailureStatus, Is.EqualTo(failureStatus));
+            Assert.That(attribute.SectionName, Is.EqualTo(name));
             Assert.That(attribute.RawTags, Is.EqualTo(tags));
             Assert.That(attribute.Tags, Has.Exactly(3).Items);
             Assert.That(attribute.Tags, Has.Exactly(1).Items.EqualTo("tag1"));
             Assert.That(attribute.Tags, Has.Exactly(1).Items.EqualTo("tag2"));
             Assert.That(attribute.Tags, Has.Exactly(1).Items.EqualTo("tag3"));
-        };
+        }
     }
 }

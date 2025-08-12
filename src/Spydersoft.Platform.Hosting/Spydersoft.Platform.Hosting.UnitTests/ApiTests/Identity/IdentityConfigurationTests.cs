@@ -19,13 +19,13 @@ public class IdentityConfigurationTests : ApiTestBase
         var details = telemetryNode.Deserialize<HealthCheckResponseResult>(
                 JsonOptions
         );
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(details, Is.Not.Null);
             Assert.That(details?.Status, Is.EqualTo("Healthy"));
             Assert.That(details?.Results, Has.One.With.Property("Key").EqualTo("self"));
-        });
+        }
     }
 
     [Test]

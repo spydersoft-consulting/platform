@@ -1,14 +1,13 @@
-﻿namespace Spydersoft.Platform.Hosting.ApiTests.Services
+﻿namespace Spydersoft.Platform.Hosting.ApiTests.Services;
+
+public interface ITestService
 {
-    public interface ITestService
+    bool IsRunning();
+}
+public class TestService : ITestService
+{
+    public bool IsRunning()
     {
-        bool IsRunning();
-    }
-    public class TestService : ITestService
-    {
-        public bool IsRunning()
-        {
-            return true;
-        }
+        return true;
     }
 }

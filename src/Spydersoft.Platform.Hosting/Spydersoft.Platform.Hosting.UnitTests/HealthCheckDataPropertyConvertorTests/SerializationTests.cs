@@ -32,7 +32,7 @@ internal class SerializationTests
     {
         HealthCheckResult? healthCheckResult = JsonSerializer.Deserialize<HealthCheckResult>(json, _jsonSerializerOptions);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(healthCheckResult, Is.Not.Null);
             Assert.That(healthCheckResult!.Status, Is.EqualTo(expectedHealthCheckResult.Status));
@@ -43,7 +43,7 @@ internal class SerializationTests
                 Assert.That(healthCheckResult.ResultData, Contains.Key(expectedData.Key));
                 Assert.That(healthCheckResult.ResultData[expectedData.Key].GetType(), Is.EqualTo(expectedData.Value.GetType()));
             }
-        });
+        }
     }
 
     [Test]

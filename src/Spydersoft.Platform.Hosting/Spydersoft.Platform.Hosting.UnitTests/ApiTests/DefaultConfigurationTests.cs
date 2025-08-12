@@ -21,13 +21,13 @@ public class DefaultConfigurationTests : ApiTestBase
         var details = telemetryNode.Deserialize<HealthCheckResponseResult>(
                 JsonOptions
         );
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(details, Is.Not.Null);
             Assert.That(details?.Status, Is.EqualTo("Healthy"));
             Assert.That(details?.Results, Has.One.With.Property("Key").EqualTo("self"));
-        });
+        }
     }
 
     [Test]
@@ -44,7 +44,7 @@ public class DefaultConfigurationTests : ApiTestBase
         );
 
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(details, Is.Not.Null);
@@ -59,7 +59,7 @@ public class DefaultConfigurationTests : ApiTestBase
             var readyDetails = readyHealthCheckResults?.ResultData?["details"];
             Assert.That(readyDetails, Is.TypeOf<Dictionary<string, string>>());
             Assert.That(readyDetails, Contains.Key("ApiVersionNumber"));
-        });
+        }
     }
 
     [Test]
@@ -75,7 +75,7 @@ public class DefaultConfigurationTests : ApiTestBase
                 JsonOptions
         );
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(details, Is.Not.Null);
@@ -104,6 +104,6 @@ public class DefaultConfigurationTests : ApiTestBase
             Assert.That(telemetryData?.Trace.Type, Is.EqualTo("console"));
             Assert.That(telemetryData?.Trace.Otlp.Endpoint, Is.Null);
             Assert.That(telemetryData?.TracePresent, Is.True);
-        });
+        }
     }
 }

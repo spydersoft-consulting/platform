@@ -8,11 +8,11 @@ public class IdentityOptionsTests
     public void IdentityOptionsDefaults()
     {
         var options = new IdentityOptions();
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(options.Authority, Is.Null);
             Assert.That(options.ApplicationName, Is.EqualTo("spydersoft-application"));
-        });
+        }
     }
 
     [Test]
@@ -29,11 +29,11 @@ public class IdentityOptionsTests
             Authority = "https://localhost:1234",
             ApplicationName = "test-client-id"
         };
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(options, Is.Not.Null);
             Assert.That(options, Has.Property("Authority").TypeOf<string>());
             Assert.That(options, Has.Property("ApplicationName").TypeOf<string>());
-        });
+        }
     }
 }

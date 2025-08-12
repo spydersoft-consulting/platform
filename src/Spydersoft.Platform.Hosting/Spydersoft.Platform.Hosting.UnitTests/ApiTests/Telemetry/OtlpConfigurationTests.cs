@@ -21,7 +21,7 @@ public class OtlpConfigurationTests : ApiTestBase
                 JsonOptions
         );
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(details, Is.Not.Null);
@@ -50,6 +50,6 @@ public class OtlpConfigurationTests : ApiTestBase
             Assert.That(telemetryData?.Trace.Type, Is.EqualTo("otlp"));
             Assert.That(telemetryData?.Trace.Otlp.Endpoint, Is.EqualTo("http://trace.localhost:12345"));
             Assert.That(telemetryData?.TracePresent, Is.True);
-        });
+        }
     }
 }

@@ -8,12 +8,12 @@ public class LogOptionsTests
     public void OptionsDefaults()
     {
         var options = new LogOptions();
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(options.Type, Is.EqualTo("console"));
             Assert.That(options.Otlp.Endpoint, Is.Null);
             Assert.That(options.Otlp.Protocol, Is.EqualTo("grpc"));
-        });
+        }
     }
 
     [Test]
@@ -28,11 +28,11 @@ public class LogOptionsTests
                 Protocol = "http"
             }
         };
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(options.Type, Is.EqualTo("otlp"));
             Assert.That(options.Otlp.Endpoint, Is.EqualTo("http://localhost:4317"));
             Assert.That(options.Otlp.Protocol, Is.EqualTo("http"));
-        });
+        }
     }
 }

@@ -26,13 +26,13 @@ public class ConfiguredOptionsTests : ApiTestBase
         var details = telemetryNode.Deserialize<RootOptionSection>(
                 JsonOptions
         );
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(details, Is.Not.Null);
             Assert.That(details?.Option1, Is.EqualTo("Value1FromOptions"));
             Assert.That(details?.Option2, Is.EqualTo("Value2FromOptions"));
-        });
+        }
     }
 
     [Test]
@@ -47,13 +47,13 @@ public class ConfiguredOptionsTests : ApiTestBase
         var details = telemetryNode.Deserialize<NestedOptionSection>(
                 JsonOptions
         );
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(details, Is.Not.Null);
             Assert.That(details?.NestedOption1, Is.EqualTo("NestedValue1FromOptions"));
             Assert.That(details?.NestedOption2, Is.EqualTo("NestedValue2FromOptions"));
-        });
+        }
     }
 
     [Test]
@@ -68,11 +68,11 @@ public class ConfiguredOptionsTests : ApiTestBase
         var details = telemetryNode.Deserialize<TaggedNotLoadedOptions>(
                 JsonOptions
         );
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(details, Is.Not.Null);
             Assert.That(details?.NotLoadedOption1, Is.EqualTo("NotLoadedOption1"));
-        });
+        }
     }
 }

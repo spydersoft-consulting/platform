@@ -21,7 +21,7 @@ public class ZipPromConfigurationTests : ApiTestBase
                 JsonOptions
         );
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(details, Is.Not.Null);
@@ -47,6 +47,6 @@ public class ZipPromConfigurationTests : ApiTestBase
             Assert.That(telemetryData?.ServiceName, Is.EqualTo("Platform.Test"));
             Assert.That(telemetryData?.Trace.Type, Is.EqualTo("zipkin"));
             Assert.That(telemetryData?.TracePresent, Is.True);
-        });
+        }
     }
 }

@@ -22,13 +22,13 @@ public class EmptyHealthCheckTests : ApiTestBase
         var responseResult = telemetryNode.Deserialize<HealthCheckResponseResult>(
                 JsonOptions
         );
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(responseResult, Is.Not.Null);
             Assert.That(responseResult?.Status, Is.EqualTo("Healthy"));
             Assert.That(responseResult?.Results, Is.Empty);
-        });
+        }
     }
 
 

@@ -1,15 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Spydersoft.Platform.Attributes;
 using Spydersoft.Platform.Exceptions;
-using Spydersoft.Platform.Hosting.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spydersoft.Platform.Hosting.StartupExtensions;
 

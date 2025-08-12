@@ -69,4 +69,24 @@ public class DefaultOptionsTests : ApiTestBase
             Assert.That(details?.NotLoadedOption1, Is.EqualTo("NotLoadedOption1"), "Should be the default option value");
         }
     }
+
+    [Test]
+    public async Task UntaggedOptions()
+    {
+        var result = await Client.GetAsync($"options/untagged");
+
+        using var jsonResult = JsonDocument.Parse(await result.Content.ReadAsStringAsync());
+
+        var telemetryNode = jsonResult.RootElement;
+
+        var details = telemetryNode.Deserialize<UntaggedOptions>(
+                JsonOptions
+        );
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(details, Is.Not.Null);
+            Assert.That(details?.Untagged1, Is.EqualTo("Untagged1"), "Should be the default option value");
+        }
+    }
 }

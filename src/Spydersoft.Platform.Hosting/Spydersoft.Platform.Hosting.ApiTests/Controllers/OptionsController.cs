@@ -9,7 +9,8 @@ namespace Spydersoft.Platform.Hosting.ApiTests.Controllers;
 public class OptionsController(
     IOptions<RootOptionSection> rootOptions,
     IOptions<NestedOptionSection> nestedOptions,
-    IOptions<TaggedNotLoadedOptions> notLoadedOptions) : ControllerBase
+    IOptions<TaggedNotLoadedOptions> notLoadedOptions,
+    IOptions<UntaggedOptions> untaggedOptions) : ControllerBase
 {
     [HttpGet("root")]
     public RootOptionSection GetRoot()
@@ -27,5 +28,11 @@ public class OptionsController(
     public TaggedNotLoadedOptions GetNotLoaded()
     {
         return notLoadedOptions.Value;
+    }
+
+    [HttpGet("untagged")]
+    public UntaggedOptions GetUntagged()
+    {
+        return untaggedOptions.Value;
     }
 }

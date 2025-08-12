@@ -23,8 +23,9 @@ public static class OptionsExtensions
             {
                 if (optionType.GetCustomAttributes(typeof(SpydersoftOptionsAttribute), false)[0] is SpydersoftOptionsAttribute optionsAttribute)
                 {
-                    // If tagsToInclude is specified, only include options with the specified tags
-                    if (!optionsAttribute.Tags.Any(t => tagsToInclude.Contains(t)))
+                    // Options with no tags are always added
+                    // If the option has tags, only add options which match tags to include
+                    if (optionsAttribute.Tags.Count() > 0 && !optionsAttribute.Tags.Any(t => tagsToInclude.Contains(t)))
                     {
                         continue;
                     }

@@ -20,9 +20,10 @@ builder.Configuration.GetSection(FusionCacheConfigOptions.SectionName).Bind(fusi
 
 if (fusionCacheOptions.Enabled && fusionCacheOptions.DistributedCacheType == CacheType.Memory)
 {
+    var cacheFileName = $".\\cache{DateTime.UtcNow:yyyyMMddHHmmss}.db";
     builder.Services.AddSqliteCache(options =>
     {
-        options.CachePath = @".\cache.db";
+        options.CachePath = cacheFileName;
     });
     builder.AddSpydersoftFusionCache(builder =>
     {
@@ -30,7 +31,7 @@ if (fusionCacheOptions.Enabled && fusionCacheOptions.DistributedCacheType == Cac
         .WithSerializer(new FusionCacheSystemTextJsonSerializer())
         .WithDistributedCache(new NeoSmart.Caching.Sqlite.SqliteCache(new NeoSmart.Caching.Sqlite.SqliteCacheOptions()
         {
-            CachePath = @".\cache.db",
+            CachePath = cacheFileName,
 
         }));
     });

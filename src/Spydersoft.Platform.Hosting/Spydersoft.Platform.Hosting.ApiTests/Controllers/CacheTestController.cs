@@ -10,11 +10,11 @@ namespace Spydersoft.Platform.Hosting.ApiTests.Controllers
     public class CacheTestController(IFusionCache? cache = null) : ControllerBase
     {
         [HttpGet("{id:int}")]
-        public CacheObjectOne Get(int id)
+        public async Task<CacheObjectOne> Get(int id)
         {
             if (cache == null)
             {
-                Task.Delay(2000).Wait();
+                await Task.Delay(5000);
                 return new CacheObjectOne
                 {
                     Name = $"Name{id}",
@@ -23,9 +23,9 @@ namespace Spydersoft.Platform.Hosting.ApiTests.Controllers
                 };
             }
 
-            return cache.GetOrSet<CacheObjectOne>($"CacheObjectOne:{id}",
-                _ => {
-                    Task.Delay(1000).Wait(); // Simulate a delay for cache population
+            return await cache.GetOrSetAsync<CacheObjectOne>($"CacheObjectOne:{id}",
+                async _ => {
+                    await Task.Delay(2000); // Simulate a delay for cache population
                     return new CacheObjectOne
                     {
                         Name = $"Name{id}",
@@ -33,7 +33,10 @@ namespace Spydersoft.Platform.Hosting.ApiTests.Controllers
                         CreatedAt = DateTime.UtcNow
                     };
                 },
-                options => options.SetDuration(TimeSpan.FromSeconds(10)));
+                options => {
+                    options.SetDuration(TimeSpan.FromSeconds(10))
+                           .SetFactoryTimeouts(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10));
+                });
         }
 
         [HttpGet("HasDistributedCache")]

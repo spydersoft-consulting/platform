@@ -16,12 +16,12 @@ public static class OptionsExtensions
         foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
             var optionTypes = assembly.GetTypes()
-                .Where(t => t.GetCustomAttributes(typeof(SpydersoftOptionsAttribute), false).Length != 0)
+                .Where(t => t.GetCustomAttributes(typeof(InjectOptionsAttribute), false).Length != 0)
                 .ToArray();
 
             foreach (var optionType in optionTypes)
             {
-                if (optionType.GetCustomAttributes(typeof(SpydersoftOptionsAttribute), false)[0] is SpydersoftOptionsAttribute optionsAttribute)
+                if (optionType.GetCustomAttributes(typeof(InjectOptionsAttribute), false)[0] is InjectOptionsAttribute optionsAttribute)
                 {
                     // Options with no tags are always added
                     // If the option has tags, only add options which match tags to include

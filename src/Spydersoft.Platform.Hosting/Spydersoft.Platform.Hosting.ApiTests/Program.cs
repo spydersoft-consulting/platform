@@ -47,6 +47,8 @@ builder.AddSpydersoftOptions(["nested"], "MySection");
 
 bool authInstalled = builder.AddSpydersoftIdentity();
 
+builder.Services.AddSpydersoftDecoratedServices();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

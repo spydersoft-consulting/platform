@@ -7,7 +7,7 @@ This library provides extensions to configure (`AddSpydersoftHealthChecks`) and 
 By default, a simple check will return healthy for all endpoints. To add your own health check:
 
 - Create a new class that implements `IHealthCheck`
-- Decorate that class with the `SpydersoftHealthCheckAttribute`, adding tags to control which endpoint(s) will execute the check.
+- Decorate that class with the `HealthCheckAttribute`, adding tags to control which endpoint(s) will execute the check.
 - Call `AddSpydersoftHealthChecks` and `UseSpydersoftHealthChecks` in your `Program.cs`
 
 The [Spydersoft.Platform.Hosting.ApiTests](../Spydersoft.Platform.Hosting.ApiTests/) project has some examples, including some that utilize services in the dependency injection system.

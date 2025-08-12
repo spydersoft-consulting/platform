@@ -5,22 +5,22 @@ This library provides extensions (`AddSpydersoftOptions`) and attributes to stan
 ## Decorating Classes for Options
 
 
-## SpydersoftOptionsAttribute
+## InjectOptionsAttribute
 
-Decorate your options classes with `SpydersoftOptionsAttribute` to enable automatic registration. The attribute takes a required `sectionName` and an optional comma-delimited `tags` string. Tags allow you to group or filter which options are registered at startup. **If you do not specify any tags, the options class will always be registered regardless of the tags passed to `AddSpydersoftOptions`.**
+Decorate your options classes with `InjectOptionsAttribute` to enable automatic registration. The attribute takes a required `sectionName` and an optional comma-delimited `tags` string. Tags allow you to group or filter which options are registered at startup. **If you do not specify any tags, the options class will always be registered regardless of the tags passed to `AddSpydersoftOptions`.**
 
 ### Example
 
 
 ```csharp
-[SpydersoftOptions("MyOptionSection", "root")]
+[InjectOptions("MyOptionSection", "root")]
 public class MyOptionSection
 {
   public string Option1 { get; set; } = "Option1";
   public string Option2 { get; set; } = "Option2";
 }
 
-[SpydersoftOptions("NestedOptionSection", "nested")]
+[InjectOptions("NestedOptionSection", "nested")]
 public class NestedOptionSection
 {
   public string NestedOption1 { get; set; } = "NestedOption1";
@@ -46,7 +46,7 @@ builder.AddSpydersoftOptions(["nested"], "MySection"); // Registers all options 
 ```
 
 
-The extension will scan all loaded assemblies for classes decorated with `SpydersoftOptionsAttribute`. For each class:
+The extension will scan all loaded assemblies for classes decorated with `InjectOptionsAttribute`. For each class:
 - If it has no tags, it will be registered unconditionally.
 - If it has tags, it will be registered only if any of its tags match the provided list.
 Registration is performed using `IServiceCollection.Configure<TOptions>()` with the appropriate configuration section.

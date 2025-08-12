@@ -5,7 +5,7 @@ using Spydersoft.Platform.Hosting.Options;
 
 namespace Spydersoft.Platform.Hosting.HealthChecks.Telemetry;
 
-[SpydersoftHealthCheck(nameof(TelemetryHealthCheck), HealthStatus.Unhealthy, "startup")]
+[HealthCheck(nameof(TelemetryHealthCheck), HealthStatus.Unhealthy, "startup")]
 public class TelemetryHealthCheck(IServiceProvider services, IOptions<TelemetryOptions> telemetryOptions) : IHealthCheck
 {
     private readonly TelemetryOptions _telemetryOptions = telemetryOptions.Value;

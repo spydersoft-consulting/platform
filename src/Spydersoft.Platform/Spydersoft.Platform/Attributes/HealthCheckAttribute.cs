@@ -4,9 +4,9 @@ using System;
 namespace Spydersoft.Platform.Attributes;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class SpydersoftHealthCheckAttribute : Attribute
+public class HealthCheckAttribute : Attribute
 {
-    public SpydersoftHealthCheckAttribute(string name, HealthStatus failureStatus, string tags = "")
+    public HealthCheckAttribute(string name, HealthStatus failureStatus, string tags = "")
     {
         Name = name;
         FailureStatus = failureStatus;

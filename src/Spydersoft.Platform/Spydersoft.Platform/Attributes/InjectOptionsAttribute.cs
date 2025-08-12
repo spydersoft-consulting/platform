@@ -3,9 +3,9 @@
 namespace Spydersoft.Platform.Attributes;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class SpydersoftOptionsAttribute : Attribute
+public class InjectOptionsAttribute : Attribute
 {
-    public SpydersoftOptionsAttribute(string sectionName, string tags = "")
+    public InjectOptionsAttribute(string sectionName, string tags = "")
     {
         SectionName = sectionName;
         RawTags = tags;

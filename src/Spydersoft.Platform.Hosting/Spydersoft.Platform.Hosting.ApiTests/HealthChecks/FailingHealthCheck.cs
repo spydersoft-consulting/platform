@@ -3,7 +3,7 @@ using Spydersoft.Platform.Attributes;
 
 namespace Spydersoft.Platform.Hosting.ApiTests.HealthChecks;
 
-[SpydersoftHealthCheck(nameof(FailingHealthCheck), failureStatus: HealthStatus.Unhealthy, "fails")]
+[HealthCheck(nameof(FailingHealthCheck), failureStatus: HealthStatus.Unhealthy, "fails")]
 public class FailingHealthCheck : IHealthCheck
 {
     public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)

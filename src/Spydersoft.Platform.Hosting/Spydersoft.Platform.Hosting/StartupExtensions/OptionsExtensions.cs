@@ -10,8 +10,7 @@ public static class OptionsExtensions
 {
     public static void AddSpydersoftOptions(this WebApplicationBuilder appBuilder, IEnumerable<string> tagsToInclude, string? sectionPrefix = null)
     {
-        MethodInfo addCheckMethod = Array.Find(typeof(OptionsConfigurationServiceCollectionExtensions).GetMethods(),
-            m => m.Name == "Configure" && m.GetParameters().Length == 2 && m.IsGenericMethod) ?? throw new ConfigurationException("Unable to find Configure method on OptionsConfigurationServiceCollectionExtensions");
+        MethodInfo addCheckMethod = GetOptionsConfigureMethod();
 
         foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
@@ -23,9 +22,8 @@ public static class OptionsExtensions
             {
                 if (optionType.GetCustomAttributes(typeof(InjectOptionsAttribute), false)[0] is InjectOptionsAttribute optionsAttribute)
                 {
-                    // Options with no tags are always added
-                    // If the option has tags, only add options which match tags to include
-                    if (optionsAttribute.Tags.Count() > 0 && !optionsAttribute.Tags.Any(t => tagsToInclude.Contains(t)))
+                    bool shouldAddOptions = ShouldAddOptions(tagsToInclude, optionsAttribute);
+                    if (!shouldAddOptions)
                     {
                         continue;
                     }
@@ -40,5 +38,24 @@ public static class OptionsExtensions
                 }
             }
         }
+    }
+
+    private static bool ShouldAddOptions(IEnumerable<string> tagsToInclude, InjectOptionsAttribute optionsAttribute)
+    {
+        // Options with no tags are always added
+        // If the option has tags, only add options which match tags to include
+        if (optionsAttribute.Tags.Length > 0 && !optionsAttribute.Tags.Any(t => tagsToInclude.Contains(t)))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static MethodInfo GetOptionsConfigureMethod()
+    {
+        return Array.Find(typeof(OptionsConfigurationServiceCollectionExtensions).GetMethods(),
+            m => m.Name == "Configure" && m.GetParameters().Length == 2 && m.IsGenericMethod)
+            ?? throw new ConfigurationException("Unable to find Configure method on OptionsConfigurationServiceCollectionExtensions");
     }
 }

@@ -1,24 +1,23 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System;
 
-namespace Spydersoft.Platform.Attributes
+namespace Spydersoft.Platform.Attributes;
+
+[AttributeUsage(AttributeTargets.Class)]
+public class SpydersoftHealthCheckAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public class SpydersoftHealthCheckAttribute : Attribute
+    public SpydersoftHealthCheckAttribute(string name, HealthStatus failureStatus, string tags = "")
     {
-        public SpydersoftHealthCheckAttribute(string name, HealthStatus failureStatus, string tags = "")
-        {
-            Name = name;
-            FailureStatus = failureStatus;
-            RawTags = tags;
-            Tags = tags.Split(',', StringSplitOptions.RemoveEmptyEntries);
-        }
-        public string Name { get; }
-
-        public HealthStatus? FailureStatus { get; }
-
-        public string RawTags { get; }
-
-        public string[] Tags { get; }
+        Name = name;
+        FailureStatus = failureStatus;
+        RawTags = tags;
+        Tags = tags.Split(',', StringSplitOptions.RemoveEmptyEntries);
     }
+    public string Name { get; }
+
+    public HealthStatus? FailureStatus { get; }
+
+    public string RawTags { get; }
+
+    public string[] Tags { get; }
 }

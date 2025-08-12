@@ -2,72 +2,71 @@
 using System.Net;
 using System.Text.Json;
 
-namespace Spydersoft.Platform.Hosting.UnitTests.ApiTests.Options
+namespace Spydersoft.Platform.Hosting.UnitTests.ApiTests.Options;
+
+public class DefaultOptionsTests : ApiTestBase
 {
-    public class DefaultOptionsTests : ApiTestBase
+    public override string Environment => "Options2";
+
+    [Test]
+    public async Task RootOptions()
     {
-        public override string Environment => "Options2";
+        var result = await Client.GetAsync($"options/root");
 
-        [Test]
-        public async Task RootOptions()
+        using var jsonResult = JsonDocument.Parse(await result.Content.ReadAsStringAsync());
+
+        var telemetryNode = jsonResult.RootElement;
+
+        var details = telemetryNode.Deserialize<RootOptionSection>(
+                JsonOptions
+        );
+        Assert.Multiple(() =>
         {
-            var result = await Client.GetAsync($"options/root");
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(details, Is.Not.Null);
+            Assert.That(details?.Option1, Is.EqualTo("Option1"));
+            Assert.That(details?.Option2, Is.EqualTo("Option2"));
+        });
+    }
 
-            using var jsonResult = JsonDocument.Parse(await result.Content.ReadAsStringAsync());
+    [Test]
+    public async Task NestedOptions()
+    {
+        var result = await Client.GetAsync($"options/nested");
 
-            var telemetryNode = jsonResult.RootElement;
+        using var jsonResult = JsonDocument.Parse(await result.Content.ReadAsStringAsync());
 
-            var details = telemetryNode.Deserialize<RootOptionSection>(
-                    JsonOptions
-            );
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-                Assert.That(details, Is.Not.Null);
-                Assert.That(details?.Option1, Is.EqualTo("Option1"));
-                Assert.That(details?.Option2, Is.EqualTo("Option2"));
-            });
-        }
+        var telemetryNode = jsonResult.RootElement;
 
-        [Test]
-        public async Task NestedOptions()
+        var details = telemetryNode.Deserialize<NestedOptionSection>(
+                JsonOptions
+        );
+        Assert.Multiple(() =>
         {
-            var result = await Client.GetAsync($"options/nested");
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(details, Is.Not.Null);
+            Assert.That(details?.NestedOption1, Is.EqualTo("NestedOption1"));
+            Assert.That(details?.NestedOption2, Is.EqualTo("NestedOption2"));
+        });
+    }
 
-            using var jsonResult = JsonDocument.Parse(await result.Content.ReadAsStringAsync());
+    [Test]
+    public async Task NotLoadedOptions()
+    {
+        var result = await Client.GetAsync($"options/notloaded");
 
-            var telemetryNode = jsonResult.RootElement;
+        using var jsonResult = JsonDocument.Parse(await result.Content.ReadAsStringAsync());
 
-            var details = telemetryNode.Deserialize<NestedOptionSection>(
-                    JsonOptions
-            );
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-                Assert.That(details, Is.Not.Null);
-                Assert.That(details?.NestedOption1, Is.EqualTo("NestedOption1"));
-                Assert.That(details?.NestedOption2, Is.EqualTo("NestedOption2"));
-            });
-        }
+        var telemetryNode = jsonResult.RootElement;
 
-        [Test]
-        public async Task NotLoadedOptions()
+        var details = telemetryNode.Deserialize<TaggedNotLoadedOptions>(
+                JsonOptions
+        );
+        Assert.Multiple(() =>
         {
-            var result = await Client.GetAsync($"options/notloaded");
-
-            using var jsonResult = JsonDocument.Parse(await result.Content.ReadAsStringAsync());
-
-            var telemetryNode = jsonResult.RootElement;
-
-            var details = telemetryNode.Deserialize<TaggedNotLoadedOptions>(
-                    JsonOptions
-            );
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-                Assert.That(details, Is.Not.Null);
-                Assert.That(details?.NotLoadedOption1, Is.EqualTo("NotLoadedOption1"));
-            });
-        }
+            Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(details, Is.Not.Null);
+            Assert.That(details?.NotLoadedOption1, Is.EqualTo("NotLoadedOption1"));
+        });
     }
 }

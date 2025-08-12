@@ -11,39 +11,38 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Spydersoft.Platform.Hosting.StartupExtensions
+namespace Spydersoft.Platform.Hosting.StartupExtensions;
+
+public static class OptionsExtensions
 {
-    public static class OptionsExtensions
+    public static void AddSpydersoftOptions(this WebApplicationBuilder appBuilder, IEnumerable<string> tagsToInclude, string? sectionPrefix = null)
     {
-        public static void AddSpydersoftOptions(this WebApplicationBuilder appBuilder, IEnumerable<string> tagsToInclude, string? sectionPrefix = null)
+        MethodInfo addCheckMethod = Array.Find(typeof(OptionsConfigurationServiceCollectionExtensions).GetMethods(),
+            m => m.Name == "Configure" && m.GetParameters().Length == 2 && m.IsGenericMethod) ?? throw new ConfigurationException("Unable to find Configure method on OptionsConfigurationServiceCollectionExtensions");
+
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
-            MethodInfo addCheckMethod = Array.Find(typeof(OptionsConfigurationServiceCollectionExtensions).GetMethods(),
-                m => m.Name == "Configure" && m.GetParameters().Length == 2 && m.IsGenericMethod) ?? throw new ConfigurationException("Unable to find Configure method on OptionsConfigurationServiceCollectionExtensions");
+            var optionTypes = assembly.GetTypes()
+                .Where(t => t.GetCustomAttributes(typeof(SpydersoftOptionsAttribute), false).Length != 0)
+                .ToArray();
 
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (var optionType in optionTypes)
             {
-                var optionTypes = assembly.GetTypes()
-                    .Where(t => t.GetCustomAttributes(typeof(SpydersoftOptionsAttribute), false).Length != 0)
-                    .ToArray();
-
-                foreach (var optionType in optionTypes)
+                if (optionType.GetCustomAttributes(typeof(SpydersoftOptionsAttribute), false)[0] is SpydersoftOptionsAttribute optionsAttribute)
                 {
-                    if (optionType.GetCustomAttributes(typeof(SpydersoftOptionsAttribute), false)[0] is SpydersoftOptionsAttribute optionsAttribute)
+                    // If tagsToInclude is specified, only include options with the specified tags
+                    if (!optionsAttribute.Tags.Any(t => tagsToInclude.Contains(t)))
                     {
-                        // If tagsToInclude is specified, only include options with the specified tags
-                        if (!optionsAttribute.Tags.Any(t => tagsToInclude.Contains(t)))
-                        {
-                            continue;
-                        }
-
-                        var sectionName = !string.IsNullOrEmpty(sectionPrefix) ? $"{sectionPrefix}:{optionsAttribute.SectionName}" : optionsAttribute.SectionName;
-
-                        var sectionConfig = appBuilder.Configuration.GetSection(sectionName);
-
-                        var genericAddCheckMethod = addCheckMethod.MakeGenericMethod(optionType);
-
-                        genericAddCheckMethod.Invoke(appBuilder.Services, [appBuilder.Services, sectionConfig]);
+                        continue;
                     }
+
+                    var sectionName = !string.IsNullOrEmpty(sectionPrefix) ? $"{sectionPrefix}:{optionsAttribute.SectionName}" : optionsAttribute.SectionName;
+
+                    var sectionConfig = appBuilder.Configuration.GetSection(sectionName);
+
+                    var genericAddCheckMethod = addCheckMethod.MakeGenericMethod(optionType);
+
+                    genericAddCheckMethod.Invoke(appBuilder.Services, [appBuilder.Services, sectionConfig]);
                 }
             }
         }

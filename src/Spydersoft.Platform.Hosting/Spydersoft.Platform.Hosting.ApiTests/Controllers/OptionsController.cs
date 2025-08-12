@@ -2,31 +2,30 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Spydersoft.Platform.Hosting.ApiTests.OptionsTests;
 
-namespace Spydersoft.Platform.Hosting.ApiTests.Controllers
+namespace Spydersoft.Platform.Hosting.ApiTests.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class OptionsController(
+    IOptions<RootOptionSection> rootOptions,
+    IOptions<NestedOptionSection> nestedOptions,
+    IOptions<TaggedNotLoadedOptions> notLoadedOptions) : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class OptionsController(
-        IOptions<RootOptionSection> rootOptions,
-        IOptions<NestedOptionSection> nestedOptions,
-        IOptions<TaggedNotLoadedOptions> notLoadedOptions) : ControllerBase
+    [HttpGet("root")]
+    public RootOptionSection GetRoot()
     {
-        [HttpGet("root")]
-        public RootOptionSection GetRoot()
-        {
-            return rootOptions.Value;
-        }
+        return rootOptions.Value;
+    }
 
-        [HttpGet("nested")]
-        public NestedOptionSection GetNested()
-        {
-            return nestedOptions.Value;
-        }
+    [HttpGet("nested")]
+    public NestedOptionSection GetNested()
+    {
+        return nestedOptions.Value;
+    }
 
-        [HttpGet("notloaded")]
-        public TaggedNotLoadedOptions GetNotLoaded()
-        {
-            return notLoadedOptions.Value;
-        }
+    [HttpGet("notloaded")]
+    public TaggedNotLoadedOptions GetNotLoaded()
+    {
+        return notLoadedOptions.Value;
     }
 }

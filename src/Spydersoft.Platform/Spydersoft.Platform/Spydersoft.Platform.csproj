@@ -9,6 +9,7 @@
 		<PackageDescription>Spydersoft Platform Hosting extensions and classes</PackageDescription>
 		<RepositoryUrl>https://github.com/spydersoft-consulting/platform</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<LangVersion>10</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>

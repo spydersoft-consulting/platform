@@ -4,7 +4,7 @@ using Spydersoft.Platform.Hosting.ApiTests.Services;
 
 namespace Spydersoft.Platform.Hosting.ApiTests.HealthChecks;
 
-[SpydersoftHealthCheck(nameof(ReadyHealthCheck), failureStatus: HealthStatus.Degraded, "ready")]
+[HealthCheck(nameof(ReadyHealthCheck), failureStatus: HealthStatus.Degraded, "ready")]
 public class ReadyHealthCheck(ITestService myService) : IHealthCheck
 {
     private readonly ITestService _myService = myService;

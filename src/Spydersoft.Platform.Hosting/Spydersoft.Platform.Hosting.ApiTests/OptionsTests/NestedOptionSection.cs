@@ -2,7 +2,7 @@
 
 namespace Spydersoft.Platform.Hosting.ApiTests.OptionsTests;
 
-[SpydersoftOptions(nameof(NestedOptionSection), "nested")]
+[InjectOptions(nameof(NestedOptionSection), "nested")]
 public class NestedOptionSection
 {
     public string NestedOption1 { get; set; } = "NestedOption1";

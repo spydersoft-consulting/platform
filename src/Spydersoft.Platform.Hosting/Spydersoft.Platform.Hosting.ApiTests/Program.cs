@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddScoped<ITestService, TestService>();
+builder.Services.AddSingleton<ITestService, TestService>();
 
 builder.AddSpydersoftTelemetry(typeof(Program).Assembly);
 builder.AddSpydersoftSerilog(true);
@@ -46,6 +46,8 @@ builder.AddSpydersoftOptions(["root"]);
 builder.AddSpydersoftOptions(["nested"], "MySection");
 
 bool authInstalled = builder.AddSpydersoftIdentity();
+
+builder.Services.AddSpydersoftDecoratedServices();
 
 var app = builder.Build();
 

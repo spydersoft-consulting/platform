@@ -31,12 +31,12 @@ public static class HealthCheckExtensions
         foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
             var healthCheckTypes = assembly.GetTypes()
-                .Where(t => t.GetCustomAttributes(typeof(SpydersoftHealthCheckAttribute), false).Length != 0)
+                .Where(t => t.GetCustomAttributes(typeof(HealthCheckAttribute), false).Length != 0)
                 .ToArray();
 
             foreach (var healthCheckType in healthCheckTypes)
             {
-                if (healthCheckType.GetCustomAttributes(typeof(SpydersoftHealthCheckAttribute), false)[0] is SpydersoftHealthCheckAttribute healthCheckAttribute)
+                if (healthCheckType.GetCustomAttributes(typeof(HealthCheckAttribute), false)[0] is HealthCheckAttribute healthCheckAttribute)
                 {
                     var genericAddCheckMethod = addCheckMethod.MakeGenericMethod(healthCheckType);
                     genericAddCheckMethod.Invoke(healthCheckBuilder, [healthCheckBuilder, healthCheckAttribute.Name, healthCheckAttribute.FailureStatus ?? HealthStatus.Unhealthy, healthCheckAttribute.Tags]);

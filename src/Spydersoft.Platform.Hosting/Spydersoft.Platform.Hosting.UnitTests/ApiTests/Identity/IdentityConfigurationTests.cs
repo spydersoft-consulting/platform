@@ -29,9 +29,9 @@ public class IdentityConfigurationTests : ApiTestBase
     }
 
     [Test]
-    public async Task WeatherForeacast_ShouldReturn_Http404()
+    public async Task RootOptions_ShouldReturn_Http404()
     {
-        var result = await Client.GetAsync($"weatherforecast");
+        var result = await Client.GetAsync($"rootoptions");
         Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
     }
 }

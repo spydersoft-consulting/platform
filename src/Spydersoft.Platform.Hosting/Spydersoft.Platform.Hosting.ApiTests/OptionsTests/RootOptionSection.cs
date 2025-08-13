@@ -2,7 +2,7 @@
 
 namespace Spydersoft.Platform.Hosting.ApiTests.OptionsTests;
 
-[SpydersoftOptions(nameof(RootOptionSection), "root")]
+[InjectOptions(nameof(RootOptionSection), "root")]
 public class RootOptionSection
 {
     public string Option1 { get; set; } = "Option1";

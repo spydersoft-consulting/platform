@@ -5,7 +5,7 @@ using Spydersoft.Platform.Hosting.Options;
 
 namespace Spydersoft.Platform.Hosting.HealthChecks;
 
-[SpydersoftHealthCheck(nameof(HealthCheckStatusCheck), HealthStatus.Unhealthy, "startup")]
+[HealthCheck(nameof(HealthCheckStatusCheck), HealthStatus.Unhealthy, "startup")]
 internal class HealthCheckStatusCheck(IOptions<AppHealthCheckOptions> options) : IHealthCheck
 {
     private readonly AppHealthCheckOptions _options = options.Value;

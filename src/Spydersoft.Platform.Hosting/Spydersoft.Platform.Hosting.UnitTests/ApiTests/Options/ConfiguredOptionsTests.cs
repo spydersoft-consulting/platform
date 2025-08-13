@@ -11,7 +11,7 @@ public class ConfiguredOptionsTests : ApiTestBase
     [Test]
     public async Task RootOptions()
     {
-        var result = await Client.GetAsync($"options/root");
+        var result = await Client.GetAsync($"rootoptions");
 
         using var jsonResult = JsonDocument.Parse(await result.Content.ReadAsStringAsync());
 
@@ -32,7 +32,7 @@ public class ConfiguredOptionsTests : ApiTestBase
     [Test]
     public async Task NestedOptions()
     {
-        var result = await Client.GetAsync($"options/nested");
+        var result = await Client.GetAsync($"nestedoptions");
 
         using var jsonResult = JsonDocument.Parse(await result.Content.ReadAsStringAsync());
 
@@ -53,7 +53,7 @@ public class ConfiguredOptionsTests : ApiTestBase
     [Test]
     public async Task NotLoadedOptions()
     {
-        var result = await Client.GetAsync($"options/notloaded");
+        var result = await Client.GetAsync($"notloadedoptions");
 
         using var jsonResult = JsonDocument.Parse(await result.Content.ReadAsStringAsync());
 
@@ -73,7 +73,7 @@ public class ConfiguredOptionsTests : ApiTestBase
     [Test]
     public async Task UntaggedOptions()
     {
-        var result = await Client.GetAsync($"options/untagged");
+        var result = await Client.GetAsync($"untaggedoptions");
 
         using var jsonResult = JsonDocument.Parse(await result.Content.ReadAsStringAsync());
 

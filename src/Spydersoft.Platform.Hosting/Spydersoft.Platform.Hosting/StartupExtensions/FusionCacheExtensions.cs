@@ -43,28 +43,17 @@ public static class FusionCacheExtensions
             return services;
         }
 
-        services.AddMemoryCache();
+        services.AddMemoryCache(setupAction =>
+        {
+            setupAction.SizeLimit = 1024 * 1024 * options.MemoryCacheLimitMB;
+        });
 
         // Could provide options.CacheName for keyed services, but this only 
         //  supports a single FusionCache instance per application now, not 
         //  necessary to make it keyed.
         var fusionCache = services.AddFusionCache()
-            .WithDefaultEntryOptions(new FusionCacheEntryOptions
-            {
-                Duration = TimeSpan.FromMinutes(options.DefaultEntryDurationInMinutes),
-
-                IsFailSafeEnabled = options.EnableFailSafe,
-                FailSafeMaxDuration = TimeSpan.FromMinutes(options.FailSafeMaxMinutes),
-                FailSafeThrottleDuration = TimeSpan.FromMinutes(options.FailSafeThrottleMinutes),
-
-                FactorySoftTimeout = TimeSpan.FromMilliseconds(options.FactoryTimeoutSoftMs),
-                FactoryHardTimeout = TimeSpan.FromMilliseconds(options.FactoryTimeoutHardMs),
-
-                DistributedCacheSoftTimeout = TimeSpan.FromMinutes(options.DistributedCacheSoftTimeoutMinutes),
-                DistributedCacheHardTimeout = TimeSpan.FromMinutes(options.DistributedCacheHardTimeoutMinutes),
-                AllowBackgroundDistributedCacheOperations = true,
-            });
-
+            .WithOptions(options.CacheOptions)
+            .WithDefaultEntryOptions(options.DefaultEntryOptions);
 
         switch (options.DistributedCacheType)
         {

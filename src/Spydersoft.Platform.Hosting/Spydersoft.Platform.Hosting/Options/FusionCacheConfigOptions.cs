@@ -36,7 +36,6 @@ public class FusionCacheConfigOptions
 
     public RedisConfig Redis { get; set; } = new RedisConfig();
 
-
     public long MemoryCacheLimitMB { get; set; } = 200;
 
     public FusionCacheEntryOptions DefaultEntryOptions { get; set; } = new FusionCacheEntryOptions();

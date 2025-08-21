@@ -25,7 +25,11 @@ if (fusionCacheOptions.Enabled && fusionCacheOptions.DistributedCacheType == Cac
     {
         options.CachePath = cacheFileName;
     });
-    builder.AddSpydersoftFusionCache(builder =>
+    builder.AddSpydersoftFusionCache(config =>
+    { 
+        config.CacheOptions.DisableTagging = true;
+    }
+    , builder =>
     {
         builder
         .WithSerializer(new FusionCacheSystemTextJsonSerializer())

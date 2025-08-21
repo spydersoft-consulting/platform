@@ -20,12 +20,14 @@ public static class FusionCacheExtensions
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <returns>WebApplicationBuilder.</returns>
-    public static WebApplicationBuilder AddSpydersoftFusionCache(this WebApplicationBuilder builder, Action<IFusionCacheBuilder>? additionalConfiguration = null)
+    public static WebApplicationBuilder AddSpydersoftFusionCache(this WebApplicationBuilder builder, Action<FusionCacheConfigOptions>? additionalConfiguration = null, Action<IFusionCacheBuilder>? additionalBuilder = null)
     {
         var cacheOptions = new FusionCacheConfigOptions();
         builder.Configuration.GetSection(FusionCacheConfigOptions.SectionName).Bind(cacheOptions);
 
-        builder.Services.ConfigureFusionCache(cacheOptions, additionalConfiguration);
+        additionalConfiguration?.Invoke(cacheOptions);
+
+        builder.Services.ConfigureFusionCache(cacheOptions, additionalBuilder);
 
         return builder;
     }
@@ -36,7 +38,7 @@ public static class FusionCacheExtensions
     /// <param name="services">The services.</param>
     /// <param name="options">The options.</param>
     /// <returns>IServiceCollection.</returns>
-    public static IServiceCollection ConfigureFusionCache(this IServiceCollection services, FusionCacheConfigOptions options, Action<IFusionCacheBuilder>? additionalConfiguration = null)
+    public static IServiceCollection ConfigureFusionCache(this IServiceCollection services, FusionCacheConfigOptions options, Action<IFusionCacheBuilder>? additionalBuilder = null)
     {
         if (!options.Enabled)
         {
@@ -75,10 +77,17 @@ public static class FusionCacheExtensions
                 throw new NotSupportedException($"Distributed cache type '{options.DistributedCacheType}' is not supported.");
         }
 
-        if (additionalConfiguration != null)
+        if (additionalBuilder != null)
         {
-            additionalConfiguration(fusionCache);
+            additionalBuilder(fusionCache);
         }
+
+        // add configuration options
+        services.AddOptions<FusionCacheConfigOptions>()
+            .Configure<IConfiguration>((settings, configuration) =>
+            {
+                configuration.GetSection(FusionCacheConfigOptions.SectionName).Bind(settings);
+            });
 
         return services;
     }

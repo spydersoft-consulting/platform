@@ -198,6 +198,7 @@ public static class TelemetryExtensions
             throw new ConfigurationException("OTLP endpoint is required when using OTLP exporter.");
         }
         otlpOptions.Endpoint = new Uri(options.Endpoint);
+        otlpOptions.Headers = string.Join(",", options.Headers.Select(kvp => $"{kvp.Key}={kvp.Value}"));
         if (options.Protocol == "http")
         {
             otlpOptions.Protocol = OtlpExportProtocol.HttpProtobuf;

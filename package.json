@@ -1,6 +1,6 @@
 {
   "name": "core-hosting",
-  "packageManager": "yarn@4.5.1",
+  "packageManager": "yarn@4.12.0",
   "devDependencies": {
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",

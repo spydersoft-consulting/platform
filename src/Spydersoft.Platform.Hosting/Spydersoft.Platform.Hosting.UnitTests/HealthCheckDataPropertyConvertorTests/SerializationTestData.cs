@@ -2,6 +2,7 @@
 using System.Collections;
 
 namespace Spydersoft.Platform.Hosting.UnitTests.HealthCheckDataPropertyConvertorTests;
+
 public static class SerializationTestData
 {
     #region Test1 Data
@@ -120,11 +121,11 @@ public static class SerializationTestData
     {
         get
         {
-            yield return new TestCaseData(Test1).Returns(Test1Json);
+            yield return new TestCaseData(Test1, Test1Json);
 
-            yield return new TestCaseData(Test2).Returns(Test2Json);
+            yield return new TestCaseData(Test2, Test2Json);
 
-            yield return new TestCaseData(Test3).Returns(Test3Data);
+            yield return new TestCaseData(Test3, Test3Data);
         }
     }
 

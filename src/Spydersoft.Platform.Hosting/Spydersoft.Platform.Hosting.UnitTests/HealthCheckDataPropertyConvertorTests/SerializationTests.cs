@@ -19,12 +19,17 @@ internal class SerializationTests
     }
 
     [TestCaseSource(typeof(SerializationTestData), nameof(SerializationTestData.SerializationTestCases))]
-    public string Test_Serialization(HealthCheckResult healthCheckResult)
+    public void Test_Serialization(HealthCheckResult healthCheckResult, string expectedJson)
     {
         string json = JsonSerializer.Serialize(healthCheckResult, _jsonSerializerOptions);
         json = json.Replace("\r\n", "\n");
         Assert.DoesNotThrow(() => JsonDocument.Parse(json), "Invalid JSON");
-        return json;
+
+        // Replace framework version in expected JSON to match current runtime
+        string frameworkVersion = typeof(object).Assembly.GetName().Version?.ToString() ?? "8.0.0.0";
+        expectedJson = expectedJson.Replace("Version=8.0.0.0", $"Version={frameworkVersion}");
+
+        Assert.That(json, Is.EqualTo(expectedJson));
     }
 
     [TestCaseSource(typeof(SerializationTestData), nameof(SerializationTestData.DeserializaitonTestCases))]

@@ -10,8 +10,19 @@ using Spydersoft.Platform.Hosting.Options;
 using System.Reflection;
 
 namespace Spydersoft.Platform.Hosting.StartupExtensions;
+
+/// <summary>
+/// Extension methods for configuring health checks in ASP.NET Core applications.
+/// </summary>
 public static class HealthCheckExtensions
 {
+    /// <summary>
+    /// Adds Spydersoft health checks to the application.
+    /// Automatically discovers and registers all health checks decorated with <see cref="HealthCheckAttribute"/>.
+    /// </summary>
+    /// <param name="appBuilder">The web application builder.</param>
+    /// <returns>The health check configuration options.</returns>
+    /// <exception cref="ConfigurationException">Thrown when required reflection methods cannot be found.</exception>
     public static AppHealthCheckOptions AddSpydersoftHealthChecks(this WebApplicationBuilder appBuilder)
     {
         var healthCheckOptions = new AppHealthCheckOptions();
@@ -47,6 +58,13 @@ public static class HealthCheckExtensions
         return healthCheckOptions;
     }
 
+    /// <summary>
+    /// Configures health check endpoints for Kubernetes-style probes.
+    /// Creates /readyz, /livez, /startup, and /configuration endpoints.
+    /// </summary>
+    /// <param name="appBuilder">The application builder.</param>
+    /// <param name="options">The health check configuration options.</param>
+    /// <returns>The application builder for chaining.</returns>
     public static IApplicationBuilder UseSpydersoftHealthChecks(this IApplicationBuilder appBuilder, AppHealthCheckOptions options)
     {
         if (!options.Enabled)

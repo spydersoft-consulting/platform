@@ -6,8 +6,19 @@ using System.Reflection;
 
 namespace Spydersoft.Platform.Hosting.StartupExtensions;
 
+/// <summary>
+/// Extension methods for automatically configuring options classes.
+/// </summary>
 public static class OptionsExtensions
 {
+    /// <summary>
+    /// Automatically discovers and configures options classes decorated with <see cref="InjectOptionsAttribute"/>.
+    /// Binds configuration sections to options classes based on attribute metadata.
+    /// </summary>
+    /// <param name="appBuilder">The web application builder.</param>
+    /// <param name="tagsToInclude">Tags to filter which options to include. Empty tags match all.</param>
+    /// <param name="sectionPrefix">Optional prefix to prepend to configuration section names.</param>
+    /// <exception cref="ConfigurationException">Thrown when required reflection methods cannot be found.</exception>
     public static void AddSpydersoftOptions(this WebApplicationBuilder appBuilder, IEnumerable<string> tagsToInclude, string? sectionPrefix = null)
     {
         MethodInfo addCheckMethod = GetOptionsConfigureMethod();

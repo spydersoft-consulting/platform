@@ -6,8 +6,18 @@ using Spydersoft.Platform.Hosting.Options;
 using Spydersoft.Platform.Hosting.StartupExtensions;
 
 namespace Spydersoft.Platform.Hosting.StartupExtensions;
+
+/// <summary>
+/// Extension methods for configuring JWT Bearer authentication and authorization.
+/// </summary>
 public static class IdentityExtensions
 {
+    /// <summary>
+    /// Adds JWT Bearer authentication to the application based on configuration.
+    /// Configures authentication and authorization services when identity is enabled.
+    /// </summary>
+    /// <param name="appBuilder">The web application builder.</param>
+    /// <returns><c>true</c> if authentication was configured; otherwise, <c>false</c>.</returns>
     public static bool AddSpydersoftIdentity(this WebApplicationBuilder appBuilder)
     {
         var authInstalled = false;
@@ -45,6 +55,12 @@ public static class IdentityExtensions
         return authInstalled;
     }
 
+    /// <summary>
+    /// Adds authentication middleware to the application pipeline if authentication was configured.
+    /// </summary>
+    /// <param name="app">The application builder.</param>
+    /// <param name="authInstalled">Value indicating whether authentication is configured.</param>
+    /// <returns>The application builder for chaining.</returns>
     public static IApplicationBuilder UseAuthentication(this IApplicationBuilder app, bool authInstalled)
     {
         if (authInstalled)
@@ -54,6 +70,12 @@ public static class IdentityExtensions
         return app;
     }
 
+    /// <summary>
+    /// Adds authorization middleware to the application pipeline if authentication was configured.
+    /// </summary>
+    /// <param name="app">The application builder.</param>
+    /// <param name="authInstalled">Value indicating whether authentication is configured.</param>
+    /// <returns>The application builder for chaining.</returns>
     public static IApplicationBuilder UseAuthorization(this IApplicationBuilder app, bool authInstalled)
     {
         if (authInstalled)

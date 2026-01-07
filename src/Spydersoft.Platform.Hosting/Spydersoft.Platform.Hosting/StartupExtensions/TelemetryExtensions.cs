@@ -18,6 +18,9 @@ using System.Reflection;
 
 namespace Spydersoft.Platform.Hosting.StartupExtensions;
 
+/// <summary>
+/// Extension methods for configuring OpenTelemetry and Serilog in ASP.NET Core applications.
+/// </summary>
 public static class TelemetryExtensions
 {
     #region Public Startup Extensions    
@@ -41,6 +44,13 @@ public static class TelemetryExtensions
         }, writeToProviders: writeToProviders);
     }
 
+    /// <summary>
+    /// Adds OpenTelemetry tracing, metrics, and logging to the application with advanced configuration options.
+    /// </summary>
+    /// <param name="appBuilder">The web application builder.</param>
+    /// <param name="startupAssembly">The assembly used to determine the service version.</param>
+    /// <param name="configurationFunctions">Optional configuration functions for customizing telemetry behavior.</param>
+    /// <returns>The web application builder for method chaining.</returns>
     public static WebApplicationBuilder AddSpydersoftTelemetry(this WebApplicationBuilder appBuilder,
         Assembly startupAssembly,
         ConfigurationFunctions? configurationFunctions)
@@ -72,6 +82,12 @@ public static class TelemetryExtensions
         return appBuilder;
     }
 
+    /// <summary>
+    /// Adds OpenTelemetry tracing, metrics, and logging to the application with default configuration.
+    /// </summary>
+    /// <param name="appBuilder">The web application builder.</param>
+    /// <param name="startupAssembly">The assembly used to determine the service version.</param>
+    /// <returns>The web application builder for method chaining.</returns>
     public static WebApplicationBuilder AddSpydersoftTelemetry(this WebApplicationBuilder appBuilder, Assembly startupAssembly)
     {
         return AddSpydersoftTelemetry(appBuilder, startupAssembly, null);

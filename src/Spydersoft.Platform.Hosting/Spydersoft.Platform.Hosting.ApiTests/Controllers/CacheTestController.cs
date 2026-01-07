@@ -8,7 +8,7 @@ namespace Spydersoft.Platform.Hosting.ApiTests.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class CacheTestController(IOptions<FusionCacheConfigOptions> options, IFusionCache? cache = null) : ControllerBase
+public class CacheTestController(IFusionCache? cache = null) : ControllerBase
 {
     [HttpGet("{id:int}")]
     public async Task<CacheObjectOne> Get(int id)

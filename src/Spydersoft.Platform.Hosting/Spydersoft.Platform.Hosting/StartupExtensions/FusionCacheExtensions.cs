@@ -13,13 +13,19 @@ using ZiggyCreatures.Caching.Fusion.Serialization.SystemTextJson;
 
 namespace Spydersoft.Platform.Hosting.StartupExtensions;
 
+/// <summary>
+/// Extension methods for configuring FusionCache in ASP.NET Core applications.
+/// </summary>
 public static class FusionCacheExtensions
 {
     /// <summary>
-    /// Adds the aspire fusion cache.
+    /// Adds and configures FusionCache to the application.
+    /// Configures multi-layer caching with optional Redis distributed cache and backplane.
     /// </summary>
-    /// <param name="builder">The builder.</param>
-    /// <returns>WebApplicationBuilder.</returns>
+    /// <param name="builder">The web application builder.</param>
+    /// <param name="additionalConfiguration">Optional action to modify cache configuration options.</param>
+    /// <param name="additionalBuilder">Optional action to customize the FusionCache builder.</param>
+    /// <returns>The web application builder for chaining.</returns>
     public static WebApplicationBuilder AddSpydersoftFusionCache(this WebApplicationBuilder builder, Action<FusionCacheConfigOptions>? additionalConfiguration = null, Action<IFusionCacheBuilder>? additionalBuilder = null)
     {
         var cacheOptions = new FusionCacheConfigOptions();
@@ -33,11 +39,13 @@ public static class FusionCacheExtensions
     }
 
     /// <summary>
-    /// Configures the fusion cache.
+    /// Configures FusionCache services with the specified options.
+    /// Sets up memory cache, distributed cache (if enabled), and serialization.
     /// </summary>
-    /// <param name="services">The services.</param>
-    /// <param name="options">The options.</param>
-    /// <returns>IServiceCollection.</returns>
+    /// <param name="services">The service collection.</param>
+    /// <param name="options">The FusionCache configuration options.</param>
+    /// <param name="additionalBuilder">Optional action to customize the FusionCache builder.</param>
+    /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection ConfigureFusionCache(this IServiceCollection services, FusionCacheConfigOptions options, Action<IFusionCacheBuilder>? additionalBuilder = null)
     {
         if (!options.Enabled)

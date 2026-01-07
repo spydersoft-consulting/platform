@@ -3,8 +3,19 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Text.Json;
 
 namespace Spydersoft.Platform.Hosting.HealthChecks;
+
+/// <summary>
+/// Provides JSON serialization for health check responses.
+/// </summary>
 static class HealthCheckWriter
 {
+    /// <summary>
+    /// Writes a health check report as JSON to the HTTP response.
+    /// Converts HealthReport entries into a structured JSON format.
+    /// </summary>
+    /// <param name="context">The HTTP context.</param>
+    /// <param name="healthReport">The health report to serialize.</param>
+    /// <returns>A task representing the asynchronous write operation.</returns>
     public static Task WriteResponse(HttpContext context, HealthReport healthReport)
     {
         context.Response.ContentType = "application/json; charset=utf-8";

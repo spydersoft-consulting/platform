@@ -9,6 +9,13 @@ public class IdentityOptions
     /// </summary>
     public const string SectionName = "Identity";
 
+    /// <summary>
+    /// Gets or sets a value indicating whether identity/authentication is enabled.
+    /// When enabled, JWT Bearer authentication will be configured.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if identity is enabled; otherwise, <c>false</c>. Default is <c>false</c>.
+    /// </value>
     public bool Enabled { get; set; } = false;
 
     /// <summary>

@@ -2,6 +2,7 @@ using NeoSmart.Caching.Sqlite;
 using Spydersoft.Platform.Hosting.ApiTests.Services;
 using Spydersoft.Platform.Hosting.Options;
 using Spydersoft.Platform.Hosting.StartupExtensions;
+using Spydersoft.Platform.Hosting.Telemetry;
 using ZiggyCreatures.Caching.Fusion;
 using ZiggyCreatures.Caching.Fusion.Serialization.SystemTextJson;
 
@@ -12,7 +13,48 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddSingleton<ITestService, TestService>();
 
-builder.AddSpydersoftTelemetry(typeof(Program).Assembly);
+bool includeTelemetryConfigFunctions = builder.Configuration.GetValue<bool>("IncludeTelemetryConfigFunctions", false);
+if (includeTelemetryConfigFunctions)
+{
+    var configFunctions = new ConfigurationFunctions
+    {
+        TraceConfiguration = (traceBuilder) =>
+        {
+            TestConfigurationFunctionTracker.Instance.Data.TraceConfigurationCalled++;
+        },
+        MetricsConfiguration = (metricsBuilder) =>
+        {
+            TestConfigurationFunctionTracker.Instance.Data.MetricsConfigurationCalled++;
+        },
+        LogConfiguration = (logBuilder) =>
+        {
+            TestConfigurationFunctionTracker.Instance.Data.LogConfigurationCalled++;
+        },
+        AspNetFilterFunction = (httpContext) =>
+        {
+            TestConfigurationFunctionTracker.Instance.Data.AspNetFilterFunctionCalled++;
+            return true;
+        },
+        AspNetRequestEnrichAction = (activity, httpContext) =>
+        {
+            TestConfigurationFunctionTracker.Instance.Data.AspNetRequestEnrichActionCalled++;
+        },
+        AspNetResponseEnrichAction = (activity, httpContext) =>
+        {
+            TestConfigurationFunctionTracker.Instance.Data.AspNetResponseEnrichActionCalled++;
+        },
+        AspNetExceptionEnrichAction = (activity, exception) =>
+        {
+            TestConfigurationFunctionTracker.Instance.Data.AspNetExceptionEnrichActionCalled++;
+        }
+    };
+
+    builder.AddSpydersoftTelemetry(typeof(Program).Assembly, configFunctions);
+}
+else
+{
+    builder.AddSpydersoftTelemetry(typeof(Program).Assembly);
+}
 builder.AddSpydersoftSerilog(true);
 
 var fusionCacheOptions = new FusionCacheConfigOptions();

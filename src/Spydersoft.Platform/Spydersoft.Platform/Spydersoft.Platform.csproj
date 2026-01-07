@@ -4,6 +4,7 @@
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageDescription>Spydersoft Platform Hosting extensions and classes</PackageDescription>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>

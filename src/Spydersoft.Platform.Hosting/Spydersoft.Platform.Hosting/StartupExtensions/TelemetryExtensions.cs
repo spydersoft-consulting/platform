@@ -12,11 +12,15 @@ using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 using Spydersoft.Platform.Exceptions;
 using Spydersoft.Platform.Hosting.Options;
+using Spydersoft.Platform.Hosting.Telemetry;
 using System.Diagnostics.Metrics;
 using System.Reflection;
 
 namespace Spydersoft.Platform.Hosting.StartupExtensions;
 
+/// <summary>
+/// Extension methods for configuring OpenTelemetry and Serilog in ASP.NET Core applications.
+/// </summary>
 public static class TelemetryExtensions
 {
     #region Public Startup Extensions    
@@ -40,11 +44,16 @@ public static class TelemetryExtensions
         }, writeToProviders: writeToProviders);
     }
 
+    /// <summary>
+    /// Adds OpenTelemetry tracing, metrics, and logging to the application with advanced configuration options.
+    /// </summary>
+    /// <param name="appBuilder">The web application builder.</param>
+    /// <param name="startupAssembly">The assembly used to determine the service version.</param>
+    /// <param name="configurationFunctions">Optional configuration functions for customizing telemetry behavior.</param>
+    /// <returns>The web application builder for method chaining.</returns>
     public static WebApplicationBuilder AddSpydersoftTelemetry(this WebApplicationBuilder appBuilder,
         Assembly startupAssembly,
-        Action<TracerProviderBuilder>? additionalTraceConfiguration,
-        Action<MeterProviderBuilder>? additionalMetricsConfiguration,
-        Action<LoggerProviderBuilder>? additionalLogConfiguration)
+        ConfigurationFunctions? configurationFunctions)
     {
         var telemetryOptions = new TelemetryOptions();
         appBuilder.Configuration.GetSection(TelemetryOptions.SectionName).Bind(telemetryOptions);
@@ -66,30 +75,42 @@ public static class TelemetryExtensions
                     serviceName: telemetryOptions.ServiceName,
                     serviceVersion: startupAssembly.GetName().Version?.ToString() ?? "unknown",
                     serviceInstanceId: Environment.MachineName))
-            .WithTracing(builder => ConfigureTracing(builder, appBuilder.Configuration, telemetryOptions, additionalTraceConfiguration))
-            .WithMetrics(builder => ConfigureMetrics(builder, appBuilder.Configuration, telemetryOptions, additionalMetricsConfiguration))
-            .WithLogging(builder => ConfigureLogging(builder, telemetryOptions, additionalLogConfiguration));
+            .WithTracing(builder => ConfigureTracing(builder, appBuilder.Configuration, telemetryOptions, configurationFunctions))
+            .WithMetrics(builder => ConfigureMetrics(builder, appBuilder.Configuration, telemetryOptions, configurationFunctions))
+            .WithLogging(builder => ConfigureLogging(builder, telemetryOptions, configurationFunctions));
 
         return appBuilder;
     }
 
+    /// <summary>
+    /// Adds OpenTelemetry tracing, metrics, and logging to the application with default configuration.
+    /// </summary>
+    /// <param name="appBuilder">The web application builder.</param>
+    /// <param name="startupAssembly">The assembly used to determine the service version.</param>
+    /// <returns>The web application builder for method chaining.</returns>
     public static WebApplicationBuilder AddSpydersoftTelemetry(this WebApplicationBuilder appBuilder, Assembly startupAssembly)
     {
-        return AddSpydersoftTelemetry(appBuilder, startupAssembly, null, null, null);
+        return AddSpydersoftTelemetry(appBuilder, startupAssembly, null);
     }
 
     #endregion
 
 
     #region Private Startup Helpers
-    private static void ConfigureTracing(TracerProviderBuilder builder, ConfigurationManager configuration, TelemetryOptions options, Action<TracerProviderBuilder>? action)
+    private static void ConfigureTracing(TracerProviderBuilder builder, ConfigurationManager configuration, TelemetryOptions options, ConfigurationFunctions? configFunctions)
     {
         // Ensure the TracerProvider subscribes to any custom ActivitySources.
         builder
             .AddSource(options.ActivitySourceName)
             .SetSampler(new AlwaysOnSampler())
             .AddHttpClientInstrumentation()
-            .AddAspNetCoreInstrumentation();
+            .AddAspNetCoreInstrumentation((options) =>
+            {
+                options.Filter = configFunctions?.AspNetFilterFunction;
+                options.EnrichWithException = configFunctions?.AspNetExceptionEnrichAction;
+                options.EnrichWithHttpRequest = configFunctions?.AspNetRequestEnrichAction;
+                options.EnrichWithHttpResponse = configFunctions?.AspNetResponseEnrichAction;
+            });
 
         switch (options.Trace.Type)
         {
@@ -120,10 +141,10 @@ public static class TelemetryExtensions
             builder.AddFusionCacheInstrumentation();
         }
 
-        action?.Invoke(builder);
+        configFunctions?.TraceConfiguration?.Invoke(builder);
     }
 
-    private static void ConfigureMetrics(MeterProviderBuilder builder, ConfigurationManager configuration, TelemetryOptions options, Action<MeterProviderBuilder>? action)
+    private static void ConfigureMetrics(MeterProviderBuilder builder, ConfigurationManager configuration, TelemetryOptions options, ConfigurationFunctions? configFunctions)
     {
         builder
             .AddMeter(options.MeterName)
@@ -169,10 +190,10 @@ public static class TelemetryExtensions
             builder.AddFusionCacheInstrumentation();
         }
 
-        action?.Invoke(builder);
+        configFunctions?.MetricsConfiguration?.Invoke(builder);
     }
 
-    private static void ConfigureLogging(LoggerProviderBuilder builder, TelemetryOptions options, Action<LoggerProviderBuilder>? action)
+    private static void ConfigureLogging(LoggerProviderBuilder builder, TelemetryOptions options, ConfigurationFunctions? configFunctions)
     {
         switch (options.Log.Type)
         {
@@ -187,7 +208,7 @@ public static class TelemetryExtensions
                 break;
         }
 
-        action?.Invoke(builder);
+        configFunctions?.LogConfiguration?.Invoke(builder);
     }
 
 

@@ -10,11 +10,11 @@ namespace Spydersoft.Platform.Hosting.StartupExtensions;
 public static class DependencyInjectionExtensions
 {
     /// <summary>
-    /// Adds the decorated services.
+    /// Adds services decorated with <see cref="DependencyInjectionAttribute"/> to the service collection.
+    /// Automatically discovers and registers services across all loaded assemblies.
     /// </summary>
-    /// <param name="services">The services.</param>
-    /// <param name="serviceAssembly">The service assembly.</param>
-    /// <returns>IServiceCollection.</returns>
+    /// <param name="services">The service collection.</param>
+    /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection AddSpydersoftDecoratedServices(this IServiceCollection services)
     {
         var rankedList = new List<Tuple<DependencyInjectionAttribute, Type>>();

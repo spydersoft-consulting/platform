@@ -3,16 +3,19 @@ using System;
 namespace Spydersoft.Platform.Attributes;
 
 /// <summary>
-/// Class DependencyInjectionAttribute.
-/// Implements the <see cref="Attribute" />
+/// Attribute for marking classes to be automatically registered in the dependency injection container.
+/// Classes decorated with this attribute will be discovered and registered at application startup.
 /// </summary>
-/// <param name="ServiceInterface">The service interface.</param>
-/// <param name="ServiceLifetime">The service lifetime.</param>
-/// <param name="rank">The rank.</param>
 /// <seealso cref="Attribute" />
 [AttributeUsage(AttributeTargets.Class)]
 public class DependencyInjectionAttribute : Attribute
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DependencyInjectionAttribute"/> class.
+    /// </summary>
+    /// <param name="serviceInterface">The service interface type to register.</param>
+    /// <param name="serviceLifetime">The service lifetime (Transient, Scoped, or Singleton). Default is Transient.</param>
+    /// <param name="rank">The registration rank for ordering multiple implementations. Default is 0.</param>
     public DependencyInjectionAttribute(Type serviceInterface, LifetimeOfService serviceLifetime = LifetimeOfService.Transient, int rank = 0)
     {
         ServiceInterface = serviceInterface;

@@ -5,12 +5,23 @@ using Spydersoft.Platform.Hosting.Options;
 
 namespace Spydersoft.Platform.Hosting.HealthChecks.Telemetry;
 
+/// <summary>
+/// Health check that validates OpenTelemetry configuration and provider registration.
+/// Checks whether TracerProvider, MeterProvider, and LoggerProvider are properly registered.
+/// </summary>
 [HealthCheck(nameof(TelemetryHealthCheck), HealthStatus.Unhealthy, "startup")]
 public class TelemetryHealthCheck(IServiceProvider services, IOptions<TelemetryOptions> telemetryOptions) : IHealthCheck
 {
     private readonly TelemetryOptions _telemetryOptions = telemetryOptions.Value;
     private readonly IServiceProvider _services = services;
 
+    /// <summary>
+    /// Checks the health of the telemetry configuration.
+    /// Returns Healthy if all three providers (trace, metrics, logs) are present, otherwise Degraded.
+    /// </summary>
+    /// <param name="context">The health check context.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A task representing the health check result.</returns>
     public Task<Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
         var tracePresent = _services.GetService(typeof(OpenTelemetry.Trace.TracerProvider)) is OpenTelemetry.Trace.TracerProvider;

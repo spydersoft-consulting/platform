@@ -5,7 +5,7 @@
       <DataCollector friendlyName="XPlat code coverage">
         <Configuration>
           <Format>opencover,cobertura</Format>
-          <Exclude>[Spydersoft.Platform.Hosting.UnitTests]*</Exclude>
+          <Exclude>[Spydersoft.Platform.Hosting.UnitTests]*,[*.ApiTests]*</Exclude>
           <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
           <SingleHit>false</SingleHit>
           <UseSourceLink>false</UseSourceLink>

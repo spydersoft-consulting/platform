@@ -67,13 +67,16 @@ internal class SerializationTests
         };
         var json = JsonSerializer.Serialize(dict, _jsonSerializerOptions);
         var deserialized = JsonSerializer.Deserialize<HealthCheckResult>(json, _jsonSerializerOptions);
-        Assert.That(deserialized, Is.Not.Null);
-        Assert.That(deserialized.Description, Is.EqualTo("Test"));
-        Assert.That(deserialized.Status, Is.EqualTo("Healthy"));
-        Assert.That(deserialized.Duration, Is.EqualTo(TimeSpan.FromSeconds(1).ToString()));
-        Assert.That(deserialized.ResultData, Has.Count.EqualTo(2));
-        Assert.That(deserialized.ResultData["key1"], Is.EqualTo("value1"));
-        Assert.That(deserialized.ResultData["key2"], Is.EqualTo("value2"));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(deserialized, Is.Not.Null);
+            Assert.That(deserialized.Description, Is.EqualTo("Test"));
+            Assert.That(deserialized.Status, Is.EqualTo("Healthy"));
+            Assert.That(deserialized.Duration, Is.EqualTo(TimeSpan.FromSeconds(1).ToString()));
+            Assert.That(deserialized.ResultData, Has.Count.EqualTo(2));
+            Assert.That(deserialized.ResultData["key1"], Is.EqualTo("value1"));
+            Assert.That(deserialized.ResultData["key2"], Is.EqualTo("value2"));
+        }
     }
 
     private class TestObj
@@ -88,8 +91,11 @@ internal class SerializationTests
         var dict = new Dictionary<string, object>();
         var json = JsonSerializer.Serialize(dict, _jsonSerializerOptions);
         var deserialized = JsonSerializer.Deserialize<IReadOnlyDictionary<string, object>>(json, _jsonSerializerOptions);
-        Assert.That(deserialized, Is.Not.Null);
-        Assert.That(deserialized.Count, Is.EqualTo(0));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(deserialized, Is.Not.Null);
+            Assert.That(deserialized, HashCode.Count.Zero);
+        }
     }
 
     [Test]

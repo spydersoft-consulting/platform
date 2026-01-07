@@ -2,6 +2,7 @@ using Spydersoft.Platform.Hosting.ApiTests.Models;
 using Spydersoft.Platform.Hosting.HealthChecks;
 using Spydersoft.Platform.Hosting.HealthChecks.Telemetry;
 using System.Net;
+using System.Reflection;
 using System.Text.Json;
 
 namespace Spydersoft.Platform.Hosting.UnitTests.ApiTests.Telemetry;
@@ -44,7 +45,7 @@ public class ConfigurationFunctionsExecutionTests : ApiTestBase
     public async Task ConfigurationFunctions_AreExecuted()
     {
         // Just make a request to trigger the telemetry functions
-		_ = await Client.GetAsync($"/service");
+        _ = await Client.GetAsync($"/service");
 
         var result = await Client.GetAsync($"/TelemetryFunctionsAccess");
 
@@ -52,10 +53,14 @@ public class ConfigurationFunctionsExecutionTests : ApiTestBase
         var content = await result.Content.ReadAsStringAsync();
 
         var functionTrackerData = JsonSerializer.Deserialize<TestConfigurationFunctionTrackerData>(content, JsonOptions);
-        Assert.That(functionTrackerData, Is.Not.Null);
-        Assert.That(functionTrackerData!.AspNetFilterFunctionCalled, Is.GreaterThan(0), "AspNetFilterFunctionCalled should have been called.");
-        Assert.That(functionTrackerData!.AspNetRequestEnrichActionCalled, Is.GreaterThan(0), "AspNetRequestEnrichAction should have been called.");
-        Assert.That(functionTrackerData!.AspNetResponseEnrichActionCalled, Is.GreaterThan(0), "AspNetResponseEnrichAction should have been called.");
-        Assert.That(functionTrackerData!.AspNetExceptionEnrichActionCalled, Is.EqualTo(0), "AspNetExceptionEnrichAction should not have been called.");
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(functionTrackerData, Is.Not.Null);
+            Assert.That(functionTrackerData!.AspNetFilterFunctionCalled, Is.GreaterThan(0), "AspNetFilterFunctionCalled should have been called.");
+            Assert.That(functionTrackerData!.AspNetRequestEnrichActionCalled, Is.GreaterThan(0), "AspNetRequestEnrichAction should have been called.");
+            Assert.That(functionTrackerData!.AspNetResponseEnrichActionCalled, Is.GreaterThan(0), "AspNetResponseEnrichAction should have been called.");
+            Assert.That(functionTrackerData!.AspNetExceptionEnrichActionCalled, Is.Zero, "AspNetExceptionEnrichAction should not have been called.");
+        }
     }
 }

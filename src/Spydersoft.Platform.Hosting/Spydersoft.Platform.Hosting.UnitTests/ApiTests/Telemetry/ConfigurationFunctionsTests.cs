@@ -29,7 +29,7 @@ public class ConfigurationFunctionsTests
     {
         // Arrange
         var builder = WebApplication.CreateBuilder();
-        
+
         // Add minimal telemetry configuration
         builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
         {
@@ -65,11 +65,14 @@ public class ConfigurationFunctionsTests
         builder.AddSpydersoftTelemetry(typeof(ConfigurationFunctionsTests).Assembly, configFunctions);
         var app = builder.Build();
 
-        // Assert
-        Assert.That(_traceConfigCalled, Is.True, "TraceConfiguration should be called");
-        Assert.That(_metricsConfigCalled, Is.True, "MetricsConfiguration should be called");
-        Assert.That(_logConfigCalled, Is.True, "LogConfiguration should be called");
-
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert - callbacks should have been called during Build()
+            // Assert
+            Assert.That(_traceConfigCalled, Is.True, "TraceConfiguration should be called");
+            Assert.That(_metricsConfigCalled, Is.True, "MetricsConfiguration should be called");
+            Assert.That(_logConfigCalled, Is.True, "LogConfiguration should be called");
+        }
         await app.DisposeAsync();
     }
 
@@ -78,7 +81,7 @@ public class ConfigurationFunctionsTests
     {
         // Arrange
         var builder = WebApplication.CreateBuilder();
-        
+
         builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
         {
             ["Telemetry:Enabled"] = "true",
@@ -97,7 +100,7 @@ public class ConfigurationFunctionsTests
             builder.AddSpydersoftTelemetry(typeof(ConfigurationFunctionsTests).Assembly, null);
             app = builder.Build();
         });
-        
+
         if (app != null)
         {
             await app.DisposeAsync();
@@ -109,7 +112,7 @@ public class ConfigurationFunctionsTests
     {
         // Arrange
         var builder = WebApplication.CreateBuilder();
-        
+
         builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
         {
             ["Telemetry:Enabled"] = "false",
@@ -127,11 +130,13 @@ public class ConfigurationFunctionsTests
         builder.AddSpydersoftTelemetry(typeof(ConfigurationFunctionsTests).Assembly, configFunctions);
         var app = builder.Build();
 
-        // Assert
-        Assert.That(_traceConfigCalled, Is.False, "TraceConfiguration should not be called when telemetry is disabled");
-        Assert.That(_metricsConfigCalled, Is.False, "MetricsConfiguration should not be called when telemetry is disabled");
-        Assert.That(_logConfigCalled, Is.False, "LogConfiguration should not be called when telemetry is disabled");
-
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(_traceConfigCalled, Is.False, "TraceConfiguration should not be called when telemetry is disabled");
+            Assert.That(_metricsConfigCalled, Is.False, "MetricsConfiguration should not be called when telemetry is disabled");
+            Assert.That(_logConfigCalled, Is.False, "LogConfiguration should not be called when telemetry is disabled");
+        }
         await app.DisposeAsync();
     }
 
@@ -150,13 +155,16 @@ public class ConfigurationFunctionsTests
             AspNetExceptionEnrichAction = (activity, exception) => { }
         };
 
-        // Assert
-        Assert.That(configFunctions.TraceConfiguration, Is.Not.Null);
-        Assert.That(configFunctions.MetricsConfiguration, Is.Not.Null);
-        Assert.That(configFunctions.LogConfiguration, Is.Not.Null);
-        Assert.That(configFunctions.AspNetFilterFunction, Is.Not.Null);
-        Assert.That(configFunctions.AspNetRequestEnrichAction, Is.Not.Null);
-        Assert.That(configFunctions.AspNetResponseEnrichAction, Is.Not.Null);
-        Assert.That(configFunctions.AspNetExceptionEnrichAction, Is.Not.Null);
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(configFunctions.TraceConfiguration, Is.Not.Null);
+            Assert.That(configFunctions.MetricsConfiguration, Is.Not.Null);
+            Assert.That(configFunctions.LogConfiguration, Is.Not.Null);
+            Assert.That(configFunctions.AspNetFilterFunction, Is.Not.Null);
+            Assert.That(configFunctions.AspNetRequestEnrichAction, Is.Not.Null);
+            Assert.That(configFunctions.AspNetResponseEnrichAction, Is.Not.Null);
+            Assert.That(configFunctions.AspNetExceptionEnrichAction, Is.Not.Null);
+        }
     }
 }

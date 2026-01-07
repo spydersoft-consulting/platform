@@ -8,6 +8,55 @@ builder.AddSpydersoftTelemetry(typeof(Program).Assembly);
 
 The assembly parameter is used to calculate the version and set the OpenTelemetry service version.
 
+### Advanced Configuration
+
+For advanced scenarios, you can provide a `ConfigurationFunctions` object to customize OpenTelemetry behavior:
+
+```csharp
+using Spydersoft.Platform.Hosting.Telemetry;
+
+var configFunctions = new ConfigurationFunctions
+{
+    // Add custom trace configuration
+    TraceConfiguration = (builder) => {
+        // Add custom sources, processors, etc.
+    },
+    
+    // Add custom metrics configuration
+    MetricsConfiguration = (builder) => {
+        // Add custom meters, views, etc.
+    },
+    
+    // Add custom logging configuration
+    LogConfiguration = (builder) => {
+        // Add custom log processors, etc.
+    },
+    
+    // Filter ASP.NET Core requests
+    AspNetFilterFunction = (httpContext) => {
+        // Return false to exclude requests from tracing
+        return !httpContext.Request.Path.StartsWithSegments("/health");
+    },
+    
+    // Enrich traces with request data
+    AspNetRequestEnrichAction = (activity, request) => {
+        activity.SetTag("custom.request.tag", "value");
+    },
+    
+    // Enrich traces with response data
+    AspNetResponseEnrichAction = (activity, response) => {
+        activity.SetTag("custom.response.tag", "value");
+    },
+    
+    // Enrich traces with exception data
+    AspNetExceptionEnrichAction = (activity, exception) => {
+        activity.SetTag("custom.exception.tag", exception.Message);
+    }
+};
+
+builder.AddSpydersoftTelemetry(typeof(Program).Assembly, configFunctions);
+```
+
 ## OpenTelemetry Configuration
 
 Configuration is controlled by configuration entries in `appsettings.json` or environment variables. Below are the possible settings with their default values. Notice the `Logging:OpenTelemetry` section. This section is used to configure the OpenTelemetry SDKs logging providers.
@@ -25,17 +74,25 @@ Configuration is controlled by configuration entries in `appsettings.json` or en
   "AspNetCoreInstrumentation": {
     // AspNetCoreTraceInstrumentationOptions
   },
+  "Enabled": true,
   "Log": {
     "Otlp": {
       "Endpoint": "",
+      "Headers": {
+        "Authorization": "Bearer token"
+      },
       "Protocol": "grpc"
     },
     "Type": "console"
   },
   "MeterName": "Spydersoft.Otel.Meter",
   "Metrics": {
+    "HistogramAggregation": "exponential",
     "Otlp": {
       "Endpoint": "",
+      "Headers": {
+        "Authorization": "Bearer token"
+      },
       "Protocol": "grpc"
     },
     "Type": "console"
@@ -43,7 +100,10 @@ Configuration is controlled by configuration entries in `appsettings.json` or en
   "ServiceName": "techradar-data",
   "Trace": {
     "Otlp": {
-      "Endpoint": "http://trace.localhost:12345"
+      "Endpoint": "http://trace.localhost:12345",
+      "Headers": {
+        "Authorization": "Bearer token"
+      }
     },
     "Type": "console",
     "Zipkin": {
@@ -58,6 +118,7 @@ Configuration is controlled by configuration entries in `appsettings.json` or en
 | Logging:OpenTelemetry               | Configure OpenTelemetry Logging Options            | See [OpenTelemetry Logging Options][4]              |
 | Telemetry:ActivitySourceName        | The name for the [OpenTelemetry ActivitySource][3] |                                                     |
 | Telemetry:AspNetCoreInstrumentation | AspNetCoreTraceInstrumentationOptions              | See [AspNetCoreTraceOptions][2]                     |
+| Telemetry:Enabled                   | Enable or disable OpenTelemetry                    | `true` (default), `false`                           |
 | Telemetry:Log                       | Log Configuration Section                          | See [Log Configuration](#log-configuration)         |
 | Telemetry:MeterName                 | The name for the OpenTelemetry Meter               |                                                     |
 | Telemetry:Metrics                   | Metrics Configuration Section                      | See [Metrics Configuration](#metrics-configuration) |
@@ -73,10 +134,11 @@ Configuration is controlled by configuration entries in `appsettings.json` or en
 
 ### Metrics Configuration
 
-| Setting | Description          | Possible Values                           |
-| ------- | -------------------- | ----------------------------------------- |
-| Otlp    | Otlp Options Section | See [Otlp Options](#otlp-options)         |
-| Type    | Exporter Type        | `console` (default), `prometheus`, `otlp` |
+| Setting              | Description                         | Possible Values                                    |
+| -------------------- | ----------------------------------- | -------------------------------------------------- |
+| HistogramAggregation | Histogram aggregation strategy      | empty (default explicit bounds), `exponential`     |
+| Otlp                 | Otlp Options Section                | See [Otlp Options](#otlp-options)                  |
+| Type                 | Exporter Type                       | `console` (default), `prometheus`, `otlp`          |
 
 ### Trace Configuration
 
@@ -88,10 +150,11 @@ Configuration is controlled by configuration entries in `appsettings.json` or en
 
 #### Otlp Options
 
-| Setting  | Description                   | Possible Values            |
-| -------- | ----------------------------- | -------------------------- |
-| Endpoint | Endpoint URL for Otlp logging |                            |
-| Protocol | Communication Protocol to use | `grpc` (default) or `http` |
+| Setting  | Description                                        | Possible Values            |
+| -------- | -------------------------------------------------- | -------------------------- |
+| Endpoint | Endpoint URL for Otlp logging                      |                            |
+| Headers  | Dictionary of headers for authentication/metadata  | Key-value pairs            |
+| Protocol | Communication Protocol to use                      | `grpc` (default) or `http` |
 
 [1]: https://github.com/open-telemetry/opentelemetry-dotnet/blob/main/src/OpenTelemetry.Exporter.Zipkin/README.md "Zipkin Configuration"
 [2]: https://github.com/open-telemetry/opentelemetry-dotnet-contrib/tree/main/src/OpenTelemetry.Instrumentation.AspNetCore "AspNetCoreTraceOptions"

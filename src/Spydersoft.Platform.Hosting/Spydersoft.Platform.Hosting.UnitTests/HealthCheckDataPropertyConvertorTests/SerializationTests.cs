@@ -70,12 +70,12 @@ internal class SerializationTests
         using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized, Is.Not.Null);
-            Assert.That(deserialized.Description, Is.EqualTo("Test"));
-            Assert.That(deserialized.Status, Is.EqualTo("Healthy"));
-            Assert.That(deserialized.Duration, Is.EqualTo(TimeSpan.FromSeconds(1).ToString()));
-            Assert.That(deserialized.ResultData, Has.Count.EqualTo(2));
-            Assert.That(deserialized.ResultData["key1"], Is.EqualTo("value1"));
-            Assert.That(deserialized.ResultData["key2"], Is.EqualTo("value2"));
+            Assert.That(deserialized?.Description, Is.EqualTo("Test"));
+            Assert.That(deserialized?.Status, Is.EqualTo("Healthy"));
+            Assert.That(deserialized?.Duration, Is.EqualTo(TimeSpan.FromSeconds(1).ToString()));
+            Assert.That(deserialized?.ResultData, Has.Count.EqualTo(2));
+            Assert.That(deserialized?.ResultData["key1"], Is.EqualTo("value1"));
+            Assert.That(deserialized?.ResultData["key2"], Is.EqualTo("value2"));
         }
     }
 
@@ -94,7 +94,7 @@ internal class SerializationTests
         using (Assert.EnterMultipleScope())
         {
             Assert.That(deserialized, Is.Not.Null);
-            Assert.That(deserialized, HashCode.Count.Zero);
+            Assert.That(deserialized, Has.Count.Zero);
         }
     }
 

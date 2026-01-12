@@ -77,7 +77,7 @@ public static class TelemetryExtensions
                     serviceInstanceId: Environment.MachineName))
             .WithTracing(builder => ConfigureTracing(builder, appBuilder.Configuration, telemetryOptions, configurationFunctions))
             .WithMetrics(builder => ConfigureMetrics(builder, appBuilder.Configuration, telemetryOptions, configurationFunctions))
-            .WithLogging(builder => ConfigureLogging(builder, telemetryOptions, configurationFunctions));
+            .WithLogging(builder => ConfigureLogging(builder, appBuilder.Configuration, telemetryOptions, configurationFunctions));
 
         return appBuilder;
     }
@@ -125,7 +125,7 @@ public static class TelemetryExtensions
                 break;
 
             case "otlp":
-                builder.AddOtlpExporter(otlpOptions => SetOltpOptions(otlpOptions, options.Trace.Otlp));
+                builder.AddOtlpExporter(otlpOptions => SetOltpOptions(configuration, otlpOptions, options.Trace.Otlp));
                 break;
 
             default:
@@ -175,7 +175,7 @@ public static class TelemetryExtensions
                 builder.AddPrometheusExporter();
                 break;
             case "otlp":
-                builder.AddOtlpExporter(otlpOptions => SetOltpOptions(otlpOptions, options.Metrics.Otlp));
+                builder.AddOtlpExporter(otlpOptions => SetOltpOptions(configuration, otlpOptions, options.Metrics.Otlp));
                 break;
             default:
                 builder.AddConsoleExporter();
@@ -193,14 +193,14 @@ public static class TelemetryExtensions
         configFunctions?.MetricsConfiguration?.Invoke(builder);
     }
 
-    private static void ConfigureLogging(LoggerProviderBuilder builder, TelemetryOptions options, ConfigurationFunctions? configFunctions)
+    private static void ConfigureLogging(LoggerProviderBuilder builder, ConfigurationManager configuration, TelemetryOptions options, ConfigurationFunctions? configFunctions)
     {
         switch (options.Log.Type)
         {
             case "otlp":
                 builder.AddOtlpExporter(otlpOptions =>
                 {
-                    SetOltpOptions(otlpOptions, options.Log.Otlp);
+                    SetOltpOptions(configuration,  otlpOptions, options.Log.Otlp);
                 });
                 break;
             default:
@@ -212,15 +212,29 @@ public static class TelemetryExtensions
     }
 
 
-    private static void SetOltpOptions(OtlpExporterOptions otlpOptions, OtlpOptions options)
+    private static void SetOltpOptions(ConfigurationManager configuration, OtlpExporterOptions otlpOptions, OtlpOptions options)
     {
-        if (string.IsNullOrWhiteSpace(options.Endpoint))
+        var endpoint = configuration.GetValue<string>("OTEL:Exporter:Otlp:Endpoint");
+        var protocol = configuration.GetValue<string>("OTEL:Exporter:Otlp:Protocol") ?? "grpc";
+
+        if (string.IsNullOrWhiteSpace(endpoint))
+        {
+            endpoint = options.Endpoint;
+        }
+
+        if (string.IsNullOrWhiteSpace(protocol))
+        {
+            protocol = options.Protocol;
+        }
+
+        if (string.IsNullOrWhiteSpace(endpoint))
         {
             throw new ConfigurationException("OTLP endpoint is required when using OTLP exporter.");
         }
-        otlpOptions.Endpoint = new Uri(options.Endpoint);
+
+        otlpOptions.Endpoint = new Uri(endpoint);
         otlpOptions.Headers = string.Join(",", options.Headers.Select(kvp => $"{kvp.Key}={kvp.Value}"));
-        if (options.Protocol == "http")
+        if (protocol == "http")
         {
             otlpOptions.Protocol = OtlpExportProtocol.HttpProtobuf;
         }
@@ -228,7 +242,6 @@ public static class TelemetryExtensions
         {
             otlpOptions.Protocol = OtlpExportProtocol.Grpc;
         }
-
     }
     #endregion
 }

@@ -61,6 +61,15 @@ builder.AddSpydersoftTelemetry(typeof(Program).Assembly, configFunctions);
 
 Configuration is controlled by configuration entries in `appsettings.json` or environment variables. Below are the possible settings with their default values. Notice the `Logging:OpenTelemetry` section. This section is used to configure the OpenTelemetry SDKs logging providers.
 
+### Environment Variable Support
+
+The following environment variables are supported and will override corresponding appsettings.json values when set:
+
+- `OTEL:Exporter:Otlp:Endpoint` - Overrides the OTLP endpoint for all telemetry types (logs, metrics, traces)
+- `OTEL:Exporter:Otlp:Protocol` - Overrides the OTLP protocol (`grpc` or `http`)
+
+These environment variables take precedence over the configuration file settings, allowing for easier deployment and container configuration.
+
 ```json
 "Logging": {
   "OpenTelemetry": {
@@ -127,10 +136,10 @@ Configuration is controlled by configuration entries in `appsettings.json` or en
 
 ### Log Configuration
 
-| Setting | Description          | Possible Values                   |
-| ------- | -------------------- | --------------------------------- |
-| Otlp    | Otlp Options Section | See [Otlp Options](#otlp-options) |
-| Type    | Exporter Type        | `console` (default), `otlp`       |
+| Setting | Description          | Possible Values                           |
+| ------- | -------------------- | ----------------------------------------- |
+| Otlp    | Otlp Options Section | See [Otlp Options](#otlp-options)         |
+| Type    | Exporter Type        | `console` (default), `otlp`, `none`       |
 
 ### Metrics Configuration
 
@@ -138,15 +147,15 @@ Configuration is controlled by configuration entries in `appsettings.json` or en
 | -------------------- | ----------------------------------- | -------------------------------------------------- |
 | HistogramAggregation | Histogram aggregation strategy      | empty (default explicit bounds), `exponential`     |
 | Otlp                 | Otlp Options Section                | See [Otlp Options](#otlp-options)                  |
-| Type                 | Exporter Type                       | `console` (default), `prometheus`, `otlp`          |
+| Type                 | Exporter Type                       | `console` (default), `prometheus`, `otlp`, `none`  |
 
 ### Trace Configuration
 
-| Setting | Description            | Possible Values                       |
-| ------- | ---------------------- | ------------------------------------- |
-| Otlp    | Otlp Options Section   | See [Otlp Options](#otlp-options)     |
-| Type    | Exporter Type          | `console` (default), `zipkin`, `otlp` |
-| Zipkin  | Zipkin Options Section | See [Zipkin Configuration][1]         |
+| Setting | Description            | Possible Values                               |
+| ------- | ---------------------- | --------------------------------------------- |
+| Otlp    | Otlp Options Section   | See [Otlp Options](#otlp-options)             |
+| Type    | Exporter Type          | `console` (default), `zipkin`, `otlp`, `none` |
+| Zipkin  | Zipkin Options Section | See [Zipkin Configuration][1]                 |
 
 #### Otlp Options
 

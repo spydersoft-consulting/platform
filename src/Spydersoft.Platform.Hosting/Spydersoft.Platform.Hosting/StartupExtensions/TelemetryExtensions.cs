@@ -128,6 +128,10 @@ public static class TelemetryExtensions
                 builder.AddOtlpExporter(otlpOptions => SetOltpOptions(configuration, otlpOptions, options.Trace.Otlp));
                 break;
 
+            case "console":
+                builder.AddConsoleExporter();
+                break;
+            case "none":
             default:
                 builder.AddConsoleExporter();
                 break;
@@ -177,8 +181,11 @@ public static class TelemetryExtensions
             case "otlp":
                 builder.AddOtlpExporter(otlpOptions => SetOltpOptions(configuration, otlpOptions, options.Metrics.Otlp));
                 break;
-            default:
+            case "console":
                 builder.AddConsoleExporter();
+                break;
+            case "none":
+            default:
                 break;
         }
 
@@ -203,8 +210,11 @@ public static class TelemetryExtensions
                     SetOltpOptions(configuration,  otlpOptions, options.Log.Otlp);
                 });
                 break;
-            default:
+            case "console":
                 builder.AddConsoleExporter();
+                break;
+            case "none":
+            default:
                 break;
         }
 

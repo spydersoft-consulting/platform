@@ -7,7 +7,7 @@ public class TraceOptions
 {
     /// <summary>
     /// Gets or sets the trace exporter type.
-    /// Valid values are "console" (default), "zipkin", or "otlp".
+    /// Valid values are "console" (default), "zipkin", "otlp", or "none".
     /// </summary>
     public string Type { get; set; } = "console";
 

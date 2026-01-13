@@ -10,7 +10,7 @@ public class LogOptions
     /// Gets or sets the log exporter type.
     /// </summary>
     /// <value>
-    /// The exporter type. Default is "console".
+    /// The exporter type. Values are "otlp", "console", or "none". Default is "console".
     /// </value>
     public string Type { get; set; } = "console";
     

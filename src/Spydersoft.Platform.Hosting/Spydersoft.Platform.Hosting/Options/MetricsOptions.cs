@@ -18,7 +18,7 @@ public class MetricsOptions
 
     /// <summary>
     /// Gets or sets the metrics exporter type.
-    /// Valid values are "console" (default), "prometheus", or "otlp".
+    /// Valid values are "console" (default), "prometheus", "otlp", or "none".
     /// </summary>
     public string Type { get; set; } = "console";
 

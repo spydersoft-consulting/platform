@@ -13,6 +13,8 @@ using Serilog.Sinks.SystemConsole.Themes;
 using Spydersoft.Platform.Exceptions;
 using Spydersoft.Platform.Hosting.Options;
 using Spydersoft.Platform.Hosting.Telemetry;
+using Spydersoft.Platform.Telemetry;
+using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Reflection;
 
@@ -63,8 +65,26 @@ public static class TelemetryExtensions
 
         if (!telemetryOptions.Enabled)
         {
+            // Register NullTelemetryClient when telemetry is disabled
+            appBuilder.Services.AddSingleton<ITelemetryClient>(NullTelemetryClient.Instance);
             return appBuilder;
         }
+
+        var version = startupAssembly.GetName().Version?.ToString() ?? "unknown";
+
+        // Register Meter as a singleton
+        appBuilder.Services.AddSingleton(sp => new Meter(telemetryOptions.MeterName, version));
+
+        // Register ActivitySource as a singleton
+        appBuilder.Services.AddSingleton(sp => new ActivitySource(telemetryOptions.ActivitySourceName, version));
+
+        // Register ITelemetryClient using MeterTelemetryClient
+        appBuilder.Services.AddSingleton<ITelemetryClient>(sp =>
+        {
+            var meter = sp.GetRequiredService<Meter>();
+            var activitySource = sp.GetRequiredService<ActivitySource>();
+            return new MeterTelemetryClient(meter, activitySource);
+        });
 
         // Use IConfiguration binding for AspNetCore instrumentation options.
         appBuilder.Services.Configure<AspNetCoreTraceInstrumentationOptions>(appBuilder.Configuration.GetSection(telemetryOptions.AspNetCoreInstrumentationSection));

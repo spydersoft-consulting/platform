@@ -244,8 +244,8 @@ public static class TelemetryExtensions
 
     private static void SetOltpOptions(ConfigurationManager configuration, OtlpExporterOptions otlpOptions, OtlpOptions options)
     {
-        var endpoint = configuration.GetValue<string>("OTEL:Exporter:Otlp:Endpoint");
-        var protocol = configuration.GetValue<string>("OTEL:Exporter:Otlp:Protocol") ?? "grpc";
+        var endpoint = configuration.GetValue<string>("OTEL_EXPORTER_OTLP_ENDPOINT");
+        var protocol = configuration.GetValue<string>("OTEL_EXPORTER_OTLP_PROTOCOL") ?? "grpc";
 
         if (string.IsNullOrWhiteSpace(endpoint))
         {

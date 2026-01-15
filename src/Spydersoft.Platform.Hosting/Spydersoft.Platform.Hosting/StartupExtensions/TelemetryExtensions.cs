@@ -13,6 +13,8 @@ using Serilog.Sinks.SystemConsole.Themes;
 using Spydersoft.Platform.Exceptions;
 using Spydersoft.Platform.Hosting.Options;
 using Spydersoft.Platform.Hosting.Telemetry;
+using Spydersoft.Platform.Telemetry;
+using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Reflection;
 
@@ -63,8 +65,26 @@ public static class TelemetryExtensions
 
         if (!telemetryOptions.Enabled)
         {
+            // Register NullTelemetryClient when telemetry is disabled
+            appBuilder.Services.AddSingleton<ITelemetryClient>(NullTelemetryClient.Instance);
             return appBuilder;
         }
+
+        var version = startupAssembly.GetName().Version?.ToString() ?? "unknown";
+
+        // Register Meter as a singleton
+        appBuilder.Services.AddSingleton(sp => new Meter(telemetryOptions.MeterName, version));
+
+        // Register ActivitySource as a singleton
+        appBuilder.Services.AddSingleton(sp => new ActivitySource(telemetryOptions.ActivitySourceName, version));
+
+        // Register ITelemetryClient using MeterTelemetryClient
+        appBuilder.Services.AddSingleton<ITelemetryClient>(sp =>
+        {
+            var meter = sp.GetRequiredService<Meter>();
+            var activitySource = sp.GetRequiredService<ActivitySource>();
+            return new MeterTelemetryClient(meter, activitySource);
+        });
 
         // Use IConfiguration binding for AspNetCore instrumentation options.
         appBuilder.Services.Configure<AspNetCoreTraceInstrumentationOptions>(appBuilder.Configuration.GetSection(telemetryOptions.AspNetCoreInstrumentationSection));
@@ -128,6 +148,10 @@ public static class TelemetryExtensions
                 builder.AddOtlpExporter(otlpOptions => SetOltpOptions(configuration, otlpOptions, options.Trace.Otlp));
                 break;
 
+            case "console":
+                builder.AddConsoleExporter();
+                break;
+            case "none":
             default:
                 builder.AddConsoleExporter();
                 break;
@@ -177,8 +201,11 @@ public static class TelemetryExtensions
             case "otlp":
                 builder.AddOtlpExporter(otlpOptions => SetOltpOptions(configuration, otlpOptions, options.Metrics.Otlp));
                 break;
-            default:
+            case "console":
                 builder.AddConsoleExporter();
+                break;
+            case "none":
+            default:
                 break;
         }
 
@@ -203,8 +230,11 @@ public static class TelemetryExtensions
                     SetOltpOptions(configuration,  otlpOptions, options.Log.Otlp);
                 });
                 break;
-            default:
+            case "console":
                 builder.AddConsoleExporter();
+                break;
+            case "none":
+            default:
                 break;
         }
 
@@ -214,8 +244,8 @@ public static class TelemetryExtensions
 
     private static void SetOltpOptions(ConfigurationManager configuration, OtlpExporterOptions otlpOptions, OtlpOptions options)
     {
-        var endpoint = configuration.GetValue<string>("OTEL:Exporter:Otlp:Endpoint");
-        var protocol = configuration.GetValue<string>("OTEL:Exporter:Otlp:Protocol") ?? "grpc";
+        var endpoint = configuration.GetValue<string>("OTEL_EXPORTER_OTLP_ENDPOINT");
+        var protocol = configuration.GetValue<string>("OTEL_EXPORTER_OTLP_PROTOCOL") ?? "grpc";
 
         if (string.IsNullOrWhiteSpace(endpoint))
         {

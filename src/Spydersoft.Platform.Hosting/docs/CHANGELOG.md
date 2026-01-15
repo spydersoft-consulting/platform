@@ -9,7 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Support for "none" as a valid telemetry exporter type for logs, metrics, and traces
+
 ### Changed
+
+- Updated `LogOptions`, `MetricsOptions`, and `TraceOptions` documentation to include "none" as a valid type
+- Modified telemetry configuration to properly handle "none" type without adding default exporters
+- Fixed default behavior in `TelemetryExtensions` to not add console exporters when type is "none"
+
+### Removed
+
+## [2.2.1] - 2026-01-12
+
+### Added
+
+- Support for OpenTelemetry environment variables (`OTEL:Exporter:Otlp:Endpoint` and `OTEL:Exporter:Otlp:Protocol`)
+
+### Changed
+
+- Updated OTLP configuration to prioritize environment variables over appsettings.json values
+- Environment variables now override configuration file settings for OTLP endpoint and protocol
 
 ### Removed
 

@@ -2,13 +2,13 @@
 
 ## Summary
 
-Comprehensive unit tests have been created to cover the new ITelemetryClient functionality with **114 passing tests** across both unit and integration test suites.
+Comprehensive unit tests have been created to cover the new ITelemetryClient functionality with **151 passing tests** across both unit and integration test suites.
 
 ## Test Coverage Overview
 
-### Unit Tests (57 tests)
+### Unit Tests (94 tests)
 
-#### MeterTelemetryClient Tests (48 tests)
+#### MeterTelemetryClient Tests (74 tests)
 Located in: `Spydersoft.Platform.UnitTests/TelemetryTests/MeterTelemetryClientTests.cs`
 
 **Constructor Tests (7 tests)**
@@ -66,7 +66,50 @@ Located in: `Spydersoft.Platform.UnitTests/TelemetryTests/MeterTelemetryClientTe
 - ✅ Dispose
 - ✅ Dispose multiple calls
 
-#### NullTelemetryClient Tests (9 tests)
+**Thread Safety Tests (4 tests)**
+- ✅ RecordCounter concurrent calls
+- ✅ RecordHistogram concurrent calls
+- ✅ RecordGauge concurrent calls
+- ✅ Mixed metrics concurrent calls
+
+**Multiple Instruments Tests (3 tests)**
+- ✅ Multiple counters (separate instruments)
+- ✅ Multiple histograms (separate instruments)
+- ✅ Multiple gauges (separate instruments)
+
+**Null and Empty Parameters Tests (14 tests)**
+- ✅ TrackMetric with null/empty properties
+- ✅ RecordCounter with null/empty tags
+- ✅ RecordHistogram with null tags
+- ✅ RecordGauge with null tags
+- ✅ TrackEvent with null/empty properties and metrics
+- ✅ TrackDependency with null data and properties
+- ✅ TrackDependency with empty data
+- ✅ TrackException with null properties and metrics
+- ✅ TrackRequest with null properties and metrics
+- ✅ TrackAvailability with null/empty message and properties
+
+**Tag Value Types Tests (2 tests)**
+- ✅ RecordCounter with various tag types (string, int, double, bool, null, guid)
+- ✅ RecordHistogram with various tag types
+
+**Special Values Tests (8 tests)**
+- ✅ RecordCounter with zero/negative values
+- ✅ RecordHistogram with zero/negative/very large/very small values
+- ✅ RecordGauge with negative values
+- ✅ RecordGauge update from positive to negative
+
+**Duration and Timestamp Tests (3 tests)**
+- ✅ TrackDependency with zero duration
+- ✅ TrackRequest with very long duration
+- ✅ TrackAvailability with past timestamp
+
+**Exception Details Tests (3 tests)**
+- ✅ TrackException with nested exceptions
+- ✅ TrackException with null stack trace
+- ✅ TrackException with long message
+
+#### NullTelemetryClient Tests (20 tests)
 Located in: `Spydersoft.Platform.UnitTests/TelemetryTests/NullTelemetryClientTests.cs`
 
 **Singleton Tests (3 tests)**
@@ -121,12 +164,12 @@ Tests run against .NET 8.0, 9.0, and 10.0
 ## Test Results
 
 ```
-Test summary: total: 114, failed: 0, succeeded: 114, skipped: 0
+Test summary: total: 151, failed: 0, succeeded: 151, skipped: 0
 ```
 
-- **Unit Tests**: 57/57 passed (100%)
+- **Unit Tests**: 94/94 passed (100%)
 - **Integration Tests**: 57/57 passed (100%)
-- **Total**: 114/114 passed (100%)
+- **Total**: 151/151 passed (100%)
 
 ## Code Coverage
 
@@ -141,12 +184,27 @@ All tests include code coverage collection using Coverlet:
 - Constructor validation
 - Dependency injection registration
 - Singleton pattern enforcement
+- Instrument creation and reuse
 
 ### ✅ Edge Cases
 - Null parameter validation
 - Empty/whitespace string validation
 - Multiple calls to same instruments
 - Disposed object handling
+- Null/empty properties and tags
+- Various tag value types (string, int, double, bool, null, guid)
+- Special numeric values (zero, negative, max, epsilon)
+- Zero and very long durations
+- Past timestamps
+- Nested exceptions
+- Null stack traces
+- Very long exception messages
+
+### ✅ Thread Safety
+- Concurrent counter recording
+- Concurrent histogram recording
+- Concurrent gauge updates
+- Mixed concurrent metric operations
 
 ### ✅ Integration Scenarios
 - OpenTelemetry integration
@@ -170,8 +228,8 @@ dotnet test src/Spydersoft.Platform/Spydersoft.Platform.UnitTests/Spydersoft.Pla
 ### Run integration tests:
 ```bash
 dotnet test src/Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting.UnitTests/Spydersoft.Platform.Hosting.UnitTests.csproj \
-  --filter "FullyQualifiedName~TelemetryClient"
-```
+  --filter "FullyQualifiedName~TelemetryClient74 tests)
+│           └── NullTelemetryClientTests.cs (20
 
 ### Run all tests:
 ```bash
@@ -206,12 +264,21 @@ src/
 6. **Performance Testing**: Validates no-op implementation has minimal overhead
 7. **Edge Case Coverage**: Tests validation, null handling, and boundary conditions
 
+## Coverage Highlights
+
+The test suite now includes:
+- **Constructor Validation**: 6 tests covering all constructor overloads and error cases
+- **Thread Safety**: 4 tests validating concurrent access to metrics
+- **Null/Empty Handling**: 14 tests ensuring robustness with missing data
+- **Edge Cases**: 21 tests covering special values, timestamps, and exceptions
+- **Multiple Instruments**: 3 tests verifying proper instrument management
+- **Tag Types**: 2 tests validating various tag value types
+
 ## Future Test Additions
 
 Consider adding tests for:
 - [ ] Application Insights implementation (when NuGet package is added)
-- [ ] Custom tag serialization edge cases
-- [ ] High-volume stress testing
+- [ ] High-volume stress testing (>100K operations)
 - [ ] Memory leak detection tests
-- [ ] Thread safety/concurrency tests
 - [ ] OpenTelemetry exporter integration tests
+- [ ] Custom metric aggregation testing

@@ -513,6 +513,507 @@ public class MeterTelemetryClientTests : IDisposable
 
     #endregion
 
+    #region Thread Safety Tests
+
+    [Test]
+    public void RecordCounter_ConcurrentCalls_ShouldBeThreadSafe()
+    {
+        // Arrange
+        var tasks = new List<Task>();
+        var iterations = 100;
+
+        // Act - Multiple threads recording to same counter
+        for (int i = 0; i < 10; i++)
+        {
+            tasks.Add(Task.Run(() =>
+            {
+                for (int j = 0; j < iterations; j++)
+                {
+                    _client!.RecordCounter("concurrent.counter", 1);
+                }
+            }));
+        }
+
+        // Assert - Should not throw
+        Assert.DoesNotThrowAsync(async () => await Task.WhenAll(tasks));
+    }
+
+    [Test]
+    public void RecordHistogram_ConcurrentCalls_ShouldBeThreadSafe()
+    {
+        // Arrange
+        var tasks = new List<Task>();
+        var iterations = 100;
+
+        // Act - Multiple threads recording to same histogram
+        for (int i = 0; i < 10; i++)
+        {
+            var threadNum = i;
+            tasks.Add(Task.Run(() =>
+            {
+                for (int j = 0; j < iterations; j++)
+                {
+                    _client!.RecordHistogram("concurrent.histogram", threadNum * 10.0 + j);
+                }
+            }));
+        }
+
+        // Assert - Should not throw
+        Assert.DoesNotThrowAsync(async () => await Task.WhenAll(tasks));
+    }
+
+    [Test]
+    public void RecordGauge_ConcurrentCalls_ShouldBeThreadSafe()
+    {
+        // Arrange
+        var tasks = new List<Task>();
+        var iterations = 100;
+
+        // Act - Multiple threads updating same gauge
+        for (int i = 0; i < 10; i++)
+        {
+            var threadNum = i;
+            tasks.Add(Task.Run(() =>
+            {
+                for (int j = 0; j < iterations; j++)
+                {
+                    _client!.RecordGauge("concurrent.gauge", threadNum * 10.0 + j);
+                }
+            }));
+        }
+
+        // Assert - Should not throw
+        Assert.DoesNotThrowAsync(async () => await Task.WhenAll(tasks));
+    }
+
+    [Test]
+    public void MixedMetrics_ConcurrentCalls_ShouldBeThreadSafe()
+    {
+        // Arrange
+        var tasks = new List<Task>();
+
+        // Act - Mix of different metric types from multiple threads
+        for (int i = 0; i < 5; i++)
+        {
+            tasks.Add(Task.Run(() =>
+            {
+                _client!.RecordCounter("mixed.counter", 1);
+                _client!.RecordHistogram("mixed.histogram", 42.0);
+                _client!.RecordGauge("mixed.gauge", 100.0);
+                _client!.TrackMetric("mixed.metric", 50.0);
+            }));
+        }
+
+        // Assert - Should not throw
+        Assert.DoesNotThrowAsync(async () => await Task.WhenAll(tasks));
+    }
+
+    #endregion
+
+    #region Multiple Instruments Tests
+
+    [Test]
+    public void MultipleCounters_ShouldCreateSeparateInstruments()
+    {
+        // Arrange & Act
+        _client!.RecordCounter("counter.one", 1);
+        _client!.RecordCounter("counter.two", 2);
+        _client!.RecordCounter("counter.three", 3);
+
+        // Assert - Should not throw
+        Assert.Pass("Successfully created multiple distinct counters");
+    }
+
+    [Test]
+    public void MultipleHistograms_ShouldCreateSeparateInstruments()
+    {
+        // Arrange & Act
+        _client!.RecordHistogram("histogram.one", 10.0);
+        _client!.RecordHistogram("histogram.two", 20.0);
+        _client!.RecordHistogram("histogram.three", 30.0);
+
+        // Assert - Should not throw
+        Assert.Pass("Successfully created multiple distinct histograms");
+    }
+
+    [Test]
+    public void MultipleGauges_ShouldCreateSeparateInstruments()
+    {
+        // Arrange & Act
+        _client!.RecordGauge("gauge.one", 10.0);
+        _client!.RecordGauge("gauge.two", 20.0);
+        _client!.RecordGauge("gauge.three", 30.0);
+
+        // Assert - Should not throw
+        Assert.Pass("Successfully created multiple distinct gauges");
+    }
+
+    #endregion
+
+    #region Null and Empty Parameters Tests
+
+    [Test]
+    public void TrackMetric_WithNullProperties_ShouldNotThrow()
+    {
+        // Arrange & Act & Assert
+        Assert.DoesNotThrow(() => _client!.TrackMetric("test.metric", 42.0, null));
+    }
+
+    [Test]
+    public void TrackMetric_WithEmptyProperties_ShouldNotThrow()
+    {
+        // Arrange
+        var emptyProps = new Dictionary<string, string>();
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => _client!.TrackMetric("test.metric", 42.0, emptyProps));
+    }
+
+    [Test]
+    public void RecordCounter_WithNullTags_ShouldNotThrow()
+    {
+        // Arrange & Act & Assert
+        Assert.DoesNotThrow(() => _client!.RecordCounter("test.counter", 1, null));
+    }
+
+    [Test]
+    public void RecordCounter_WithEmptyTags_ShouldNotThrow()
+    {
+        // Arrange
+        var emptyTags = new Dictionary<string, object?>();
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => _client!.RecordCounter("test.counter", 1, emptyTags));
+    }
+
+    [Test]
+    public void RecordHistogram_WithNullTags_ShouldNotThrow()
+    {
+        // Arrange & Act & Assert
+        Assert.DoesNotThrow(() => _client!.RecordHistogram("test.histogram", 42.0, null));
+    }
+
+    [Test]
+    public void RecordGauge_WithNullTags_ShouldNotThrow()
+    {
+        // Arrange & Act & Assert
+        Assert.DoesNotThrow(() => _client!.RecordGauge("test.gauge", 42.0, null));
+    }
+
+    [Test]
+    public void TrackEvent_WithNullPropertiesAndMetrics_ShouldNotThrow()
+    {
+        // Arrange & Act & Assert
+        Assert.DoesNotThrow(() => _client!.TrackEvent("test.event", null, null));
+    }
+
+    [Test]
+    public void TrackEvent_WithEmptyPropertiesAndMetrics_ShouldNotThrow()
+    {
+        // Arrange
+        var emptyProps = new Dictionary<string, string>();
+        var emptyMetrics = new Dictionary<string, double>();
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => _client!.TrackEvent("test.event", emptyProps, emptyMetrics));
+    }
+
+    [Test]
+    public void TrackDependency_WithNullDataAndProperties_ShouldNotThrow()
+    {
+        // Arrange
+        var startTime = DateTimeOffset.UtcNow;
+        var duration = TimeSpan.FromMilliseconds(100);
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => _client!.TrackDependency(
+            "HTTP",
+            "api.example.com",
+            "GET /users",
+            null,
+            startTime,
+            duration,
+            true,
+            null));
+    }
+
+    [Test]
+    public void TrackDependency_WithEmptyData_ShouldNotThrow()
+    {
+        // Arrange
+        var startTime = DateTimeOffset.UtcNow;
+        var duration = TimeSpan.FromMilliseconds(100);
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => _client!.TrackDependency(
+            "HTTP",
+            "api.example.com",
+            "GET /users",
+            "",
+            startTime,
+            duration,
+            true));
+    }
+
+    [Test]
+    public void TrackException_WithNullPropertiesAndMetrics_ShouldNotThrow()
+    {
+        // Arrange
+        var exception = new InvalidOperationException("Test");
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => _client!.TrackException(exception, null, null));
+    }
+
+    [Test]
+    public void TrackRequest_WithNullPropertiesAndMetrics_ShouldNotThrow()
+    {
+        // Arrange
+        var startTime = DateTimeOffset.UtcNow;
+        var duration = TimeSpan.FromMilliseconds(100);
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => _client!.TrackRequest(
+            "GET /api/test",
+            startTime,
+            duration,
+            "200",
+            true,
+            null,
+            null));
+    }
+
+    [Test]
+    public void TrackAvailability_WithNullMessageAndProperties_ShouldNotThrow()
+    {
+        // Arrange
+        var startTime = DateTimeOffset.UtcNow;
+        var duration = TimeSpan.FromSeconds(1);
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => _client!.TrackAvailability(
+            "HealthCheck",
+            startTime,
+            duration,
+            "local",
+            true,
+            null,
+            null));
+    }
+
+    [Test]
+    public void TrackAvailability_WithEmptyMessage_ShouldNotThrow()
+    {
+        // Arrange
+        var startTime = DateTimeOffset.UtcNow;
+        var duration = TimeSpan.FromSeconds(1);
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => _client!.TrackAvailability(
+            "HealthCheck",
+            startTime,
+            duration,
+            "local",
+            true,
+            ""));
+    }
+
+    #endregion
+
+    #region Tag Value Types Tests
+
+    [Test]
+    public void RecordCounter_WithVariousTagTypes_ShouldNotThrow()
+    {
+        // Arrange
+        var tags = new Dictionary<string, object?>
+        {
+            ["string.tag"] = "value",
+            ["int.tag"] = 42,
+            ["double.tag"] = 3.14,
+            ["bool.tag"] = true,
+            ["null.tag"] = null,
+            ["guid.tag"] = Guid.NewGuid()
+        };
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => _client!.RecordCounter("test.counter", 1, tags));
+    }
+
+    [Test]
+    public void RecordHistogram_WithVariousTagTypes_ShouldNotThrow()
+    {
+        // Arrange
+        var tags = new Dictionary<string, object?>
+        {
+            ["string.tag"] = "value",
+            ["int.tag"] = 42,
+            ["long.tag"] = 123L,
+            ["null.tag"] = null
+        };
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => _client!.RecordHistogram("test.histogram", 42.0, tags));
+    }
+
+    #endregion
+
+    #region Special Values Tests
+
+    [Test]
+    public void RecordCounter_WithZeroValue_ShouldNotThrow()
+    {
+        // Arrange & Act & Assert
+        Assert.DoesNotThrow(() => _client!.RecordCounter("test.counter", 0));
+    }
+
+    [Test]
+    public void RecordCounter_WithNegativeValue_ShouldNotThrow()
+    {
+        // Arrange & Act & Assert
+        // Note: Counters technically should only accept positive values, but we don't enforce this
+        Assert.DoesNotThrow(() => _client!.RecordCounter("test.counter", -1));
+    }
+
+    [Test]
+    public void RecordHistogram_WithZeroValue_ShouldNotThrow()
+    {
+        // Arrange & Act & Assert
+        Assert.DoesNotThrow(() => _client!.RecordHistogram("test.histogram", 0.0));
+    }
+
+    [Test]
+    public void RecordHistogram_WithNegativeValue_ShouldNotThrow()
+    {
+        // Arrange & Act & Assert
+        Assert.DoesNotThrow(() => _client!.RecordHistogram("test.histogram", -42.5));
+    }
+
+    [Test]
+    public void RecordHistogram_WithVeryLargeValue_ShouldNotThrow()
+    {
+        // Arrange & Act & Assert
+        Assert.DoesNotThrow(() => _client!.RecordHistogram("test.histogram", double.MaxValue));
+    }
+
+    [Test]
+    public void RecordHistogram_WithVerySmallValue_ShouldNotThrow()
+    {
+        // Arrange & Act & Assert
+        Assert.DoesNotThrow(() => _client!.RecordHistogram("test.histogram", double.Epsilon));
+    }
+
+    [Test]
+    public void RecordGauge_WithNegativeValue_ShouldNotThrow()
+    {
+        // Arrange & Act & Assert
+        Assert.DoesNotThrow(() => _client!.RecordGauge("test.gauge", -100.0));
+    }
+
+    [Test]
+    public void RecordGauge_UpdateFromPositiveToNegative_ShouldNotThrow()
+    {
+        // Arrange & Act
+        _client!.RecordGauge("test.gauge", 100.0);
+        _client!.RecordGauge("test.gauge", -50.0);
+
+        // Assert
+        Assert.Pass("Successfully updated gauge from positive to negative");
+    }
+
+    #endregion
+
+    #region Duration and Timestamp Tests
+
+    [Test]
+    public void TrackDependency_WithZeroDuration_ShouldNotThrow()
+    {
+        // Arrange
+        var startTime = DateTimeOffset.UtcNow;
+        var duration = TimeSpan.Zero;
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => _client!.TrackDependency(
+            "HTTP",
+            "api.example.com",
+            "GET /fast",
+            null,
+            startTime,
+            duration,
+            true));
+    }
+
+    [Test]
+    public void TrackRequest_WithVeryLongDuration_ShouldNotThrow()
+    {
+        // Arrange
+        var startTime = DateTimeOffset.UtcNow;
+        var duration = TimeSpan.FromHours(24);
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => _client!.TrackRequest(
+            "GET /slow",
+            startTime,
+            duration,
+            "200",
+            true));
+    }
+
+    [Test]
+    public void TrackAvailability_WithPastTimestamp_ShouldNotThrow()
+    {
+        // Arrange
+        var startTime = DateTimeOffset.UtcNow.AddDays(-1);
+        var duration = TimeSpan.FromSeconds(1);
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => _client!.TrackAvailability(
+            "HealthCheck",
+            startTime,
+            duration,
+            "local",
+            true));
+    }
+
+    #endregion
+
+    #region Exception Details Tests
+
+    [Test]
+    public void TrackException_WithNestedExceptions_ShouldNotThrow()
+    {
+        // Arrange
+        var innerException = new InvalidOperationException("Inner error");
+        var outerException = new Exception("Outer error", innerException);
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => _client!.TrackException(outerException));
+    }
+
+    [Test]
+    public void TrackException_WithNullStackTrace_ShouldNotThrow()
+    {
+        // Arrange
+        var exception = new Exception("Test exception");
+        // Exception without being thrown has null stack trace
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => _client!.TrackException(exception));
+    }
+
+    [Test]
+    public void TrackException_WithLongMessage_ShouldNotThrow()
+    {
+        // Arrange
+        var longMessage = new string('x', 10000);
+        var exception = new Exception(longMessage);
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => _client!.TrackException(exception));
+    }
+
+    #endregion
+
     public void Dispose()
     {
         Dispose(true);

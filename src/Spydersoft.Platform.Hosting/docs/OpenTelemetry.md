@@ -65,10 +65,11 @@ Configuration is controlled by configuration entries in `appsettings.json` or en
 
 The following environment variables are supported and will override corresponding appsettings.json values when set:
 
-- `OTEL:Exporter:Otlp:Endpoint` - Overrides the OTLP endpoint for all telemetry types (logs, metrics, traces)
-- `OTEL:Exporter:Otlp:Protocol` - Overrides the OTLP protocol (`grpc` or `http`)
+- `OTEL_EXPORTER_OTLP_ENDPOINT` - Overrides the OTLP endpoint for all telemetry types (logs, metrics, traces)
+- `OTEL_EXPORTER_OTLP_PROTOCOL` - Overrides the OTLP protocol (`grpc`, `http`, or `http/protobuf`)
+- `OTEL_EXPORTER_OTLP_HEADERS` - Overrides the OTLP headers for authentication and metadata (format: `key1=value1,key2=value2`)
 
-These environment variables take precedence over the configuration file settings, allowing for easier deployment and container configuration.
+These environment variables take precedence over the configuration file settings, allowing for easier deployment and container configuration. This is particularly useful for managing sensitive authentication tokens in containerized environments.
 
 ```json
 "Logging": {
@@ -159,11 +160,11 @@ These environment variables take precedence over the configuration file settings
 
 #### Otlp Options
 
-| Setting  | Description                                        | Possible Values            |
-| -------- | -------------------------------------------------- | -------------------------- |
-| Endpoint | Endpoint URL for Otlp logging                      |                            |
-| Headers  | Dictionary of headers for authentication/metadata  | Key-value pairs            |
-| Protocol | Communication Protocol to use                      | `grpc` (default) or `http` |
+| Setting  | Description                                        | Possible Values                              |
+| -------- | -------------------------------------------------- | -------------------------------------------- |
+| Endpoint | Endpoint URL for Otlp logging                      |                              |
+| Headers  | Dictionary of headers for authentication/metadata  | Key-value pairs (overridden by `OTEL_EXPORTER_OTLP_HEADERS` env var) |
+| Protocol | Communication Protocol to use                      | `grpc` (default), `http`, or `http/protobuf` |
 
 [1]: https://github.com/open-telemetry/opentelemetry-dotnet/blob/main/src/OpenTelemetry.Exporter.Zipkin/README.md "Zipkin Configuration"
 [2]: https://github.com/open-telemetry/opentelemetry-dotnet-contrib/tree/main/src/OpenTelemetry.Instrumentation.AspNetCore "AspNetCoreTraceOptions"

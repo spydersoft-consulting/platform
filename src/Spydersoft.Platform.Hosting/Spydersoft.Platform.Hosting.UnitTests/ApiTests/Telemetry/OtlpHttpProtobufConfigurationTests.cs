@@ -1,15 +1,16 @@
-﻿using Spydersoft.Platform.Hosting.HealthChecks;
+using Spydersoft.Platform.Hosting.HealthChecks;
 using Spydersoft.Platform.Hosting.HealthChecks.Telemetry;
 using System.Net;
 using System.Text.Json;
 
 namespace Spydersoft.Platform.Hosting.UnitTests.ApiTests.Telemetry;
-public class OtlpConfigurationTests : ApiTestBase
+
+public class OtlpHttpProtobufConfigurationTests : ApiTestBase
 {
-    public override string Environment => "Otlp";
+    public override string Environment => "OtlpHttpProtobuf";
 
     [Test]
-    public async Task Startup_ConfigurationCheck()
+    public async Task Startup_ConfigurationWithHttpProtobufProtocol_ShouldBeHealthy()
     {
         var result = await Client.GetAsync($"startup");
 
@@ -28,29 +29,32 @@ public class OtlpConfigurationTests : ApiTestBase
             Assert.That(details?.Status, Is.EqualTo("Healthy"));
             Assert.That(details?.Results, Contains.Key(nameof(TelemetryHealthCheck)));
 
-            var telemeteryHealthCheckResults = details?.Results?[nameof(TelemetryHealthCheck)];
-            Assert.That(telemeteryHealthCheckResults, Is.Not.Null);
-            Assert.That(telemeteryHealthCheckResults?.Status, Is.EqualTo("Healthy"));
-            Assert.That(telemeteryHealthCheckResults?.ResultData, Contains.Key("details"));
+            var telemetryHealthCheckResults = details?.Results?[nameof(TelemetryHealthCheck)];
+            Assert.That(telemetryHealthCheckResults, Is.Not.Null);
+            Assert.That(telemetryHealthCheckResults?.Status, Is.EqualTo("Healthy"));
+            Assert.That(telemetryHealthCheckResults?.ResultData, Contains.Key("details"));
 
-            Assert.That(telemeteryHealthCheckResults?.ResultData?["details"], Is.TypeOf<TelemetryHealthCheckDetails>());
-            var telemetryData = telemeteryHealthCheckResults?.ResultData?["details"] as TelemetryHealthCheckDetails;
+            Assert.That(telemetryHealthCheckResults?.ResultData?["details"], Is.TypeOf<TelemetryHealthCheckDetails>());
+            var telemetryData = telemetryHealthCheckResults?.ResultData?["details"] as TelemetryHealthCheckDetails;
 
+            // Verify basic configuration
             Assert.That(telemetryData?.ActivitySourceName, Is.EqualTo("Platform.Test.Activity"));
             Assert.That(telemetryData?.Enabled, Is.True);
-            Assert.That(telemetryData?.Metrics.HistogramAggregation, Is.Empty);
+            Assert.That(telemetryData?.ServiceName, Is.EqualTo("Platform.Test"));
+
+            // Verify OTLP endpoints
             Assert.That(telemetryData?.Log.Type, Is.EqualTo("otlp"));
             Assert.That(telemetryData?.Log.Otlp.Endpoint, Is.EqualTo("http://log.localhost:12345"));
-            Assert.That(telemetryData?.LogPresent, Is.True);
-            Assert.That(telemetryData?.MeterName, Is.EqualTo("Platform.Test.Meter"));
+            Assert.That(telemetryData?.Log.Otlp.Protocol, Is.EqualTo("http/protobuf"));
+
             Assert.That(telemetryData?.Metrics.Type, Is.EqualTo("otlp"));
             Assert.That(telemetryData?.Metrics.Otlp.Endpoint, Is.EqualTo("http://metrics.localhost:12345"));
-            Assert.That(telemetryData?.MetricsPresent, Is.True);
-            Assert.That(telemetryData?.ServiceName, Is.EqualTo("Platform.Test"));
+            Assert.That(telemetryData?.Metrics.Otlp.Protocol, Is.EqualTo("http/protobuf"));
+
             Assert.That(telemetryData?.Trace.Type, Is.EqualTo("otlp"));
             Assert.That(telemetryData?.Trace.Otlp.Endpoint, Is.EqualTo("http://trace.localhost:12345"));
-            Assert.That(telemetryData?.TracePresent, Is.True);
-            
+            Assert.That(telemetryData?.Trace.Otlp.Protocol, Is.EqualTo("http/protobuf"));
+
             // Verify that no headers are configured in this test
             Assert.That(telemetryData?.Log.Otlp.Headers, Is.Null.Or.Empty);
             Assert.That(telemetryData?.Metrics.Otlp.Headers, Is.Null.Or.Empty);

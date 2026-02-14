@@ -10,12 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Support for "none" as a valid telemetry exporter type for logs, metrics, and traces
+- Support for `OTEL_EXPORTER_OTLP_HEADERS` environment variable for OTLP authentication headers
+- Support for `http/protobuf` protocol in OTLP exporter configuration
 
 ### Changed
 
 - Updated `LogOptions`, `MetricsOptions`, and `TraceOptions` documentation to include "none" as a valid type
 - Modified telemetry configuration to properly handle "none" type without adding default exporters
 - Fixed default behavior in `TelemetryExtensions` to not add console exporters when type is "none"
+- OTLP headers now prioritize `OTEL_EXPORTER_OTLP_HEADERS` environment variable over configuration file values
+- OTLP protocol configuration now supports both `http` and `http/protobuf` values (both map to HttpProtobuf)
 
 ### Removed
 

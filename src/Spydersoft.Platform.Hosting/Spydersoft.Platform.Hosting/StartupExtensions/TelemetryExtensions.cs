@@ -142,6 +142,7 @@ public static class TelemetryExtensions
                 builder.AddConsoleExporter();
                 break;
             case "none":
+                break;
             default:
                 builder.AddConsoleExporter();
                 break;

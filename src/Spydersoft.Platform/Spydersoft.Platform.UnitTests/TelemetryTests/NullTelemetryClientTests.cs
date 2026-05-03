@@ -132,13 +132,7 @@ public class NullTelemetryClientTests
 
         // Act & Assert
         Assert.DoesNotThrow(() => _client.TrackDependency(
-            "HTTP",
-            "api.example.com",
-            "GET /users",
-            null,
-            startTime,
-            duration,
-            true));
+            new DependencyTelemetry("HTTP", "api.example.com", "GET /users", null, startTime, duration, true)));
     }
 
     #endregion

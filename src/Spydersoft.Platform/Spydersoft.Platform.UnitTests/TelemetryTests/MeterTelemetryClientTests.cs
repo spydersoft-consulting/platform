@@ -248,13 +248,7 @@ public class MeterTelemetryClientTests : IDisposable
 
         // Act & Assert
         Assert.DoesNotThrow(() => _client!.TrackDependency(
-            "HTTP",
-            "api.example.com",
-            "GET /users",
-            null,
-            startTime,
-            duration,
-            true));
+            new DependencyTelemetry("HTTP", "api.example.com", "GET /users", null, startTime, duration, true)));
     }
 
     [Test]
@@ -270,14 +264,7 @@ public class MeterTelemetryClientTests : IDisposable
 
         // Act & Assert
         Assert.DoesNotThrow(() => _client!.TrackDependency(
-            "SQL",
-            "database-server",
-            "SELECT * FROM Users",
-            "UserId = 123",
-            startTime,
-            duration,
-            true,
-            properties));
+            new DependencyTelemetry("SQL", "database-server", "SELECT * FROM Users", "UserId = 123", startTime, duration, true, properties)));
     }
 
     [Test]
@@ -289,13 +276,7 @@ public class MeterTelemetryClientTests : IDisposable
 
         // Act & Assert
         Assert.DoesNotThrow(() => _client!.TrackDependency(
-            "HTTP",
-            "api.example.com",
-            "POST /orders",
-            null,
-            startTime,
-            duration,
-            false));
+            new DependencyTelemetry("HTTP", "api.example.com", "POST /orders", null, startTime, duration, false)));
     }
 
     #endregion
@@ -727,14 +708,7 @@ public class MeterTelemetryClientTests : IDisposable
 
         // Act & Assert
         Assert.DoesNotThrow(() => _client!.TrackDependency(
-            "HTTP",
-            "api.example.com",
-            "GET /users",
-            null,
-            startTime,
-            duration,
-            true,
-            null));
+            new DependencyTelemetry("HTTP", "api.example.com", "GET /users", null, startTime, duration, true, null)));
     }
 
     [Test]
@@ -746,13 +720,7 @@ public class MeterTelemetryClientTests : IDisposable
 
         // Act & Assert
         Assert.DoesNotThrow(() => _client!.TrackDependency(
-            "HTTP",
-            "api.example.com",
-            "GET /users",
-            "",
-            startTime,
-            duration,
-            true));
+            new DependencyTelemetry("HTTP", "api.example.com", "GET /users", "", startTime, duration, true)));
     }
 
     [Test]
@@ -934,13 +902,7 @@ public class MeterTelemetryClientTests : IDisposable
 
         // Act & Assert
         Assert.DoesNotThrow(() => _client!.TrackDependency(
-            "HTTP",
-            "api.example.com",
-            "GET /fast",
-            null,
-            startTime,
-            duration,
-            true));
+            new DependencyTelemetry("HTTP", "api.example.com", "GET /fast", null, startTime, duration, true)));
     }
 
     [Test]

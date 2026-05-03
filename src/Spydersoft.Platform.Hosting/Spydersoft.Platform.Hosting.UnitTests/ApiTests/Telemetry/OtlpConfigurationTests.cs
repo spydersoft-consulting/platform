@@ -38,7 +38,7 @@ public class OtlpConfigurationTests : ApiTestBase
 
             Assert.That(telemetryData?.ActivitySourceName, Is.EqualTo("Platform.Test.Activity"));
             Assert.That(telemetryData?.Enabled, Is.True);
-            Assert.That(telemetryData?.Metrics.HistogramAggregation, Is.Empty);
+            Assert.That(telemetryData?.Metrics.HistogramAggregation, Is.EqualTo("exponential"));
             Assert.That(telemetryData?.Log.Type, Is.EqualTo("otlp"));
             Assert.That(telemetryData?.Log.Otlp.Endpoint, Is.EqualTo("http://log.localhost:12345"));
             Assert.That(telemetryData?.LogPresent, Is.True);

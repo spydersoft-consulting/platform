@@ -117,7 +117,7 @@ public class DefaultConfigurationTests : ApiTestBase
 
             Assert.That(telemetryData?.ActivitySourceName, Is.EqualTo("Spydersoft.Otel.Activity"));
             Assert.That(telemetryData?.Enabled, Is.True);
-            Assert.That(telemetryData?.Metrics.HistogramAggregation, Is.Empty);
+            Assert.That(telemetryData?.Metrics.HistogramAggregation, Is.EqualTo("exponential"));
             Assert.That(telemetryData?.Log.Type, Is.EqualTo("console"));
             Assert.That(telemetryData?.Log.Otlp.Endpoint, Is.Null);
             Assert.That(telemetryData?.LogPresent, Is.True);

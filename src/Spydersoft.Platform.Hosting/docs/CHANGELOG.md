@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `AddSpydersoftResilience` extension method for applying a standard HTTP resilience pipeline (retry, circuit breaker, timeout) to all HTTP clients via `Microsoft.Extensions.Http.Resilience`
 - Support for "none" as a valid telemetry exporter type for logs, metrics, and traces
 - Support for `OTEL_EXPORTER_OTLP_HEADERS` environment variable for OTLP authentication headers
 - Support for `http/protobuf` protocol in OTLP exporter configuration

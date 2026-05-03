@@ -1,6 +1,7 @@
 ﻿using System.Net;
 
 namespace Spydersoft.Platform.Hosting.UnitTests.ApiTests;
+
 public class DisabledConfigurationTests : ApiTestBase
 {
     public override string Environment => "Disabled";

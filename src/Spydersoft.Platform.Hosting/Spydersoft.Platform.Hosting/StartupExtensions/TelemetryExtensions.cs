@@ -217,7 +217,7 @@ public static class TelemetryExtensions
             case "otlp":
                 builder.AddOtlpExporter(otlpOptions =>
                 {
-                    SetOltpOptions(configuration,  otlpOptions, options.Log.Otlp);
+                    SetOltpOptions(configuration, otlpOptions, options.Log.Otlp);
                 });
                 break;
             case "console":
@@ -236,7 +236,7 @@ public static class TelemetryExtensions
     {
         var endpoint = configuration.GetValue<string>("OTEL_EXPORTER_OTLP_ENDPOINT");
         var protocol = configuration.GetValue<string>("OTEL_EXPORTER_OTLP_PROTOCOL") ?? "grpc";
-		var headers = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_HEADERS");
+        var headers = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_HEADERS");
 
         if (string.IsNullOrWhiteSpace(endpoint))
         {
@@ -255,14 +255,14 @@ public static class TelemetryExtensions
 
         otlpOptions.Endpoint = new Uri(endpoint);
 
-		if (!string.IsNullOrWhiteSpace(headers))
-		{
-			otlpOptions.Headers = headers;
-		}
-		else if (options.Headers.Count > 0)
-		{
-			otlpOptions.Headers = string.Join(",", options.Headers.Select(kvp => $"{kvp.Key}={kvp.Value}"));
-		}
+        if (!string.IsNullOrWhiteSpace(headers))
+        {
+            otlpOptions.Headers = headers;
+        }
+        else if (options.Headers.Count > 0)
+        {
+            otlpOptions.Headers = string.Join(",", options.Headers.Select(kvp => $"{kvp.Key}={kvp.Value}"));
+        }
 
         if (protocol is "http/protobuf" or "http")
         {

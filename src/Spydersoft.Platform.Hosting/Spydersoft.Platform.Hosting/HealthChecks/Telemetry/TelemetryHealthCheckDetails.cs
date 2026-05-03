@@ -15,7 +15,7 @@ public class TelemetryHealthCheckDetails
     /// The activity source name.
     /// </value>
     public string ActivitySourceName { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// Gets or sets a value indicating whether telemetry is enabled.
     /// </summary>
@@ -23,7 +23,7 @@ public class TelemetryHealthCheckDetails
     /// <c>true</c> if telemetry is enabled; otherwise, <c>false</c>.
     /// </value>
     public bool Enabled { get; set; } = false;
-    
+
     /// <summary>
     /// Gets or sets the log configuration options.
     /// </summary>
@@ -31,7 +31,7 @@ public class TelemetryHealthCheckDetails
     /// The log options.
     /// </value>
     public LogOptions Log { get; set; } = new LogOptions();
-    
+
     /// <summary>
     /// Gets or sets a value indicating whether the LoggerProvider is registered.
     /// </summary>
@@ -39,7 +39,7 @@ public class TelemetryHealthCheckDetails
     /// <c>true</c> if LoggerProvider is present; otherwise, <c>false</c>.
     /// </value>
     public bool LogPresent { get; set; } = false;
-    
+
     /// <summary>
     /// Gets or sets the meter name for metrics.
     /// </summary>
@@ -47,7 +47,7 @@ public class TelemetryHealthCheckDetails
     /// The meter name.
     /// </value>
     public string MeterName { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// Gets or sets the metrics configuration options.
     /// </summary>
@@ -55,7 +55,7 @@ public class TelemetryHealthCheckDetails
     /// The metrics options.
     /// </value>
     public MetricsOptions Metrics { get; set; } = new MetricsOptions();
-    
+
     /// <summary>
     /// Gets or sets a value indicating whether the MeterProvider is registered.
     /// </summary>
@@ -63,7 +63,7 @@ public class TelemetryHealthCheckDetails
     /// <c>true</c> if MeterProvider is present; otherwise, <c>false</c>.
     /// </value>
     public bool MetricsPresent { get; set; } = false;
-    
+
     /// <summary>
     /// Gets or sets the OpenTelemetry service name.
     /// </summary>

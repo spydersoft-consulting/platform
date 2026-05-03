@@ -66,7 +66,7 @@ public class MeterTelemetryClientTests : IDisposable
     public void Constructor_WithNullMeter_ShouldThrow()
     {
         // Arrange, Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new MeterTelemetryClient((Meter)null!));
+        Assert.Throws<ArgumentNullException>(() => new MeterTelemetryClient((Meter) null!));
     }
 
     [Test]

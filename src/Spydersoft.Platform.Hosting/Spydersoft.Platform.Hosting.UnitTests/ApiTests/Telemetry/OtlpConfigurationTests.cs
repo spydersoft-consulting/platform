@@ -4,6 +4,7 @@ using System.Net;
 using System.Text.Json;
 
 namespace Spydersoft.Platform.Hosting.UnitTests.ApiTests.Telemetry;
+
 public class OtlpConfigurationTests : ApiTestBase
 {
     public override string Environment => "Otlp";
@@ -50,7 +51,7 @@ public class OtlpConfigurationTests : ApiTestBase
             Assert.That(telemetryData?.Trace.Type, Is.EqualTo("otlp"));
             Assert.That(telemetryData?.Trace.Otlp.Endpoint, Is.EqualTo("http://trace.localhost:12345"));
             Assert.That(telemetryData?.TracePresent, Is.True);
-            
+
             // Verify that no headers are configured in this test
             Assert.That(telemetryData?.Log.Otlp.Headers, Is.Null.Or.Empty);
             Assert.That(telemetryData?.Metrics.Otlp.Headers, Is.Null.Or.Empty);

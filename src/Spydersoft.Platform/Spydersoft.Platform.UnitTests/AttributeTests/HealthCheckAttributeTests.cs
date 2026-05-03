@@ -22,6 +22,7 @@ public class HealthCheckAttributeTests
             Assert.That(attribute.Tags, Has.Exactly(1).Items.EqualTo("tag1"));
             Assert.That(attribute.Tags, Has.Exactly(1).Items.EqualTo("tag2"));
             Assert.That(attribute.Tags, Has.Exactly(1).Items.EqualTo("tag3"));
-        };
+        }
+        ;
     }
 }

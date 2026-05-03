@@ -1,4 +1,5 @@
 ﻿namespace Spydersoft.Platform.Hosting.UnitTests.HealthCheckDataPropertyConvertorTests;
+
 public class ComplexObject
 {
     public string Name { get; set; } = string.Empty;

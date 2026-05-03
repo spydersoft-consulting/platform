@@ -68,7 +68,7 @@ if (fusionCacheOptions.Enabled && fusionCacheOptions.DistributedCacheType == Cac
         options.CachePath = cacheFileName;
     });
     builder.AddSpydersoftFusionCache(config =>
-    { 
+    {
         config.CacheOptions.DisableTagging = true;
     }
     , builder =>

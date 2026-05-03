@@ -13,7 +13,7 @@ public class HealthCheckResponseResult
     /// The aggregated status across all health checks (e.g., "Healthy", "Degraded", "Unhealthy").
     /// </value>
     public string Status { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// Gets or sets the total duration for all health checks.
     /// </summary>
@@ -21,7 +21,7 @@ public class HealthCheckResponseResult
     /// A string representation of the total execution time.
     /// </value>
     public string TotalDuration { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// Gets or sets the individual health check results.
     /// </summary>

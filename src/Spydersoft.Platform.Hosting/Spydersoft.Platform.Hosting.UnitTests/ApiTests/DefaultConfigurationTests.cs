@@ -5,6 +5,7 @@ using System.Net;
 using System.Text.Json;
 
 namespace Spydersoft.Platform.Hosting.UnitTests.ApiTests;
+
 public class DefaultConfigurationTests : ApiTestBase
 {
     public override string Environment => "Production";

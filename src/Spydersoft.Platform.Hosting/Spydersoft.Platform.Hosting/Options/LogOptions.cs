@@ -13,7 +13,7 @@ public class LogOptions
     /// The exporter type. Values are "otlp", "console", or "none". Default is "console".
     /// </value>
     public string Type { get; set; } = "console";
-    
+
     /// <summary>
     /// Gets or sets the OTLP exporter configuration.
     /// Only used when <see cref="Type"/> is set to "otlp".

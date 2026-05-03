@@ -4,6 +4,7 @@ using System.Net;
 using System.Text.Json;
 
 namespace Spydersoft.Platform.Hosting.UnitTests.ApiTests.Telemetry;
+
 public class ZipPromConfigurationTests : ApiTestBase
 {
     public override string Environment => "ZipProm";

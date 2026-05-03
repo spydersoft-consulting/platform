@@ -3,6 +3,7 @@ using System.Net;
 using System.Text.Json;
 
 namespace Spydersoft.Platform.Hosting.UnitTests.ApiTests.Identity;
+
 public class IdentityConfigurationTests : ApiTestBase
 {
     public override string Environment => "Identity";

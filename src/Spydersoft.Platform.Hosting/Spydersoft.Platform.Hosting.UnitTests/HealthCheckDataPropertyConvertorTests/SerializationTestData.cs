@@ -119,8 +119,7 @@ public static class SerializationTestData
 
     public static IEnumerable SerializationTestCases
     {
-        get
-        {
+        get {
             yield return new TestCaseData(Test1, Test1Json);
 
             yield return new TestCaseData(Test2, Test2Json);
@@ -131,8 +130,7 @@ public static class SerializationTestData
 
     public static IEnumerable DeserializaitonTestCases
     {
-        get
-        {
+        get {
             yield return new TestCaseData(Test1Json, Test1);
 
             yield return new TestCaseData(Test2Json, Test2);

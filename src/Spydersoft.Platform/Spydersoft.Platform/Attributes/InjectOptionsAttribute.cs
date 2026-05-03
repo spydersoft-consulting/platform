@@ -20,7 +20,7 @@ public class InjectOptionsAttribute : Attribute
         RawTags = tags;
         Tags = tags.Split(',', StringSplitOptions.RemoveEmptyEntries);
     }
-    
+
     /// <summary>
     /// Gets the configuration section name.
     /// </summary>

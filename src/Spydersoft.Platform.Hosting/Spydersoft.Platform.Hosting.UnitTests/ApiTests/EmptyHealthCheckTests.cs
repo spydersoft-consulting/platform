@@ -3,6 +3,7 @@ using System.Net;
 using System.Text.Json;
 
 namespace Spydersoft.Platform.Hosting.UnitTests.ApiTests;
+
 public class EmptyHealthCheckTests : ApiTestBase
 {
     public override string Environment => "Empty";

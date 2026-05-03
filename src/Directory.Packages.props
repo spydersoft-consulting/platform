@@ -34,6 +34,9 @@
 		<PackageVersion Include="ZiggyCreatures.FusionCache.OpenTelemetry" Version="2.6.0" />
 		<PackageVersion Include="ZiggyCreatures.FusionCache.Serialization.SystemTextJson" Version="2.6.0" />
 
+		<!-- Resilience -->
+		<PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.5.0" />
+
 		<!-- Third Party -->
 		<PackageVersion Include="NeoSmart.Caching.Sqlite.AspNetCore" Version="9.0.1" />
 

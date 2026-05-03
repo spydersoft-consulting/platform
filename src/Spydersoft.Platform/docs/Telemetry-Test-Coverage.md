@@ -233,7 +233,7 @@ dotnet test src/Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting.UnitTest
 
 ### Run all tests:
 ```bash
-dotnet test src/Spydersoft.Platform.sln --filter "FullyQualifiedName~Telemetry"
+dotnet test src/Spydersoft.Platform.slnx --filter "FullyQualifiedName~Telemetry"
 ```
 
 ## Test Organization

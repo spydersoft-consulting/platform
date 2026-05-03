@@ -115,19 +115,16 @@ These environment variables take precedence over the configuration file settings
         "Authorization": "Bearer token"
       }
     },
-    "Type": "console",
-    "Zipkin": {
-      // ZipkinExporterOptions
-    },
+    "Type": "console"
   },
 }
 ```
 
 | Setting                             | Description                                        | Possible Values                                     |
 | ----------------------------------- | -------------------------------------------------- | --------------------------------------------------- |
-| Logging:OpenTelemetry               | Configure OpenTelemetry Logging Options            | See [OpenTelemetry Logging Options][4]              |
-| Telemetry:ActivitySourceName        | The name for the [OpenTelemetry ActivitySource][3] |                                                     |
-| Telemetry:AspNetCoreInstrumentation | AspNetCoreTraceInstrumentationOptions              | See [AspNetCoreTraceOptions][2]                     |
+| Logging:OpenTelemetry               | Configure OpenTelemetry Logging Options            | See [OpenTelemetry Logging Options][3]              |
+| Telemetry:ActivitySourceName        | The name for the [OpenTelemetry ActivitySource][2] |                                                     |
+| Telemetry:AspNetCoreInstrumentation | AspNetCoreTraceInstrumentationOptions              | See [AspNetCoreTraceOptions][1]                     |
 | Telemetry:Enabled                   | Enable or disable OpenTelemetry                    | `true` (default), `false`                           |
 | Telemetry:Log                       | Log Configuration Section                          | See [Log Configuration](#log-configuration)         |
 | Telemetry:MeterName                 | The name for the OpenTelemetry Meter               |                                                     |
@@ -152,11 +149,10 @@ These environment variables take precedence over the configuration file settings
 
 ### Trace Configuration
 
-| Setting | Description            | Possible Values                               |
-| ------- | ---------------------- | --------------------------------------------- |
-| Otlp    | Otlp Options Section   | See [Otlp Options](#otlp-options)             |
-| Type    | Exporter Type          | `console` (default), `zipkin`, `otlp`, `none` |
-| Zipkin  | Zipkin Options Section | See [Zipkin Configuration][1]                 |
+| Setting | Description          | Possible Values                           |
+| ------- | -------------------- | ----------------------------------------- |
+| Otlp    | Otlp Options Section | See [Otlp Options](#otlp-options)         |
+| Type    | Exporter Type        | `console` (default), `otlp`, `none`       |
 
 #### Otlp Options
 
@@ -166,7 +162,6 @@ These environment variables take precedence over the configuration file settings
 | Headers  | Dictionary of headers for authentication/metadata  | Key-value pairs (overridden by `OTEL_EXPORTER_OTLP_HEADERS` env var) |
 | Protocol | Communication Protocol to use                      | `grpc` (default), `http`, or `http/protobuf` |
 
-[1]: https://github.com/open-telemetry/opentelemetry-dotnet/blob/main/src/OpenTelemetry.Exporter.Zipkin/README.md "Zipkin Configuration"
-[2]: https://github.com/open-telemetry/opentelemetry-dotnet-contrib/tree/main/src/OpenTelemetry.Instrumentation.AspNetCore "AspNetCoreTraceOptions"
-[3]: https://opentelemetry.io/docs/languages/net/instrumentation/#setting-up-an-activitysource "OpenTelemetry Activity Source"
-[4]: https://github.com/open-telemetry/opentelemetry-dotnet/blob/main/src/OpenTelemetry/Logs/ILogger/OpenTelemetryLoggerOptions.cs "OpenTelemetry Logging Options"
+[1]: https://github.com/open-telemetry/opentelemetry-dotnet-contrib/tree/main/src/OpenTelemetry.Instrumentation.AspNetCore "AspNetCoreTraceOptions"
+[2]: https://opentelemetry.io/docs/languages/net/instrumentation/#setting-up-an-activitysource "OpenTelemetry Activity Source"
+[3]: https://github.com/open-telemetry/opentelemetry-dotnet/blob/main/src/OpenTelemetry/Logs/ILogger/OpenTelemetryLoggerOptions.cs "OpenTelemetry Logging Options"

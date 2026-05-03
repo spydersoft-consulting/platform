@@ -134,16 +134,6 @@ public static class TelemetryExtensions
 
         switch (options.Trace.Type)
         {
-            case "zipkin":
-                builder.AddZipkinExporter();
-
-                builder.ConfigureServices(services =>
-                {
-                    // Use IConfiguration binding for Zipkin exporter options.
-                    services.Configure<ZipkinExporterOptions>(configuration.GetSection(options.Trace.ZipkinConfigurationSection));
-                });
-                break;
-
             case "otlp":
                 builder.AddOtlpExporter(otlpOptions => SetOltpOptions(configuration, otlpOptions, options.Trace.Otlp));
                 break;
@@ -188,7 +178,7 @@ public static class TelemetryExtensions
                 });
                 break;
             default:
-                // Explicit bounds histogram is the default.
+                // Explicit bounds histogram - splits into .count/.sum/.bucket in Datadog's OTLP intake.
                 // No additional configuration necessary.
                 break;
         }

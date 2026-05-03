@@ -7,9 +7,10 @@ public class MetricsOptions
 {
     /// <summary>
     /// Gets or sets the histogram aggregation strategy.
-    /// Valid values are empty string (default explicit bounds) or "exponential" for exponential bucket histograms.
+    /// Valid values are "exponential" (default, maps to Datadog distribution) or empty string for explicit bucket histograms.
+    /// Explicit bucket histograms are split into .count/.sum/.bucket metrics by Datadog's OTLP intake and will not appear as distributions.
     /// </summary>
-    public string HistogramAggregation { get; set; } = string.Empty;
+    public string HistogramAggregation { get; set; } = "exponential";
 
     /// <summary>
     /// Gets or sets the OTLP configuration options for metrics export.

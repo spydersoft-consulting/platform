@@ -20,8 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed default behavior in `TelemetryExtensions` to not add console exporters when type is "none"
 - OTLP headers now prioritize `OTEL_EXPORTER_OTLP_HEADERS` environment variable over configuration file values
 - OTLP protocol configuration now supports both `http` and `http/protobuf` values (both map to HttpProtobuf)
+- Updated NuGet packages: OpenTelemetry packages to 1.15.x, FusionCache to 2.6.0, Microsoft.Extensions to 10.0.7, test packages to latest
 
 ### Removed
+
+- Removed `OpenTelemetry.Exporter.Zipkin` package and `"zipkin"` trace exporter type — the upstream Zipkin exporter has been deprecated by the OpenTelemetry project. Use `"otlp"` instead.
 
 ## [2.2.1] - 2026-01-12
 

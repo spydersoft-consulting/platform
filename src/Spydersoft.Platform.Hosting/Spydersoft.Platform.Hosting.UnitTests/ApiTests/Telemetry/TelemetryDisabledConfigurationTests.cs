@@ -41,7 +41,7 @@ public class TelemetryDisabledConfigurationTests : ApiTestBase
 
             // Verify telemetry is disabled
             Assert.That(telemetryData?.Enabled, Is.False);
-            
+
             // When disabled, the providers should not be present
             Assert.That(telemetryData?.TracePresent, Is.False);
             Assert.That(telemetryData?.MetricsPresent, Is.False);

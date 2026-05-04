@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 builder.Services.AddSingleton<ITestService, TestService>();
 
 bool includeTelemetryConfigFunctions = builder.Configuration.GetValue<bool>("IncludeTelemetryConfigFunctions", false);
@@ -68,7 +69,7 @@ if (fusionCacheOptions.Enabled && fusionCacheOptions.DistributedCacheType == Cac
         options.CachePath = cacheFileName;
     });
     builder.AddSpydersoftFusionCache(config =>
-    { 
+    {
         config.CacheOptions.DisableTagging = true;
     }
     , builder =>
@@ -90,6 +91,8 @@ AppHealthCheckOptions healthCheckOptions = builder.AddSpydersoftHealthChecks();
 
 builder.AddSpydersoftOptions(["root"]);
 builder.AddSpydersoftOptions(["nested"], "MySection");
+
+builder.AddSpydersoftResilience();
 
 bool authInstalled = builder.AddSpydersoftIdentity();
 

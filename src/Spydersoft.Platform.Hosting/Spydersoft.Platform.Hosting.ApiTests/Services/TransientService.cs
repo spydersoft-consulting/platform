@@ -4,7 +4,7 @@ namespace Spydersoft.Platform.Hosting.ApiTests.Services;
 
 public interface ITransientService
 {
-	Guid InstanceId { get; }
+    Guid InstanceId { get; }
 }
 
 [DependencyInjection(typeof(ITransientService), LifetimeOfService.Transient)]

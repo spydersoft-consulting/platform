@@ -11,7 +11,7 @@ public class MetricsOptionsTests
         using (Assert.EnterMultipleScope())
         {
             Assert.That(options.Type, Is.EqualTo("console"));
-            Assert.That(options.HistogramAggregation, Is.EqualTo(string.Empty));
+            Assert.That(options.HistogramAggregation, Is.EqualTo("exponential"));
             Assert.That(options.Otlp.Endpoint, Is.Null);
             Assert.That(options.Otlp.Protocol, Is.EqualTo("grpc"));
         }

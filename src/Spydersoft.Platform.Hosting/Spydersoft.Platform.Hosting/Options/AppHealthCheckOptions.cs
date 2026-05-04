@@ -56,7 +56,7 @@ public class AppHealthCheckOptions
     {
         return [.. ReadyTags.Split(',', StringSplitOptions.RemoveEmptyEntries)];
     }
-    
+
     /// <summary>
     /// Gets the live tags as a list.
     /// Splits the <see cref="LiveTags"/> by comma and removes empty entries.
@@ -66,7 +66,7 @@ public class AppHealthCheckOptions
     {
         return [.. LiveTags.Split(',', StringSplitOptions.RemoveEmptyEntries)];
     }
-    
+
     /// <summary>
     /// Gets the startup tags as a list.
     /// Splits the <see cref="StartupTags"/> by comma and removes empty entries.

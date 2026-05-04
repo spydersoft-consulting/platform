@@ -10,6 +10,7 @@ This library provides functionality for adding the following to your ASP.NET Cor
 - [OpenTelemetry Logging, Metrics, and Tracing](./OpenTelemetry.md)
 - [ASP.NET Health Checks](./HealthChecks.md)
 - [JWT Bearer Authentication & Authorization](./Identity.md)
+- [HTTP Client Resilience](./Resilience.md)
 
 ## Getting Started
 

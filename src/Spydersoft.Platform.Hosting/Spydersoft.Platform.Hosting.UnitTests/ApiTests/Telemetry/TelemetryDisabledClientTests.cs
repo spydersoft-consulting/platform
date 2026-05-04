@@ -89,13 +89,7 @@ public class TelemetryDisabledClientTests : ApiTestBase
 
         // Act & Assert
         Assert.DoesNotThrow(() => telemetryClient.TrackDependency(
-            "HTTP",
-            "api.example.com",
-            "GET /users",
-            null,
-            startTime,
-            duration,
-            true));
+            new DependencyTelemetry("HTTP", "api.example.com", "GET /users", null, startTime, duration, true)));
     }
 
     [Test]

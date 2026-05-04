@@ -8,12 +8,12 @@ namespace Spydersoft.Platform.Hosting.ApiTests.Controllers;
 public class ServiceController(IServiceConsumer serviceConsumer1, IServiceConsumer2 serviceConsumer2) : ControllerBase
 {
 
-	[HttpGet]
-	public IEnumerable<ServiceInfo> Get()
-	{
-		return new ServiceInfo[] {
-			serviceConsumer1.GetInfo(),
-			serviceConsumer2.GetInfo()
-		};
-	}
+    [HttpGet]
+    public IEnumerable<ServiceInfo> Get()
+    {
+        return new ServiceInfo[] {
+            serviceConsumer1.GetInfo(),
+            serviceConsumer2.GetInfo()
+        };
+    }
 }

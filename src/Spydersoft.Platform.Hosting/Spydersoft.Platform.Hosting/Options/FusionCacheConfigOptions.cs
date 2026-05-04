@@ -87,12 +87,12 @@ public enum CacheType
     /// No distributed cache. Only in-memory L1 caching is used.
     /// </summary>
     None,
-    
+
     /// <summary>
     /// In-memory cache only.
     /// </summary>
     Memory,
-    
+
     /// <summary>
     /// Redis-based distributed cache for L2 caching.
     /// </summary>
@@ -111,7 +111,7 @@ public sealed class RedisConfig
     /// The connection string for connecting to Redis. Default is empty.
     /// </value>
     public string ConnectionString { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// Gets or sets the Redis instance name.
     /// Used as a prefix for all cache keys to avoid collisions.

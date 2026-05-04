@@ -4,6 +4,7 @@ using System.Net;
 using System.Text.Json;
 
 namespace Spydersoft.Platform.Hosting.UnitTests.ApiTests.Telemetry;
+
 public class ZipPromConfigurationTests : ApiTestBase
 {
     public override string Environment => "ZipProm";
@@ -45,7 +46,7 @@ public class ZipPromConfigurationTests : ApiTestBase
             Assert.That(telemetryData?.Metrics.Type, Is.EqualTo("prometheus"));
             Assert.That(telemetryData?.MetricsPresent, Is.True);
             Assert.That(telemetryData?.ServiceName, Is.EqualTo("Platform.Test"));
-            Assert.That(telemetryData?.Trace.Type, Is.EqualTo("zipkin"));
+            Assert.That(telemetryData?.Trace.Type, Is.EqualTo("otlp"));
             Assert.That(telemetryData?.TracePresent, Is.True);
         }
     }

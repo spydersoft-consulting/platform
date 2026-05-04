@@ -63,23 +63,8 @@ public interface ITelemetryClient
     /// <summary>
     /// Tracks a dependency call (e.g., HTTP, database, queue).
     /// </summary>
-    /// <param name="dependencyTypeName">The type of dependency (e.g., "HTTP", "SQL", "Queue").</param>
-    /// <param name="target">The target of the dependency (e.g., server name, endpoint).</param>
-    /// <param name="dependencyName">The name of the dependency operation.</param>
-    /// <param name="data">Optional additional data about the dependency call.</param>
-    /// <param name="startTime">The start time of the dependency call.</param>
-    /// <param name="duration">The duration of the dependency call.</param>
-    /// <param name="success">Whether the dependency call was successful.</param>
-    /// <param name="properties">Optional properties to associate with the dependency.</param>
-    void TrackDependency(
-        string dependencyTypeName,
-        string target,
-        string dependencyName,
-        string? data,
-        DateTimeOffset startTime,
-        TimeSpan duration,
-        bool success,
-        IDictionary<string, string>? properties = null);
+    /// <param name="dependency">The dependency telemetry data.</param>
+    void TrackDependency(DependencyTelemetry dependency);
 
     #endregion
 

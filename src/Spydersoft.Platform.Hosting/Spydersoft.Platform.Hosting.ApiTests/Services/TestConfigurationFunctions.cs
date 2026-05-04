@@ -7,8 +7,7 @@ public class TestConfigurationFunctionTracker
     private static TestConfigurationFunctionTracker? _instance;
     public static TestConfigurationFunctionTracker Instance
     {
-        get
-        {
+        get {
             _instance ??= new TestConfigurationFunctionTracker();
             return _instance;
         }

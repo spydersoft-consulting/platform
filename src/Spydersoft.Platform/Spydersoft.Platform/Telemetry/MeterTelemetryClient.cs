@@ -105,33 +105,25 @@ public class MeterTelemetryClient : ITelemetryClient, IDisposable
     }
 
     /// <inheritdoc/>
-    public void TrackDependency(
-        string dependencyTypeName,
-        string target,
-        string dependencyName,
-        string? data,
-        DateTimeOffset startTime,
-        TimeSpan duration,
-        bool success,
-        IDictionary<string, string>? properties = null)
+    public void TrackDependency(DependencyTelemetry dependency)
     {
-        using var activity = _activitySource.StartActivity($"Dependency.{dependencyName}", ActivityKind.Client, default(ActivityContext), startTime: startTime.UtcDateTime);
+        using var activity = _activitySource.StartActivity($"Dependency.{dependency.DependencyName}", ActivityKind.Client, default(ActivityContext), startTime: dependency.StartTime.UtcDateTime);
         if (activity != null)
         {
-            activity.SetTag("dependency.type", dependencyTypeName);
-            activity.SetTag("dependency.target", target);
-            activity.SetTag("dependency.name", dependencyName);
-            activity.SetTag("dependency.success", success);
+            activity.SetTag("dependency.type", dependency.DependencyTypeName);
+            activity.SetTag("dependency.target", dependency.Target);
+            activity.SetTag("dependency.name", dependency.DependencyName);
+            activity.SetTag("dependency.success", dependency.Success);
 
-            if (!string.IsNullOrEmpty(data))
+            if (!string.IsNullOrEmpty(dependency.Data))
             {
-                activity.SetTag("dependency.data", data);
+                activity.SetTag("dependency.data", dependency.Data);
             }
 
-            AddActivityTags(activity, properties);
-            activity.SetEndTime(startTime.Add(duration).UtcDateTime);
+            AddActivityTags(activity, dependency.Properties);
+            activity.SetEndTime(dependency.StartTime.Add(dependency.Duration).UtcDateTime);
 
-            if (!success)
+            if (!dependency.Success)
             {
                 activity.SetStatus(ActivityStatusCode.Error);
             }

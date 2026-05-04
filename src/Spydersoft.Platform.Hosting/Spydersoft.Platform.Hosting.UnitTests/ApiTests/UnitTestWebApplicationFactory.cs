@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace Spydersoft.Platform.Hosting.UnitTests.ApiTests;
+
 internal class UnitTestWebApplicationFactory(string environment) : WebApplicationFactory<Program>
 {
     private readonly string _environment = environment;

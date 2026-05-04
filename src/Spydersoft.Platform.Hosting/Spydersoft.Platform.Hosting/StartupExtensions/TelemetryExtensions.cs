@@ -134,16 +134,6 @@ public static class TelemetryExtensions
 
         switch (options.Trace.Type)
         {
-            case "zipkin":
-                builder.AddZipkinExporter();
-
-                builder.ConfigureServices(services =>
-                {
-                    // Use IConfiguration binding for Zipkin exporter options.
-                    services.Configure<ZipkinExporterOptions>(configuration.GetSection(options.Trace.ZipkinConfigurationSection));
-                });
-                break;
-
             case "otlp":
                 builder.AddOtlpExporter(otlpOptions => SetOltpOptions(configuration, otlpOptions, options.Trace.Otlp));
                 break;
@@ -152,6 +142,7 @@ public static class TelemetryExtensions
                 builder.AddConsoleExporter();
                 break;
             case "none":
+                break;
             default:
                 builder.AddConsoleExporter();
                 break;
@@ -188,7 +179,7 @@ public static class TelemetryExtensions
                 });
                 break;
             default:
-                // Explicit bounds histogram is the default.
+                // Explicit bounds histogram - splits into .count/.sum/.bucket in Datadog's OTLP intake.
                 // No additional configuration necessary.
                 break;
         }
@@ -227,7 +218,7 @@ public static class TelemetryExtensions
             case "otlp":
                 builder.AddOtlpExporter(otlpOptions =>
                 {
-                    SetOltpOptions(configuration,  otlpOptions, options.Log.Otlp);
+                    SetOltpOptions(configuration, otlpOptions, options.Log.Otlp);
                 });
                 break;
             case "console":
@@ -246,7 +237,7 @@ public static class TelemetryExtensions
     {
         var endpoint = configuration.GetValue<string>("OTEL_EXPORTER_OTLP_ENDPOINT");
         var protocol = configuration.GetValue<string>("OTEL_EXPORTER_OTLP_PROTOCOL") ?? "grpc";
-		var headers = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_HEADERS");
+        var headers = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_HEADERS");
 
         if (string.IsNullOrWhiteSpace(endpoint))
         {
@@ -265,14 +256,14 @@ public static class TelemetryExtensions
 
         otlpOptions.Endpoint = new Uri(endpoint);
 
-		if (!string.IsNullOrWhiteSpace(headers))
-		{
-			otlpOptions.Headers = headers;
-		}
-		else if (options.Headers.Count > 0)
-		{
-			otlpOptions.Headers = string.Join(",", options.Headers.Select(kvp => $"{kvp.Key}={kvp.Value}"));
-		}
+        if (!string.IsNullOrWhiteSpace(headers))
+        {
+            otlpOptions.Headers = headers;
+        }
+        else if (options.Headers.Count > 0)
+        {
+            otlpOptions.Headers = string.Join(",", options.Headers.Select(kvp => $"{kvp.Key}={kvp.Value}"));
+        }
 
         if (protocol is "http/protobuf" or "http")
         {

@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 
 namespace Spydersoft.Platform.Hosting.UnitTests.ApiTests;
+
 public abstract class ApiTestBase : IDisposable
 {
     private UnitTestWebApplicationFactory _factory;

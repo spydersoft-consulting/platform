@@ -23,7 +23,7 @@ public class HealthCheckAttribute : Attribute
         RawTags = tags;
         Tags = tags.Split(',', StringSplitOptions.RemoveEmptyEntries);
     }
-    
+
     /// <summary>
     /// Gets the name of the health check.
     /// </summary>

@@ -45,15 +45,7 @@ public class NullTelemetryClient : ITelemetryClient
     }
 
     /// <inheritdoc/>
-    public void TrackDependency(
-        string dependencyTypeName,
-        string target,
-        string dependencyName,
-        string? data,
-        DateTimeOffset startTime,
-        TimeSpan duration,
-        bool success,
-        IDictionary<string, string>? properties = null)
+    public void TrackDependency(DependencyTelemetry dependency)
     {
         // No-op
     }

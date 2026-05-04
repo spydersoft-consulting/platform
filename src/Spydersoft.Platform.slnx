@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/Core/">
+    <Project Path="Spydersoft.Platform/Spydersoft.Platform.UnitTests/Spydersoft.Platform.UnitTests.csproj" />
+    <Project Path="Spydersoft.Platform/Spydersoft.Platform/Spydersoft.Platform.csproj" />
+  </Folder>
+  <Folder Name="/Hosting/">
+    <Project Path="Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting.ApiTests/Spydersoft.Platform.Hosting.ApiTests.csproj" />
+    <Project Path="Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting.UnitTests/Spydersoft.Platform.Hosting.UnitTests.csproj" />
+    <Project Path="Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting.csproj" />
+  </Folder>
+</Solution>

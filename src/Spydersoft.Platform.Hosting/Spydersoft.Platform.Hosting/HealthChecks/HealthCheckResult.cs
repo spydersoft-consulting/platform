@@ -15,7 +15,7 @@ public class HealthCheckResult
     /// A human-readable description of the health check.
     /// </value>
     public string Description { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// Gets or sets the health check status.
     /// </summary>
@@ -23,7 +23,7 @@ public class HealthCheckResult
     /// The status (e.g., "Healthy", "Degraded", "Unhealthy").
     /// </value>
     public string Status { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// Gets or sets the duration of the health check execution.
     /// </summary>

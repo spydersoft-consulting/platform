@@ -1011,7 +1011,7 @@ public class MeterTelemetryClientTests : IDisposable
             Assert.That(activity.GetTagItem("dependency.type"), Is.EqualTo("HTTP"));
             Assert.That(activity.GetTagItem("dependency.target"), Is.EqualTo("api.example.com"));
             Assert.That(activity.GetTagItem("dependency.name"), Is.EqualTo("GET /users"));
-            Assert.That(activity.GetTagItem("dependency.success"), Is.EqualTo(true));
+            Assert.That(activity.GetTagItem("dependency.success"), Is.True);
             Assert.That(activity.GetTagItem("dependency.data"), Is.EqualTo("query=all"));
             Assert.That(activity.GetTagItem("region"), Is.EqualTo("us-east"));
         }

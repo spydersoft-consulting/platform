@@ -976,6 +976,120 @@ public class MeterTelemetryClientTests : IDisposable
 
     #endregion
 
+    #region Activity Tag Verification Tests
+
+    private static ActivityListener CreateActivityListener(List<Activity> captured)
+    {
+        var listener = new ActivityListener
+        {
+            ShouldListenTo = source => source.Name == "TestActivitySource",
+            Sample = (ref ActivityCreationOptions<ActivityContext> options) => ActivitySamplingResult.AllDataAndRecorded,
+            ActivityStopped = activity => captured.Add(activity)
+        };
+        ActivitySource.AddActivityListener(listener);
+        return listener;
+    }
+
+    [Test]
+    public void TrackDependency_WithListener_SetsExpectedTags()
+    {
+        var captured = new List<Activity>();
+        using var listener = CreateActivityListener(captured);
+        var startTime = DateTimeOffset.UtcNow;
+        var duration = TimeSpan.FromMilliseconds(100);
+        var properties = new Dictionary<string, string> { ["region"] = "us-east" };
+
+        _client!.TrackDependency(new DependencyTelemetry(
+            "HTTP", "api.example.com", "GET /users", "query=all",
+            startTime, duration, true, properties));
+
+        Assert.That(captured, Has.Count.EqualTo(1));
+        var activity = captured[0];
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(activity.DisplayName, Is.EqualTo("Dependency.GET /users"));
+            Assert.That(activity.GetTagItem("dependency.type"), Is.EqualTo("HTTP"));
+            Assert.That(activity.GetTagItem("dependency.target"), Is.EqualTo("api.example.com"));
+            Assert.That(activity.GetTagItem("dependency.name"), Is.EqualTo("GET /users"));
+            Assert.That(activity.GetTagItem("dependency.success"), Is.EqualTo(true));
+            Assert.That(activity.GetTagItem("dependency.data"), Is.EqualTo("query=all"));
+            Assert.That(activity.GetTagItem("region"), Is.EqualTo("us-east"));
+        }
+    }
+
+    [Test]
+    public void TrackDependency_WithListener_NullData_DoesNotSetDataTag()
+    {
+        var captured = new List<Activity>();
+        using var listener = CreateActivityListener(captured);
+
+        _client!.TrackDependency(new DependencyTelemetry(
+            "HTTP", "api.example.com", "GET /users", null,
+            DateTimeOffset.UtcNow, TimeSpan.FromMilliseconds(100), true));
+
+        Assert.That(captured, Has.Count.EqualTo(1));
+        Assert.That(captured[0].GetTagItem("dependency.data"), Is.Null);
+    }
+
+    [Test]
+    public void TrackDependency_WithListener_EmptyData_DoesNotSetDataTag()
+    {
+        var captured = new List<Activity>();
+        using var listener = CreateActivityListener(captured);
+
+        _client!.TrackDependency(new DependencyTelemetry(
+            "HTTP", "api.example.com", "GET /users", "",
+            DateTimeOffset.UtcNow, TimeSpan.FromMilliseconds(100), true));
+
+        Assert.That(captured, Has.Count.EqualTo(1));
+        Assert.That(captured[0].GetTagItem("dependency.data"), Is.Null);
+    }
+
+    [Test]
+    public void TrackDependency_WithListener_FailedDependency_SetsErrorStatus()
+    {
+        var captured = new List<Activity>();
+        using var listener = CreateActivityListener(captured);
+
+        _client!.TrackDependency(new DependencyTelemetry(
+            "HTTP", "api.example.com", "POST /orders", null,
+            DateTimeOffset.UtcNow, TimeSpan.FromMilliseconds(50), false));
+
+        Assert.That(captured, Has.Count.EqualTo(1));
+        Assert.That(captured[0].Status, Is.EqualTo(ActivityStatusCode.Error));
+    }
+
+    [Test]
+    public void TrackDependency_WithListener_SuccessfulDependency_DoesNotSetErrorStatus()
+    {
+        var captured = new List<Activity>();
+        using var listener = CreateActivityListener(captured);
+
+        _client!.TrackDependency(new DependencyTelemetry(
+            "HTTP", "api.example.com", "GET /users", null,
+            DateTimeOffset.UtcNow, TimeSpan.FromMilliseconds(100), true));
+
+        Assert.That(captured, Has.Count.EqualTo(1));
+        Assert.That(captured[0].Status, Is.Not.EqualTo(ActivityStatusCode.Error));
+    }
+
+    [Test]
+    public void TrackDependency_WithListener_SetsEndTimeFromDuration()
+    {
+        var captured = new List<Activity>();
+        using var listener = CreateActivityListener(captured);
+        var startTime = DateTimeOffset.UtcNow;
+        var duration = TimeSpan.FromMilliseconds(250);
+
+        _client!.TrackDependency(new DependencyTelemetry(
+            "SQL", "db", "SELECT 1", null, startTime, duration, true));
+
+        Assert.That(captured, Has.Count.EqualTo(1));
+        Assert.That(captured[0].Duration, Is.EqualTo(duration).Within(TimeSpan.FromMilliseconds(10)));
+    }
+
+    #endregion
+
     public void Dispose()
     {
         Dispose(true);

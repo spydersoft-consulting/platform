@@ -3,6 +3,14 @@
     <Project Path="Spydersoft.Platform/Spydersoft.Platform.UnitTests/Spydersoft.Platform.UnitTests.csproj" />
     <Project Path="Spydersoft.Platform/Spydersoft.Platform/Spydersoft.Platform.csproj" />
   </Folder>
+  <Folder Name="/Messaging/">
+    <Project Path="Spydersoft.Messaging/Spydersoft.Messaging/Spydersoft.Messaging.csproj" />
+    <Project Path="Spydersoft.Messaging/Spydersoft.Messaging.UnitTests/Spydersoft.Messaging.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/Messaging.RabbitMQ/">
+    <Project Path="Spydersoft.Messaging.RabbitMQ/Spydersoft.Messaging.RabbitMQ/Spydersoft.Messaging.RabbitMQ.csproj" />
+    <Project Path="Spydersoft.Messaging.RabbitMQ/Spydersoft.Messaging.RabbitMQ.UnitTests/Spydersoft.Messaging.RabbitMQ.UnitTests.csproj" />
+  </Folder>
   <Folder Name="/Hosting/">
     <Project Path="Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting.ApiTests/Spydersoft.Platform.Hosting.ApiTests.csproj" />
     <Project Path="Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting.UnitTests/Spydersoft.Platform.Hosting.UnitTests.csproj" />

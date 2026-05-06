@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageDescription>Transport-agnostic messaging abstractions for the Spydersoft Platform.</PackageDescription>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="../docs/README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+</Project>

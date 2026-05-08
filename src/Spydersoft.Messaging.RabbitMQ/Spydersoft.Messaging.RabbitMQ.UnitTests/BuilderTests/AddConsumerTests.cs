@@ -38,10 +38,13 @@ internal class AddConsumerTests
         var registrations = provider.GetServices<RabbitMqConsumerRegistration>().ToList();
 
         Assert.That(registrations, Has.Count.EqualTo(1));
-        Assert.That(registrations[0].Topic, Is.EqualTo("test.topic"));
-        Assert.That(registrations[0].QueueName, Is.EqualTo("test-queue"));
-        Assert.That(registrations[0].MessageType, Is.EqualTo(typeof(TestMessage)));
-        Assert.That(registrations[0].HandlerType, Is.EqualTo(typeof(TestMessageHandler)));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(registrations[0].Topic, Is.EqualTo("test.topic"));
+            Assert.That(registrations[0].QueueName, Is.EqualTo("test-queue"));
+            Assert.That(registrations[0].MessageType, Is.EqualTo(typeof(TestMessage)));
+            Assert.That(registrations[0].HandlerType, Is.EqualTo(typeof(TestMessageHandler)));
+        }
     }
 
     [Test]

@@ -57,11 +57,11 @@ internal class AckNackTests
         // Give the broker time to potentially redeliver — it should not, because nack is requeue=false.
         await Task.Delay(TimeSpan.FromSeconds(2));
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(FailingHandler.CallCount, Is.EqualTo(1), "handler must not be called more than once");
-            Assert.That(GetQueueMessageCount(_queueName), Is.EqualTo(0u), "queue should be empty (nack discarded message)");
-        });
+            Assert.That(GetQueueMessageCount(_queueName), Is.Zero, "queue should be empty (nack discarded message)");
+        }
 
         await host.StopAsync();
     }

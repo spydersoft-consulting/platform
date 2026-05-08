@@ -55,15 +55,14 @@ internal class BasicPropertiesWireFormatTests
 
         var ea = await captured.Task.WaitAsync(TimeSpan.FromSeconds(10));
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(ea.BasicProperties.ContentType, Is.EqualTo("application/json"));
             Assert.That(ea.BasicProperties.MessageId, Is.EqualTo(envelope.MessageId));
             Assert.That(ea.BasicProperties.CorrelationId, Is.EqualTo("trace-xyz"));
-            // body should still be JSON
             var body = Encoding.UTF8.GetString(ea.Body.Span);
             Assert.That(body, Does.Contain("\"hello\""));
-        });
+        }
     }
 
     [Test]

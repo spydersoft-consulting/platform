@@ -29,7 +29,7 @@ public static class RabbitMqMessagingBuilderExtensions
         return RegisterCommon(services);
     }
 
-    private static ISpydersoftMessagingBuilder RegisterCommon(IServiceCollection services)
+    private static SpydersoftMessagingBuilder RegisterCommon(IServiceCollection services)
     {
         services.AddSingleton<IMessagePublisher, RabbitMqMessagePublisher>();
         services.AddHostedService<RabbitMqConsumerBackgroundService>();

@@ -86,11 +86,11 @@ internal class JsonSerializerOptionsTests
         var ea = await captured.Task.WaitAsync(TimeSpan.FromSeconds(10));
         var body = Encoding.UTF8.GetString(ea.Body.Span);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(body, Does.Contain("long_property_name"), "expected snake_case property name from custom JSON options");
             Assert.That(body, Does.Not.Contain("longPropertyName"));
-        });
+        }
     }
 
     public sealed class SnakeMessage

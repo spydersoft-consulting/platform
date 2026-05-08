@@ -9,7 +9,7 @@ using Spydersoft.Messaging.RabbitMQ.Options;
 
 namespace Spydersoft.Messaging.RabbitMQ;
 
-public sealed class RabbitMqConsumerBackgroundService : BackgroundService
+public sealed partial class RabbitMqConsumerBackgroundService : BackgroundService
 {
     private readonly IEnumerable<RabbitMqConsumerRegistration> _registrations;
     private readonly RabbitMqOptions _options;
@@ -43,7 +43,7 @@ public sealed class RabbitMqConsumerBackgroundService : BackgroundService
         };
 
         _connection = await factory.CreateConnectionAsync(stoppingToken);
-        _logger.LogInformation("RabbitMQ consumer connection established to {Host}:{Port}", _options.Host, _options.Port);
+        LogConsumerConnectionEstablished(_options.Host, _options.Port);
 
         foreach (var registration in _registrations)
         {
@@ -82,9 +82,7 @@ public sealed class RabbitMqConsumerBackgroundService : BackgroundService
                 consumer: consumer,
                 cancellationToken: stoppingToken);
 
-            _logger.LogInformation(
-                "Consuming topic {Topic} from queue {Queue}",
-                registration.Topic, registration.QueueName);
+            LogConsumingTopic(registration.Topic, registration.QueueName);
         }
 
         await Task.Delay(Timeout.Infinite, stoppingToken).ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
@@ -138,4 +136,10 @@ public sealed class RabbitMqConsumerBackgroundService : BackgroundService
             _connection.Dispose();
         }
     }
+
+    [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "RabbitMQ consumer connection established to {Host}:{Port}")]
+    private partial void LogConsumerConnectionEstablished(string host, int port);
+
+    [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "Consuming topic {Topic} from queue {Queue}")]
+    private partial void LogConsumingTopic(string topic, string queue);
 }

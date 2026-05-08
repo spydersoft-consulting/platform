@@ -34,13 +34,13 @@ internal class PublishConsumeTests
         await publisher.PublishAsync("orders.created", envelope);
 
         var received = await OrderHandler.Completion.Task.WaitAsync(TimeSpan.FromSeconds(10));
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(received.Payload.OrderId, Is.EqualTo("ORD-42"));
             Assert.That(received.Payload.Amount, Is.EqualTo(99.95m));
             Assert.That(received.MessageId, Is.EqualTo(envelope.MessageId));
             Assert.That(received.CorrelationId, Is.EqualTo("corr-abc"));
-        });
+        }
 
         await host.StopAsync();
     }

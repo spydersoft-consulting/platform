@@ -9,8 +9,11 @@ internal class DefaultValueTests
     {
         var envelope = new MessageEnvelope<string> { Payload = "test" };
 
-        Assert.That(envelope.MessageId, Is.Not.Null.And.Not.Empty);
-        Assert.That(Guid.TryParse(envelope.MessageId, out _), Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(envelope.MessageId, Is.Not.Null.And.Not.Empty);
+            Assert.That(Guid.TryParse(envelope.MessageId, out _), Is.True);
+        }
     }
 
     [Test]
@@ -20,9 +23,12 @@ internal class DefaultValueTests
         var envelope = new MessageEnvelope<string> { Payload = "test" };
         var after = DateTimeOffset.UtcNow;
 
-        Assert.That(envelope.PublishedAt.Offset, Is.EqualTo(TimeSpan.Zero));
-        Assert.That(envelope.PublishedAt, Is.GreaterThanOrEqualTo(before));
-        Assert.That(envelope.PublishedAt, Is.LessThanOrEqualTo(after));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(envelope.PublishedAt.Offset, Is.EqualTo(TimeSpan.Zero));
+            Assert.That(envelope.PublishedAt, Is.GreaterThanOrEqualTo(before));
+            Assert.That(envelope.PublishedAt, Is.LessThanOrEqualTo(after));
+        }
     }
 
     [Test]

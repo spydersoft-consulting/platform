@@ -6,7 +6,7 @@ using Spydersoft.Messaging.RabbitMQ.Options;
 
 namespace Spydersoft.Messaging.RabbitMQ;
 
-public sealed class RabbitMqMessagePublisher : IMessagePublisher, IAsyncDisposable
+public sealed partial class RabbitMqMessagePublisher : IMessagePublisher, IAsyncDisposable
 {
     private readonly RabbitMqOptions _options;
     private readonly ILogger<RabbitMqMessagePublisher> _logger;
@@ -58,7 +58,7 @@ public sealed class RabbitMqMessagePublisher : IMessagePublisher, IAsyncDisposab
             body: body,
             cancellationToken: cancellationToken);
 
-        _logger.LogDebug("Published message to topic {Topic} on exchange {Exchange}", topic, _options.Exchange);
+        LogPublished(topic, _options.Exchange);
     }
 
     private async Task<IConnection> GetOrCreateConnectionAsync(CancellationToken cancellationToken)
@@ -86,7 +86,7 @@ public sealed class RabbitMqMessagePublisher : IMessagePublisher, IAsyncDisposab
             };
 
             _connection = await factory.CreateConnectionAsync(cancellationToken);
-            _logger.LogInformation("RabbitMQ connection established to {Host}:{Port}", _options.Host, _options.Port);
+            LogConnectionEstablished(_options.Host, _options.Port);
             return _connection;
         }
         finally
@@ -104,4 +104,10 @@ public sealed class RabbitMqMessagePublisher : IMessagePublisher, IAsyncDisposab
         }
         _connectionLock.Dispose();
     }
+
+    [LoggerMessage(EventId = 1, Level = LogLevel.Debug, Message = "Published message to topic {Topic} on exchange {Exchange}")]
+    private partial void LogPublished(string topic, string exchange);
+
+    [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "RabbitMQ connection established to {Host}:{Port}")]
+    private partial void LogConnectionEstablished(string host, int port);
 }

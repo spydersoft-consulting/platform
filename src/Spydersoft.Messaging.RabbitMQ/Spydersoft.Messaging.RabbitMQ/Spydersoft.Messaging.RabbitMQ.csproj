@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageDescription>RabbitMQ transport implementation for Spydersoft.Messaging.</PackageDescription>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="RabbitMQ.Client" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.Options" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Spydersoft.Messaging\Spydersoft.Messaging\Spydersoft.Messaging.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="../docs/README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+</Project>

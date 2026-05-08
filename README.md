@@ -10,7 +10,9 @@ This repository contains libraries with common tasks for Spydersoft projects.
 ## Libraries
 
 - [Spydersoft.Platform](./src/Spydersoft.Platform/)
-- [Spydersoft.Platform.Hosting](./src/Spydersoft.Platform.Hosting//)
+- [Spydersoft.Platform.Hosting](./src/Spydersoft.Platform.Hosting/)
+- [Spydersoft.Messaging](./src/Spydersoft.Messaging/)
+- [Spydersoft.Messaging.RabbitMQ](./src/Spydersoft.Messaging.RabbitMQ/)
 
 ## Directory Structure
 

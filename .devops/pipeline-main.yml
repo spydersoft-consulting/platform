@@ -25,10 +25,11 @@ extends:
   parameters:
     projectsToBuild: |
       src/**/*.csproj
-    projectsToPack: "**/*.csproj;!**/*.UnitTests.csproj;!**/*.ApiTests.csproj"
+    projectsToPack: "**/*.csproj;!**/*.UnitTests.csproj;!**/*.ApiTests.csproj;!**/*.IntegrationTests.csproj"
     executeTests: true
     testProjects: |
       src/**/*.UnitTests.csproj
+      src/**/*.IntegrationTests.csproj
     externalPublishUrl: $(nuget-feed-url)
     externalPublishApiKey: $(nuget-feed-api-key)
     # If it's a PR or a build from main (not a tag) then don't publish to Nuget
@@ -52,8 +53,8 @@ extends:
     sonarProjectName: Spydersoft.Platform
     sonarExtraProperties: |
       sonar.projectKey=spydersoft_platform
-      sonar.test.inclusions=**/*.UnitTests/**,**/*.ApiTests/**
-      sonar.coverage.exclusions=**/*.UnitTests/**,**/*.ApiTests/**
+      sonar.test.inclusions=**/*.UnitTests/**,**/*.ApiTests/**,**/*.IntegrationTests/**
+      sonar.coverage.exclusions=**/*.UnitTests/**,**/*.ApiTests/**,**/*.IntegrationTests/**
       sonar.scanner.scanAll=false
     
     

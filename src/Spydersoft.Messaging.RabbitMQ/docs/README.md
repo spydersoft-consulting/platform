@@ -71,3 +71,21 @@ public sealed class MyMessageHandler : IMessageHandler<MyMessage>
 ```
 
 Unhandled exceptions result in a nack without requeue, routing the message to the dead-letter exchange if configured on the broker.
+
+## Failure Semantics
+
+- **Publishing** (`IMessagePublisher.PublishAsync`): throws on transport failure. Callers
+  that need fire-and-forget semantics (e.g. logging audit events) must wrap the call in
+  their own try/catch.
+- **Consuming** (`IMessageHandler<T>.HandleAsync`): an unhandled exception causes the
+  underlying transport to nack the message without requeue, routing to the dead-letter
+  exchange if the broker has one configured.
+- **Cancellation**: handlers should respect `CancellationToken` and propagate
+  `OperationCanceledException` on shutdown — the transport will release in-flight messages
+  back to the queue.
+
+## JSON Serialization
+
+Envelopes are serialized as JSON using `JsonSerializerDefaults.Web` by default (camelCase
+property names). To customize, set `RabbitMqOptions.JsonSerializerOptions` — both publisher
+and consumer use the same instance, so the round-trip stays consistent.

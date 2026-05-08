@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace Spydersoft.Messaging.RabbitMQ.Options;
 
 public class RabbitMqOptions
@@ -29,4 +31,12 @@ public class RabbitMqOptions
     /// Whether published messages are persisted to disk.
     /// </summary>
     public bool PersistentMessages { get; set; } = true;
+
+    /// <summary>
+    /// JSON serializer options used for envelope serialization. Defaults to
+    /// <see cref="JsonSerializerDefaults.Web"/> (camelCase property names). Both
+    /// publisher and consumer use the same instance, so the round-trip stays consistent.
+    /// </summary>
+    public JsonSerializerOptions JsonSerializerOptions { get; set; }
+        = new(JsonSerializerDefaults.Web);
 }

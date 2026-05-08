@@ -37,12 +37,18 @@ public sealed class RabbitMqMessagePublisher : IMessagePublisher, IAsyncDisposab
             autoDelete: false,
             cancellationToken: cancellationToken);
 
-        var body = JsonSerializer.SerializeToUtf8Bytes(envelope);
+        var body = JsonSerializer.SerializeToUtf8Bytes(envelope, _options.JsonSerializerOptions);
 
         var properties = new BasicProperties
         {
-            DeliveryMode = _options.PersistentMessages ? DeliveryModes.Persistent : DeliveryModes.Transient
+            DeliveryMode = _options.PersistentMessages ? DeliveryModes.Persistent : DeliveryModes.Transient,
+            ContentType = "application/json",
+            MessageId = envelope.MessageId,
         };
+        if (!string.IsNullOrEmpty(envelope.CorrelationId))
+        {
+            properties.CorrelationId = envelope.CorrelationId;
+        }
 
         await channel.BasicPublishAsync(
             exchange: _options.Exchange,

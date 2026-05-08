@@ -25,8 +25,9 @@ src/
     docs/
       README.md
   Spydersoft.Messaging.RabbitMQ/
-    Spydersoft.Messaging.RabbitMQ/      ← RabbitMQ implementation
-    Spydersoft.Messaging.RabbitMQ.IntegrationTests/
+    Spydersoft.Messaging.RabbitMQ/                    ← RabbitMQ implementation
+    Spydersoft.Messaging.RabbitMQ.UnitTests/
+    Spydersoft.Messaging.RabbitMQ.IntegrationTests/   ← Testcontainers-based broker tests
     docs/
       README.md
 ```

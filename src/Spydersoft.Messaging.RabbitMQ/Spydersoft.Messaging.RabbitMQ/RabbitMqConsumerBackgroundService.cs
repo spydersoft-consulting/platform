@@ -99,7 +99,7 @@ public sealed class RabbitMqConsumerBackgroundService : BackgroundService
         try
         {
             var envelopeType = typeof(MessageEnvelope<>).MakeGenericType(registration.MessageType);
-            var envelope = JsonSerializer.Deserialize(ea.Body.Span, envelopeType);
+            var envelope = JsonSerializer.Deserialize(ea.Body.Span, envelopeType, _options.JsonSerializerOptions);
 
             using var scope = _serviceProvider.CreateScope();
             var handlerType = typeof(IMessageHandler<>).MakeGenericType(registration.MessageType);
@@ -109,6 +109,10 @@ public sealed class RabbitMqConsumerBackgroundService : BackgroundService
             await (Task) handleMethod.Invoke(handler, [envelope, cancellationToken])!;
 
             await channel.BasicAckAsync(ea.DeliveryTag, multiple: false, cancellationToken: cancellationToken);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception ex)
         {

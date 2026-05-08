@@ -56,3 +56,15 @@ public sealed class MyMessageHandler : IMessageHandler<MyMessage>
     }
 }
 ```
+
+## Failure Semantics
+
+- **Publishing** (`IMessagePublisher.PublishAsync`): throws on transport failure. Callers
+  that need fire-and-forget semantics (e.g. logging audit events) must wrap the call in
+  their own try/catch.
+- **Consuming** (`IMessageHandler<T>.HandleAsync`): an unhandled exception causes the
+  underlying transport to nack the message without requeue, routing to the dead-letter
+  exchange if the broker has one configured.
+- **Cancellation**: handlers should respect `CancellationToken` and propagate
+  `OperationCanceledException` on shutdown — the transport will release in-flight messages
+  back to the queue.

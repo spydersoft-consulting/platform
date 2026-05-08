@@ -10,6 +10,7 @@
   <Folder Name="/Messaging.RabbitMQ/">
     <Project Path="Spydersoft.Messaging.RabbitMQ/Spydersoft.Messaging.RabbitMQ/Spydersoft.Messaging.RabbitMQ.csproj" />
     <Project Path="Spydersoft.Messaging.RabbitMQ/Spydersoft.Messaging.RabbitMQ.UnitTests/Spydersoft.Messaging.RabbitMQ.UnitTests.csproj" />
+    <Project Path="Spydersoft.Messaging.RabbitMQ/Spydersoft.Messaging.RabbitMQ.IntegrationTests/Spydersoft.Messaging.RabbitMQ.IntegrationTests.csproj" />
   </Folder>
   <Folder Name="/Hosting/">
     <Project Path="Spydersoft.Platform.Hosting/Spydersoft.Platform.Hosting.ApiTests/Spydersoft.Platform.Hosting.ApiTests.csproj" />

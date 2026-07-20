@@ -23,6 +23,7 @@ variables:
 extends:
   template: pipelines/build-net-library/v1.yml@templates
   parameters:
+    vmImage: ubuntu-latest
     projectsToBuild: |
       src/**/*.csproj
     projectsToPack: "**/*.csproj;!**/*.UnitTests.csproj;!**/*.ApiTests.csproj;!**/*.IntegrationTests.csproj"

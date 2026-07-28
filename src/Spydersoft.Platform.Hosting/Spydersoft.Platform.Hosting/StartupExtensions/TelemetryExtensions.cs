@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Instrumentation.AspNetCore;
@@ -30,8 +31,24 @@ public static class TelemetryExtensions
     /// Adds Serilog as a console logger, plus any other sinks configured in appsettings.
     /// </summary>
     /// <remarks>
-    /// When using this in conjunction with OpenTelemetry, make sure <paramref name="writeToProviders"/> is set to <c>true</c>.  Additionally, the
-    /// Serilog configuration for log levels overrides the any levels in the Logging section.
+    /// <para>
+    /// The console sink is for local/interactive tailing (e.g. <c>kubectl logs</c>) only — it uses a human-readable,
+    /// colorized, multi-line template in every environment. It is <em>not</em> the collector ingestion path: log
+    /// delivery to the backend (Loki, via Grafana Alloy) happens through the OpenTelemetry logging pipeline
+    /// configured by <see cref="AddSpydersoftTelemetry(WebApplicationBuilder, Assembly)"/> (<c>Telemetry:Log:Type=otlp</c>),
+    /// which receives events forwarded from Serilog when <paramref name="writeToProviders"/> is <c>true</c>. Do not
+    /// reformat the console sink as structured JSON to try to make Grafana output more readable — that only helps if
+    /// stdout is actually being scraped by a collector (check for a <c>logs.spydersoft.io/collect</c> pod annotation;
+    /// most services don't have one and rely on OTLP export instead).
+    /// </para>
+    /// <para>
+    /// When using this in conjunction with OpenTelemetry, make sure <paramref name="writeToProviders"/> is set to <c>true</c>,
+    /// and call <see cref="AddSpydersoftTelemetry(WebApplicationBuilder, Assembly)"/> (or the overload with
+    /// <see cref="ConfigurationFunctions"/>) <em>before</em> calling this method — <c>AddSpydersoftTelemetry</c> clears the
+    /// default logging providers registered by <see cref="WebApplicationBuilder"/> so that Serilog's own console sink isn't
+    /// duplicated by the framework's built-in console logger. Additionally, the Serilog configuration for log levels
+    /// overrides any levels in the Logging section.
+    /// </para>
     /// </remarks>
     /// <param name="appBuilder">The application builder.</param>
     /// <param name="writeToProviders">if set to <c>true</c> [write to providers].</param>
@@ -47,6 +64,22 @@ public static class TelemetryExtensions
     }
 
     /// <summary>
+    /// Adds Serilog's structured request-logging middleware, replacing ASP.NET Core's built-in
+    /// per-request diagnostic logging (<c>Request starting</c>/<c>Request finished</c>) with a single
+    /// structured log line per request (method, path, status code, elapsed time).
+    /// </summary>
+    /// <remarks>
+    /// Call this once, immediately after <c>UseRouting()</c>. It replaces the need for hand-written
+    /// "processing request" log lines in individual controller actions.
+    /// </remarks>
+    /// <param name="app">The application builder.</param>
+    /// <returns>The application builder for chaining.</returns>
+    public static IApplicationBuilder UseSpydersoftRequestLogging(this IApplicationBuilder app)
+    {
+        return app.UseSerilogRequestLogging();
+    }
+
+    /// <summary>
     /// Adds OpenTelemetry tracing, metrics, and logging to the application with advanced configuration options.
     /// </summary>
     /// <param name="appBuilder">The web application builder.</param>
@@ -57,6 +90,14 @@ public static class TelemetryExtensions
         Assembly startupAssembly,
         ConfigurationFunctions? configurationFunctions)
     {
+        // WebApplicationBuilder.CreateBuilder() auto-registers a default console ILoggerProvider. If
+        // AddSpydersoftSerilog(writeToProviders: true) is called afterward (as required whenever telemetry
+        // is enabled, so Serilog events reach the OpenTelemetry logging bridge below), that default provider
+        // would receive a second copy of every log event in a different format, duplicating console output.
+        // Clearing providers here (before OpenTelemetry registers its own logging provider further down) removes
+        // only that default provider. This requires AddSpydersoftTelemetry to be called before AddSpydersoftSerilog.
+        appBuilder.Logging.ClearProviders();
+
         var telemetryOptions = new TelemetryOptions();
         appBuilder.Configuration.GetSection(TelemetryOptions.SectionName).Bind(telemetryOptions);
 

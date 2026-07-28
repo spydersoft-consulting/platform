@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for "none" as a valid telemetry exporter type for logs, metrics, and traces
 - Support for `OTEL_EXPORTER_OTLP_HEADERS` environment variable for OTLP authentication headers
 - Support for `http/protobuf` protocol in OTLP exporter configuration
+- `UseSpydersoftRequestLogging` extension method (wraps Serilog's `UseSerilogRequestLogging()`) for a single structured per-request log line, replacing hand-written per-action "processing request" log calls
 
 ### Changed
 
@@ -22,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OTLP headers now prioritize `OTEL_EXPORTER_OTLP_HEADERS` environment variable over configuration file values
 - OTLP protocol configuration now supports both `http` and `http/protobuf` values (both map to HttpProtobuf)
 - Updated NuGet packages: OpenTelemetry packages to 1.15.x, FusionCache to 2.6.0, Microsoft.Extensions to 10.0.7, test packages to latest
+- `AddSpydersoftTelemetry` now calls `builder.Logging.ClearProviders()` before registering OpenTelemetry's logging provider, removing the default console `ILoggerProvider` that `WebApplicationBuilder.CreateBuilder()` registers automatically. Previously, calling `AddSpydersoftSerilog(writeToProviders: true)` (required whenever telemetry is enabled) caused every log event to be written twice — once by Serilog's console sink and once by the untouched default console provider. Consumers must continue to call `AddSpydersoftTelemetry` before `AddSpydersoftSerilog`, as already documented.
 
 ### Removed
 

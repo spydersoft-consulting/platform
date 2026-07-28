@@ -8,6 +8,9 @@ builder.AddSpydersoftTelemetry(typeof(Program).Assembly);
 
 The assembly parameter is used to calculate the version and set the OpenTelemetry service version.
 
+> [!NOTE]
+> `AddSpydersoftTelemetry` also clears the default logging providers registered by `WebApplicationBuilder.CreateBuilder()` before adding its own OpenTelemetry logging provider. This is so that, when paired with `AddSpydersoftSerilog(writeToProviders: true)` (see [Serilog](./Serilog.md)), log events aren't duplicated to both the framework's default console logger and Serilog's own console sink. Call `AddSpydersoftTelemetry` before `AddSpydersoftSerilog`.
+
 ### Advanced Configuration
 
 For advanced scenarios, you can provide a `ConfigurationFunctions` object to customize OpenTelemetry behavior:

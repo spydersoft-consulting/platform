@@ -10,6 +10,7 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
+using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using Spydersoft.Platform.Exceptions;
 using Spydersoft.Platform.Hosting.Options;
@@ -17,6 +18,7 @@ using Spydersoft.Platform.Hosting.Telemetry;
 using Spydersoft.Platform.Telemetry;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
+using System.Linq;
 using System.Reflection;
 
 namespace Spydersoft.Platform.Hosting.StartupExtensions;
@@ -64,19 +66,38 @@ public static class TelemetryExtensions
     }
 
     /// <summary>
+    /// Health check endpoints registered by <c>UseSpydersoftHealthChecks</c> (<see cref="HealthCheckExtensions"/>).
+    /// Polled every few seconds by Kubernetes probes, so they're logged at <see cref="LogEventLevel.Verbose"/>
+    /// instead of Information to avoid drowning out real request traffic in the console/OTLP log stream.
+    /// </summary>
+    private static readonly string[] HealthCheckPaths = ["/livez", "/readyz", "/startup", "/configuration"];
+
+    /// <summary>
     /// Adds Serilog's structured request-logging middleware, replacing ASP.NET Core's built-in
     /// per-request diagnostic logging (<c>Request starting</c>/<c>Request finished</c>) with a single
     /// structured log line per request (method, path, status code, elapsed time).
     /// </summary>
     /// <remarks>
     /// Call this once, immediately after <c>UseRouting()</c>. It replaces the need for hand-written
-    /// "processing request" log lines in individual controller actions.
+    /// "processing request" log lines in individual controller actions. Requests to the standard health
+    /// check endpoints (<c>/livez</c>, <c>/readyz</c>, <c>/startup</c>, <c>/configuration</c>) are logged at
+    /// Verbose rather than Information, so they're suppressed by the default Serilog minimum level instead
+    /// of flooding logs with a line every few seconds from Kubernetes probes.
     /// </remarks>
     /// <param name="app">The application builder.</param>
     /// <returns>The application builder for chaining.</returns>
     public static IApplicationBuilder UseSpydersoftRequestLogging(this IApplicationBuilder app)
     {
-        return app.UseSerilogRequestLogging();
+        return app.UseSerilogRequestLogging(options =>
+        {
+            options.GetLevel = (httpContext, elapsed, ex) => ex is not null
+                ? LogEventLevel.Error
+                : httpContext.Response.StatusCode > 499
+                    ? LogEventLevel.Error
+                    : HealthCheckPaths.Any(path => httpContext.Request.Path.StartsWithSegments(path))
+                        ? LogEventLevel.Verbose
+                        : LogEventLevel.Information;
+        });
     }
 
     /// <summary>
